@@ -1,0 +1,41 @@
+<!-- Custom query controls for collaboration management -->
+<div class='custompanel-content'>
+    <p>
+        Select the desired collaboration mode from the choices shown here.  The current mode is already selected.  The collaboration mode determines if users can edit the project content.
+        If you restrict access to the <span title='Privileged Collaborator Group'>PCG</span> members, select the members at the bottom of this page.
+    </p>
+    <div id='gcc_mode_choices_div' class="group-standard">
+
+        <div class="inline">
+        <label title="Only allow members of included groups to edit Project Content" for="gcc_mode_membergroups">Member Groups
+        </label>
+        <input name="gcc_modegroup" id="gcc_mode_membergroups" value="membergroups" type="radio">
+        </div>
+
+        <div class="inline">
+        <label title="Only allow Privileged Collaborator Group members to edit content" for="gcc_mode_pcgonly">Only PCG
+        </label>
+        <input name="gcc_modegroup" id="gcc_mode_pcgonly" value="pcgonly" type="radio">
+        </div>
+
+        <div class="inline">
+        <label title="Only allow the Project Owner and their Delegate Owners to edit project content" for="gcc_mode_owneranddelegates">Project Owner and Delegates
+        </label>
+        <input name="gcc_modegroup" id="gcc_mode_owneranddelegates" value="owneranddelegates" type="radio">
+        </div>
+
+        <div class="inline">
+        <label title="Only allow the Primary Owner of the project to edit project content" for="gcc_mode_primaryowner">Only Primary Project Owner
+        </label>
+        <input name="gcc_modegroup" id="gcc_mode_primaryowner" value="primaryowner" type="radio">
+        </div>
+
+        <div class="inline">
+        <label title="Don't allow anyone to edit project content" for="gcc_mode_nobody">Nobody
+        </label>
+        <input name="gcc_modegroup" id="gcc_mode_nobody" value="nobody" type="radio">
+        </div>
+
+    </div>
+
+</div>

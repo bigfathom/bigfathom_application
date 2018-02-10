@@ -1,0 +1,89 @@
+PROJECT_TEMPLATE	FORMAT	PUBLISHER:NAME	PUBLISHER:URI	TYPE	PUBLISHED_TS	TEMPLATE_NM	PUBLISHEDREFNAME	AUTHOR_NAME	PROJECT_CONTEXTID	ROOT_WORKITEMID
+DATA ROW>>	TXT:BFTF1	admin	http://localhost/	project template	2017-08-05T12:01:23-04:00	FISMA Audit	fisma_audit	Frank Font	104	1
+BEGIN	METADATA	MISSION_TX
+Check the security posture of a system using FISMA control families as a guide.
+END	METADATA	MISION_TX
+BEGIN	METADATA	SUBMITTER_BLURB_TX
+Organize the process of performing a NIST 800-53 audit.  Content derived from details at <a href='https://nvd.nist.gov/800-53/Rev4'>https://nvd.nist.gov/800-53/Rev4</a> website.
+END	METADATA	SUBMITTER_BLURB_TX
+WORKITEMS	WID	NAME	PURPOSE_TX	OWNER_TEMPLATE_PROJECTID	TYPELETTER
+DATA ROW>>	1	FISMA_AUDIT	Check all the control families	1	P
+DATA ROW>>	2	Create Audit Report	Undeclared purpose	1	G
+DATA ROW>>	3	Check Control Families	Undeclared purpose	1	G
+DATA ROW>>	4	Collect Metadata	Undeclared purpose	1	G
+DATA ROW>>	5	SI - System and Info Integrity	Undeclared purpose	1	G
+DATA ROW>>	6	PM - Program Management	Undeclared purpose	1	G
+DATA ROW>>	7	IR - Incident Response	Undeclared purpose	1	G
+DATA ROW>>	8	SC - System and Comm Protect	Undeclared purpose	1	G
+DATA ROW>>	9	AT - Awareness and Training	Undeclared purpose	1	G
+DATA ROW>>	10	CA - Security Asmt and Auth	Undeclared purpose	1	G
+DATA ROW>>	11	MA - Maintenance	Undeclared purpose	1	G
+DATA ROW>>	12	MP - Media Protection	Undeclared purpose	1	G
+DATA ROW>>	13	SA - System and Services Acquisition	Undeclared purpose	1	G
+DATA ROW>>	14	PE - Physical and Environmet Protection	Undeclared purpose	1	G
+DATA ROW>>	15	PS - Personnel Security	Undeclared purpose	1	G
+DATA ROW>>	16	RA - Risk Assessment	Undeclared purpose	1	G
+DATA ROW>>	17	AU - Audit and Accountability	Undeclared purpose	1	G
+DATA ROW>>	18	PL - Planning	Undeclared purpose	1	G
+DATA ROW>>	19	AC - Access Control	Undeclared purpose	1	G
+DATA ROW>>	20	IA - Identification and Authentication	Undeclared purpose	1	G
+DATA ROW>>	21	CM - Configuration Management	Undeclared purpose	1	G
+DATA ROW>>	22	CP - Contingency Planning	Undeclared purpose	1	G
+DATA ROW>>	23	Present Findings	Undeclared purpose	1	G
+DATA ROW>>	24	Identify System Owner	Undeclared purpose	1	T
+DATA ROW>>	25	Identify System Boundaries	Undeclared purpose	1	T
+DATA ROW>>	26	Identify Audit Team	Undeclared purpose	1	T
+WORKITEM_SUBMAP_NAME:DAW
+DATA ROW>>	1	2
+DATA ROW>>	1	23
+DATA ROW>>	2	3
+DATA ROW>>	2	4
+DATA ROW>>	3	5
+DATA ROW>>	3	6
+DATA ROW>>	3	7
+DATA ROW>>	3	8
+DATA ROW>>	3	9
+DATA ROW>>	3	10
+DATA ROW>>	3	11
+DATA ROW>>	3	12
+DATA ROW>>	3	13
+DATA ROW>>	3	14
+DATA ROW>>	3	15
+DATA ROW>>	3	16
+DATA ROW>>	3	17
+DATA ROW>>	3	18
+DATA ROW>>	3	19
+DATA ROW>>	3	20
+DATA ROW>>	3	21
+DATA ROW>>	3	22
+DATA ROW>>	4	24
+DATA ROW>>	4	25
+DATA ROW>>	4	26
+MAP_RELEVANT_ROLES
+MAP_WORKITEMID2PROJECTID
+DATA ROW>>	2	1
+DATA ROW>>	23	1
+DATA ROW>>	3	1
+DATA ROW>>	4	1
+DATA ROW>>	5	1
+DATA ROW>>	6	1
+DATA ROW>>	7	1
+DATA ROW>>	8	1
+DATA ROW>>	9	1
+DATA ROW>>	10	1
+DATA ROW>>	11	1
+DATA ROW>>	12	1
+DATA ROW>>	13	1
+DATA ROW>>	14	1
+DATA ROW>>	15	1
+DATA ROW>>	16	1
+DATA ROW>>	17	1
+DATA ROW>>	18	1
+DATA ROW>>	19	1
+DATA ROW>>	20	1
+DATA ROW>>	21	1
+DATA ROW>>	22	1
+DATA ROW>>	24	1
+DATA ROW>>	25	1
+DATA ROW>>	26	1
+PROJECT_TEMPLATE_END	WORKITEM_COUNT=26	DAW_LINK_COUNT=25

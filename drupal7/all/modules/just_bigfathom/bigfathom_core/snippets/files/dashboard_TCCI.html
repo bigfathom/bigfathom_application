@@ -1,0 +1,147 @@
+<!-- Progress Cycle Concept -->
+<div class="context-project-workflow-area">
+
+    <div id="context-box-idea" class="context-helper-top">
+        <div class="context-label-text">
+            Ideation
+        </div>
+    </div>
+    
+    <div id="context-box-plan" class="context-helper-right">
+        <div class="context-label-text">
+            Planning
+        </div>
+    </div>
+    
+    <div id="context-box-exec" class="context-helper-bottom">
+        <div class="context-label-text">
+             Execution
+        </div>
+    </div>
+    
+    <div id="context-box-eval" class="context-helper-left">
+        <div class="context-label-text">
+             Evaluation
+        </div>
+            
+    </div>
+</div>
+
+<script type="text/javascript">
+
+jQuery(document).ready(function(){
+    (function ($) {
+
+        var contextnames = "idea,plan,exec,eval";
+        var car = contextnames.split(",");
+        var lockedContextSelectionsName = null;
+        
+        /**
+         * Tell us if a project has been selected
+         */
+        function hasOpenProject()
+        {
+            return $('.tab-content-options > li').length > 1;
+        }
+        
+        function clearAllContextSelections()
+        {
+            $( ".context-project-workflow-area > div" ).removeClass("context-helper-locked");
+            var match = $( ".tab-content-options > li" );
+            match.removeClass('context-relevant-high');
+            match.removeClass('context-relevant-low');
+            match.removeClass('context-relevant-none');
+        }
+
+        function setContextSelections(contextName)
+        {
+            if(lockedContextSelectionsName !== contextName)
+            {
+                //Unlock existing selection
+                lockedContextSelectionsName = null;
+            }
+            if(!hasOpenProject())
+            {
+                //Tell them to open a project first!
+                var match = $( ".tab-content-options > li" );
+                match.addClass('context-relevant-high');
+            } else {
+                var match = $( ".tab-content-options > li" );
+                match.addClass('context-relevant-none');
+
+                var high_match = $( "li[context-high*='" + contextName + "']" );
+                high_match.removeClass('context-relevant-none');
+                high_match.addClass('context-relevant-high');
+
+                var low_match = $( "li[context-low*='" + contextName + "']" );
+                low_match.removeClass('context-relevant-none');
+                low_match.addClass('context-relevant-low');
+            }
+        }
+
+        function lockContextSelections(contextName)
+        {
+            lockedContextSelectionsName = contextName;
+            $( ".context-project-workflow-area > div" ).removeClass("context-helper-locked");
+            $( "#context-box-" + contextName ).addClass("context-helper-locked");
+        }
+        
+        $( "#context-box-idea" )
+                .mouseover(function() {
+                    setContextSelections("idea");
+                })
+                .click(function() {
+                    lockContextSelections("idea");
+                })
+                .mouseout(function() {
+                    if(lockedContextSelectionsName == null)
+                    {
+                        clearAllContextSelections();
+                    }
+                });
+          
+        $( "#context-box-plan" )
+                .mouseover(function() {
+                    setContextSelections("plan");
+                })
+                .click(function() {
+                    lockContextSelections("plan");
+                })
+                .mouseout(function() {
+                    if(lockedContextSelectionsName == null)
+                    {
+                        clearAllContextSelections();
+                    }
+                });
+          
+        $( "#context-box-eval" )
+                .mouseover(function() {
+                    setContextSelections("eval");
+                })
+                .click(function() {
+                    lockContextSelections("eval");
+                })
+                .mouseout(function() {
+                    if(lockedContextSelectionsName == null)
+                    {
+                        clearAllContextSelections();
+                    }
+                });
+                
+        $( "#context-box-exec" )
+                .mouseover(function() {
+                    setContextSelections("exec");
+                })
+                .click(function() {
+                    lockContextSelections("exec");
+                })
+                .mouseout(function() {
+                    if(lockedContextSelectionsName == null)
+                    {
+                        clearAllContextSelections();
+                    }
+                });
+   
+    }(jQuery));
+});
+</script>

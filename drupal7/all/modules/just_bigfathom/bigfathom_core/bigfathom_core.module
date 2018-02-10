@@ -1,0 +1,599 @@
+<?php
+/**
+ * @file
+ * --------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright (c) 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * 
+ * All rights reserved.  Contact author for more information.
+ * This is BETA software.  No warranty or fitness for use is implied at this time.
+ * --------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'core/config.php';
+module_load_include('php','bigfathom_core','core/Context');
+module_load_include('inc','bigfathom_core','functions/menus');
+module_load_include('inc','bigfathom_core','functions/goals');  //Because ajax
+
+/** 
+ * Implements hook_help. 
+ */
+function bigfathom_core_help($path, $arg) 
+{
+    $contributemsg = 'Contact at <a href="http://room4me.com/">Room4me.com Software LLC</a> to ask about consulting services.';
+    switch ($path)
+    {
+      case "admin/help#bigfathom_core":
+          return '<p>'. t("This module has the main elements of the application.") .'</p>'
+                .'<p>'.t($contributemsg).'</p>';
+          break;
+    }
+}
+
+/**
+ * Redirect the user to their main landing page on successful login
+ */
+function bigfathom_core_user_login(&$edit, $account)
+{
+    //$landing_target = 'bigfathom/topinfo/projects';
+    $landing_target = 'bigfathom/topinfo/dashboards';
+    if (empty($_GET['destination']) && empty($_GET['redirect'])
+            && (!isset($_POST['form_id']) || $_POST['form_id'] != 'user_pass_reset'))
+    {
+        if(empty($_GET['q']) || FALSE === strpos($_GET['q'], 'user/reset'))
+        {
+            $edit['redirect'] = $landing_target;
+        }
+    }
+}
+
+/** 
+ * Returns information about this module
+ */
+function bigfathom_core_info() 
+{
+    $info = array();
+    $info['version'] = BIGFATHOM_CORE_VERSION_INFO;
+    $info['site_config'] = BIGFATHOM_CUSTOM_CONFIG_ID;
+    return $info;
+}
+
+function bigfathom_core_enforce_project_required($redirect_on_fail=TRUE)
+{
+    $oContext = \bigfathom\Context::getInstance();
+    if(!$oContext->hasSelectedProject())
+    {
+        if($redirect_on_fail)
+        {
+            $redirect_url = "bigfathom/topinfo/projects";
+            drupal_goto($redirect_url,
+                array(
+                  'query' => array(
+                        'action' => 'requires_project_selection',
+                        ),
+                    )
+                );
+        }
+        return FALSE;
+    }
+    return TRUE;
+}
+
+function bigfathom_core_menu_access($myargs)
+{
+    //drupal_set_message("LOOK menu access args1>>> " . print_r($myargs,TRUE));
+    if(isset($myargs['selected_projectid']))
+    {
+        $result = ($myargs['selected_projectid'] != NULL);
+    } else {
+        $result = FALSE;
+    }
+    return $result;
+}
+
+function bigfathom_core_get_menu_page_arguments($curpath=NULL)
+{
+
+    if($curpath == NULL)
+    {
+        $curpath = current_path();
+    }
+    //$path_args = explode('/', $curpath);
+    $onemenuitems = menu_get_item($curpath);
+    $pageargs = $onemenuitems['page_arguments'];
+    
+    return $pageargs;
+}
+
+function bigfathom_core_menu() 
+{
+    $items = [];
+    
+    $oContext = \bigfathom\Context::getInstance();
+    $has_selected_project = $oContext->hasSelectedProject();
+    $selected_projectid = $oContext->getSelectedProjectID();
+    
+    bigfathom_core_menu_core_callbacks($items);
+    bigfathom_core_menu_topinfo($items);
+    bigfathom_core_menu_root_options($items);
+
+
+    /* this code chunk does not work
+    session_start();
+    $inactive = 60;
+
+    $session_life = time() - $_session['timeout_ref']; 
+    if($session_life > $inactive) 
+    {
+        session_destroy(); 
+        drupal_set_message("Logged out due to inactivity",'info');
+        header("Location: logoutpage.php");
+        //return [];
+    }
+    $timeout_ref = time();
+    drupal_set_message("LOOK checkgap=$session_life timeout_ref=$timeout_ref",'status');
+    $_session['timeout_ref']=$timeout_ref;
+    */
+    return $items;
+}
+
+
+//About application
+function bigfathom_core_viewabout_form() 
+{
+    return drupal_get_form('bigfathom_core_viewabout_form_builder');
+}
+function bigfathom_core_viewabout_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom\ViewAboutPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+//Privacy statement
+function bigfathom_core_privacystatement_form() 
+{
+    return drupal_get_form('bigfathom_core_privacystatement_form_builder');
+}
+function bigfathom_core_privacystatement_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom\ViewPrivacyStatementPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+//Terms of Service statement
+function bigfathom_core_termsofservice_statement_form() 
+{
+    return drupal_get_form('bigfathom_core_termsofservice_statement_form_builder');
+}
+function bigfathom_core_termsofservice_statement_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom\ViewTermsOfServiceStatementPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_setpersonavail_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_setpersonavail_form_builder');
+}
+function bigfathom_core_showhelp_setpersonavail_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\SetPersonAvailabilityPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_navigation_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_navigation_form_builder');
+}
+function bigfathom_core_showhelp_navigation_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\NavigationPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_usecases_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_usecases_form_builder');
+}
+function bigfathom_core_showhelp_usecases_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\UseCasesPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_testcases_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_testcases_form_builder');
+}
+function bigfathom_core_showhelp_testcases_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\TestCasesPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_selectproject_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_selectproject_form_builder');
+}
+function bigfathom_core_showhelp_selectproject_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\SelectExistingProjectPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_newproject_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_newproject_form_builder');
+}
+function bigfathom_core_showhelp_newproject_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\NewProjectPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_antproject_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_antproject_form_builder');
+}
+function bigfathom_core_showhelp_antproject_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\DeclareAntProjectsPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_newtemplate_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_newtemplate_form_builder');
+}
+function bigfathom_core_showhelp_newtemplate_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\NewTemplatePage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = [];    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_symbols_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_symbols_form_builder');
+}
+function bigfathom_core_showhelp_symbols_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\SymbolsPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_newsprint_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_newsprint_form_builder');
+}
+function bigfathom_core_showhelp_newsprint_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\NewSprintPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_comms_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_comms_form_builder');
+}
+function bigfathom_core_showhelp_comms_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\InContextCommunicationsPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_vision_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_vision_form_builder');
+}
+function bigfathom_core_showhelp_vision_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\ImportanceOfVisionPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_setworkdeps_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_setworkdeps_form_builder');
+}
+function bigfathom_core_showhelp_setworkdeps_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\SetWorkitemDependencies();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_tmm_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_tmm_form_builder');
+}
+function bigfathom_core_showhelp_tmm_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\TimeManagementPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_collaboration_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_collaboration_form_builder');
+}
+function bigfathom_core_showhelp_collaboration_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\CollaborationPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_projectplanning_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_projectplanning_form_builder');
+}
+function bigfathom_core_showhelp_projectplanning_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\ProjectPlanningPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+//System Roles
+function bigfathom_core_managesystemroles_form() 
+{
+    return drupal_get_form('bigfathom_core_managesystemroles_form_builder');
+}
+function bigfathom_core_managesystemroles_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\ManageSystemRolesPage();
+        $form = array();
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+
+
+
+function bigfathom_core_showhelp_user_agileleader_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_user_agileleader_form_builder');
+}
+function bigfathom_core_showhelp_user_agileleader_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\HelpUserAgileLeaderPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_user_ba_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_user_ba_form_builder');
+}
+function bigfathom_core_showhelp_user_ba_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\HelpUserBAPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_user_qa_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_user_qa_form_builder');
+}
+function bigfathom_core_showhelp_user_qa_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\HelpUserQAPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_user_softdev_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_user_softdev_form_builder');
+}
+function bigfathom_core_showhelp_user_softdev_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\HelpUserSoftwareDevPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+
+function bigfathom_core_showhelp_user_classicpm_form() 
+{
+    return drupal_get_form('bigfathom_core_showhelp_user_classicpm_form_builder');
+}
+function bigfathom_core_showhelp_user_classicpm_form_builder($form, &$form_state)
+{
+    try
+    {
+        $oPI = new \bigfathom_help\HelpUserClassicPMPage();
+        $form = [];
+        $disabled = TRUE;
+        $myvalues = array();    //No values for this one.
+        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
+    } catch (\Exception $ex) {
+        throw $ex;
+    }
+}
+

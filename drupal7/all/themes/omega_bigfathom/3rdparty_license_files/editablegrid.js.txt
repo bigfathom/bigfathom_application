@@ -1,0 +1,7 @@
+EditableGrid is an open source JavaScript library aimed at turning tables into fully editable components.
+
+http://www.editablegrid.net/en
+
+MIT License as per the website where the source is published as of 2016.
+
+https://github.com/webismymind/editablegrid

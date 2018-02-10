@@ -1,0 +1,33 @@
+<?php
+/**
+ * @file
+ * --------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright (c) 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * 
+ * All rights reserved.  Contact author for more information.
+ * This is BETA software.  No warranty or fitness for use is implied at this time.
+ * --------------------------------------------------------------------------------------
+ *
+ */
+
+
+function bigfathom_utilization_uninstall()
+{
+    $t = get_t();
+    drupal_set_message($t('Uninstalled bigfathom_utilization'));
+}
+
+/**
+ * Insert baseline rows into tables
+ * @return status
+ */
+function bigfathom_utilization_install()
+{
+    $t = get_t();
+    drupal_set_message($t('Installed bigfathom_utilization'));
+}
+
+
+    

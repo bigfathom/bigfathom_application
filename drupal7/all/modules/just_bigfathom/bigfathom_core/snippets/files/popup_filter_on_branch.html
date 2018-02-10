@@ -1,0 +1,81 @@
+<div>
+    <p>This will filter out all workitems that are not part of the branch</p>
+</div>
+
+<script>
+    function workitemfilterInitializeControls() 
+    {
+        document.getElementById("workitemfilter-allwork").checked = true;
+        document.getElementById("workitemfilter-adj-dates").checked = true;
+        document.getElementById("workitemfilter-adj-effort").checked = true;
+        //document.getElementById("workitemfilter-byworkowner").checked = true;
+        workitemfilterAdjustControls();
+    }
+    function workitemfilterGetFlagArray() 
+    {
+        var flags = [];
+        flags['flag_scope'] = document.getElementById("workitemfilter-allwork").checked ? 'ALL_WORK' : 'ONLY_YOUR_WORK';
+        flags['flag_replace_blank_dates'] = document.getElementById("workitemfilter-fb-dates").checked ? 1 : 0;
+        flags['flag_replace_blank_effort'] = document.getElementById("workitemfilter-fb-effort").checked ? 1 : 0;
+        flags['flag_replace_unlocked_dates'] = document.getElementById("workitemfilter-adj-dates").checked ? 1 : 0;
+        flags['flag_replace_unlocked_effort'] = document.getElementById("workitemfilter-adj-effort").checked ? 1 : 0;
+        flags['flag_availability_type'] = 'BY_OWNER'; // document.getElementById("workitemfilter-byworkowner").checked ? 'BY_OWNER' : 'FORCE_BASELINE';
+        return flags;
+    }
+    function workitemfilterAdjustControls() 
+    {
+        if (document.getElementById("workitemfilter-adj-dates").checked === true)
+        {
+            document.getElementById("workitemfilter-fb-dates").checked = true;
+            document.getElementById("workitemfilter-fb-dates").disabled = true;
+        } else {
+            document.getElementById("workitemfilter-fb-dates").disabled = false;
+        }
+        if (document.getElementById("workitemfilter-adj-effort").checked === true)
+        {
+            document.getElementById("workitemfilter-fb-effort").checked = true;
+            document.getElementById("workitemfilter-fb-effort").disabled = true;
+        } else {
+            document.getElementById("workitemfilter-fb-effort").disabled = false;
+        }
+    }
+</script>
+<form name="workitemfilter-options-form">
+        <fieldset>
+            <legend title='The workitems that will be considered for auto-fill updates'> <b> Scope </b> </legend>
+                <div> 
+                    <div> <input checked="checked" id="workitemfilter-allwork" type="radio" name="scope" value="all work"> All Work </div>
+                    <div> <input id="workitemfilter-onlyyourwork" type="radio" name="scope" value="only your work"> Only Your Work </div>
+                </div>
+        </fieldset>
+
+        <fieldset>
+            <legend title='Attempt to fill-in where a value is not already declared'> <b> Fill Blanks </b> </legend>
+                <div>
+                    <div> <input checked="checked" onclick="workitemfilterAdjustControls();" id="workitemfilter-fb-dates" type="checkbox"> Dates </div>
+                    <div> <input checked="checked" onclick="workitemfilterAdjustControls();" id="workitemfilter-fb-effort" type="checkbox"> Effort Constraint</div>
+                </div>
+        </fieldset>
+
+        <fieldset>
+                <legend title='Attempt to update unlocked estimates'> <b>Adjust Unlocked</b> </legend>
+                        <div>
+                                <div> <input checked="checked" onclick="workitemfilterAdjustControls();" id="workitemfilter-adj-dates" type="checkbox"> Dates</div>
+                                <div> <input checked="checked" onclick="workitemfilterAdjustControls();" id="workitemfilter-adj-effort" type="checkbox"> Effort Constraint</div>
+                        </div>
+        </fieldset>
+
+    <!-- 
+        <fieldset>
+                <legend> <b> Resource Availability </b> </legend>
+                        <div>
+                                <div> <input checked="checked" id="workitemfilter-byworkowner" type="radio" name="resource" value="by_work_owner"> By Work Owner</div>
+                                <div> <input id="workitemfilter-systemdefault" type="radio" name="resource" value="by_system_baseline"> System Default</div>
+                        </div>
+        </fieldset>
+    -->
+</form>
+
+
+
+

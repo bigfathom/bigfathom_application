@@ -1,0 +1,82 @@
+<div>
+    <p>The auto-fill operation may affect values of one or more workitems of the current project as it tries to fill in values to fit the declared constraints.</p>
+    <p class='colorful-notice'>Caution: there is no "un-do" for this operation.</p>
+</div>
+
+<script>
+    function autofillInitializeControls() 
+    {
+        document.getElementById("autofill-allwork").checked = true;
+        document.getElementById("autofill-adj-dates").checked = true;
+        document.getElementById("autofill-adj-effort").checked = true;
+        //document.getElementById("autofill-byworkowner").checked = true;
+        autofillAdjustControls();
+    }
+    function autofillGetFlagArray() 
+    {
+        var flags = [];
+        flags['flag_scope'] = document.getElementById("autofill-allwork").checked ? 'ALL_WORK' : 'ONLY_YOUR_WORK';
+        flags['flag_replace_blank_dates'] = document.getElementById("autofill-fb-dates").checked ? 1 : 0;
+        flags['flag_replace_blank_effort'] = document.getElementById("autofill-fb-effort").checked ? 1 : 0;
+        flags['flag_replace_unlocked_dates'] = document.getElementById("autofill-adj-dates").checked ? 1 : 0;
+        flags['flag_replace_unlocked_effort'] = document.getElementById("autofill-adj-effort").checked ? 1 : 0;
+        flags['flag_availability_type'] = 'BY_OWNER'; // document.getElementById("autofill-byworkowner").checked ? 'BY_OWNER' : 'FORCE_BASELINE';
+        return flags;
+    }
+    function autofillAdjustControls() 
+    {
+        if (document.getElementById("autofill-adj-dates").checked === true)
+        {
+            document.getElementById("autofill-fb-dates").checked = true;
+            document.getElementById("autofill-fb-dates").disabled = true;
+        } else {
+            document.getElementById("autofill-fb-dates").disabled = false;
+        }
+        if (document.getElementById("autofill-adj-effort").checked === true)
+        {
+            document.getElementById("autofill-fb-effort").checked = true;
+            document.getElementById("autofill-fb-effort").disabled = true;
+        } else {
+            document.getElementById("autofill-fb-effort").disabled = false;
+        }
+    }
+</script>
+<form name="autofill-options-form">
+        <fieldset>
+            <legend title='The workitems that will be considered for auto-fill updates'> <b> Scope </b> </legend>
+                <div> 
+                    <div> <input checked="checked" id="autofill-allwork" type="radio" name="scope" value="all work"> All Work </div>
+                    <div> <input id="autofill-onlyyourwork" type="radio" name="scope" value="only your work"> Only Your Work </div>
+                </div>
+        </fieldset>
+
+        <fieldset>
+            <legend title='Attempt to fill-in where a value is not already declared'> <b> Fill Blanks </b> </legend>
+                <div>
+                    <div> <input checked="checked" onclick="autofillAdjustControls();" id="autofill-fb-dates" type="checkbox"> Dates </div>
+                    <div> <input checked="checked" onclick="autofillAdjustControls();" id="autofill-fb-effort" type="checkbox"> Effort Constraint</div>
+                </div>
+        </fieldset>
+
+        <fieldset>
+                <legend title='Attempt to update unlocked estimates'> <b>Adjust Unlocked</b> </legend>
+                        <div>
+                                <div> <input checked="checked" onclick="autofillAdjustControls();" id="autofill-adj-dates" type="checkbox"> Dates</div>
+                                <div> <input checked="checked" onclick="autofillAdjustControls();" id="autofill-adj-effort" type="checkbox"> Effort Constraint</div>
+                        </div>
+        </fieldset>
+
+    <!-- 
+        <fieldset>
+                <legend> <b> Resource Availability </b> </legend>
+                        <div>
+                                <div> <input checked="checked" id="autofill-byworkowner" type="radio" name="resource" value="by_work_owner"> By Work Owner</div>
+                                <div> <input id="autofill-systemdefault" type="radio" name="resource" value="by_system_baseline"> System Default</div>
+                        </div>
+        </fieldset>
+    -->
+</form>
+
+
+
+

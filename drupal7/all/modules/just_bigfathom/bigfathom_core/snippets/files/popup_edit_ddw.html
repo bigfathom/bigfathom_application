@@ -1,0 +1,216 @@
+<script>
+    var ddw_form_props = {};
+    function editDDWInitializeControls(wid) 
+    {
+        $( "#dlg_edit_ddw_wid1" ).html(wid);
+        $( "#dlg_edit_ddw_wid2" ).html(wid);
+        $( "#dlg_edit_ddw_wid3" ).html(wid);
+        $( "#dlg_edit_ddw_statusinfo" ).html('');
+    }
+    function editDDWSetControlValues(record)
+    {
+        $( "#dlg_edit_ddw_statusinfo" ).html('');
+        ddw_form_props.record = record;
+        var ddw = record.maps.ddw;
+        if(!Array.isArray(ddw))
+        {
+            //Convert it into an array
+            var myar = [];
+            for(var a in ddw)
+            {
+                myar.push(a);
+            }
+            ddw = myar;
+        }
+        $( "#edit_ddw_tx" ).val(ddw.join(','));
+        $( "#dlg_edit_ddw_loading" ).css({'display':'none'});
+        $( "#dlg_edit_ddw_input" ).css({'display':'inline-block'});
+        
+    }
+    function editDDWSetStatusMessage(msg)
+    {
+        $( "#dlg_edit_ddw_statusinfo" ).html(msg);
+    }
+    function editDDWGetValues()
+    {
+        function isNumeric(n) 
+        {
+            return !isNaN(parseFloat(n)) && isFinite(n);
+        }
+        
+        function sortNumber(a,b)
+        {
+            return a - b;
+        }
+        
+        var getTextAsArray = function(list_tx)
+        {
+            var candidate_ar = list_tx.split(',');
+            var clean_ar = [];
+            var dirty_ar = [];
+            //alert("ABOUT TO VALIDATE " + list_tx + " ::: " + JSON.stringify(candidate_ar));
+            for(var i=0; i< candidate_ar.length; i++)
+            {
+                var numcan = candidate_ar[i].replace(/^\s+|\s+$/g, "");
+                if(numcan.length > 0)
+                {
+                    if(isNumeric(numcan))
+                    {
+                        var realint = parseInt(numcan);
+                        clean_ar.push(realint);
+                        console.log("LOOK '" + numcan + "' = '" + realint + "'");
+                    } else {
+                        dirty_ar.push(numcan);
+                    }
+                }
+            }
+            //alert("LOOK " + list_tx + " clean_ar=" + JSON.stringify(clean_ar));
+            clean_ar.sort(sortNumber);
+            if(dirty_ar.length === 0)
+            {
+                ddw_form_props.new.validation.isokay = true;
+                ddw_form_props.new.validation.message = '';
+            } 
+            else
+            {
+                ddw_form_props.new.validation.isokay = false;
+                if(dirty_ar.length === 1)
+                {
+                    ddw_form_props.new.validation.message = 'Bad Input:' + dirty_ar.join(',');
+                } else {
+                    ddw_form_props.new.validation.message = 'Bad Input:' + dirty_ar.join(',');
+                }
+            }
+            return clean_ar;
+        };
+        
+        var getTextAsMap = function(list_tx)
+        {
+            var myar = getTextAsArray(list_tx);
+            var mymap = {};
+            for(var i=0; i<myar.length; i++)
+            {
+                var v = myar[i];
+                mymap[v] = v;
+            }
+            return mymap;
+        };
+
+        var getAsArray = function(candidate_ar)
+        {
+            if(!Array.isArray(candidate_ar))
+            {
+                //Convert it into an array
+                var myar = [];
+                for(var a in candidate_ar)
+                {
+                    if(candidate_ar.hasOwnProperty(a))
+                    {
+                        myar.push(a);
+                    }
+                }
+                return myar;
+            }
+            return candidate_ar;
+        };
+        
+        var getDiffs = function(original_map, new_map)
+        {
+            var added = [];
+            var removed = [];
+            
+            //original_map = getAsArray(original_map);
+            //new_map = getAsArray(new_map);
+            
+            var realnum_orig_map = {};
+            for(var a in original_map)
+            {
+                if(original_map.hasOwnProperty(a))
+                {
+                    var i_val = parseInt(a);
+                    realnum_orig_map[i_val] = i_val;
+                }
+            }
+            
+            var realnum_new_map = {};
+            for(var a in new_map)
+            {
+                if(new_map.hasOwnProperty(a))
+                {
+                    var i_val = parseInt(a);
+                    realnum_new_map[i_val] = i_val;
+                }
+            }
+            
+            for(var a in realnum_orig_map)
+            {
+                if(realnum_orig_map.hasOwnProperty(a))
+                {
+                    if(!realnum_new_map.hasOwnProperty(a))
+                    {
+                        removed.push(a);
+                    }
+                }
+            }
+            
+            for(var a in realnum_new_map)
+            {
+                if(realnum_new_map.hasOwnProperty(a))
+                {
+                    if(!realnum_orig_map.hasOwnProperty(a))
+                    {
+                        added.push(a);
+                    }
+                }
+            }
+
+            removed.sort(sortNumber);
+            added.sort(sortNumber);
+            
+            var diffs = {};
+            diffs['added'] = added;
+            diffs['removed'] = removed;
+            return diffs;
+        };
+        
+        ddw_form_props.new = {'validation':{}, 'maps':{}, 'analysis':{'ddw':{}}};
+        var raw_input_tx = $( "#edit_ddw_tx" ).val();
+        ddw_form_props.new.maps.ddw = getTextAsMap(raw_input_tx);
+        ddw_form_props.new.analysis.ddw.diffs = getDiffs(ddw_form_props.record.maps.ddw,ddw_form_props.new.maps.ddw);
+        ddw_form_props.new.analysis.has_changes = (ddw_form_props.new.analysis.ddw.diffs.added.length>0 || ddw_form_props.new.analysis.ddw.diffs.removed.length>0);
+        console.log("LOOK original " + JSON.stringify(ddw_form_props.record.maps.ddw))  ;      
+        console.log("LOOK new " + JSON.stringify(ddw_form_props.new.maps.ddw))  ;      
+        console.log("LOOK analysis " + JSON.stringify(ddw_form_props.new.analysis))  ;  
+        //alert("LOOK at console for diffs now");
+        $( "#dlg_edit_ddw_statusinfo" ).html(ddw_form_props.new.validation.message);
+        //if(ddw_form_props.new.validation.isokay)
+        return ddw_form_props;
+    }
+</script>
+<form id='editform_ddw'>
+    <div id="dlg_edit_ddw_form">
+        <div align="left">
+            <input type="hidden" name="nativeid" id="edit_nativeid" value="" data-mini="true" />
+
+            <p id="dlg_edit_ddw_topinfo"></p>
+            <p class='colorful-warning' id="dlg_edit_ddw_statusinfo"></p>
+            <div id="dlg_edit_ddw_loading">
+                <p>Loading current data ...</p>
+            </div>
+            <div style='display:none' id="dlg_edit_ddw_input">
+                <div>
+                    <p>The IDs listed here indicate the workitems which <strong>are directly influenced</strong> by the successful completion of <strong>workitem#<span id='dlg_edit_ddw_wid1'>--</span></strong>.</p>
+                </div>
+                <p>
+                    <label for="ddw_tx" title="Use comma as a delimiter between the ID numbers">Workitem IDs that are influenced by #<span id='dlg_edit_ddw_wid2'>--</span></label>
+                    <textarea style="width:100%" name="ddw_tx" id="edit_ddw_tx" data-mini="true" >
+                    </textarea>
+                </p>
+                <p class='popup-concept-info'>
+                     <span>[All IDs Above]</span> <i class='fa fa-arrow-left' title='influence arrow'></i> #<span id='dlg_edit_ddw_wid3'></span>
+                </p>
+            </div>
+
+        </div>        
+    </div>
+</form>

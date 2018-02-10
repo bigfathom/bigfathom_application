@@ -1,0 +1,32 @@
+Copyright (c) 2015-2018 Room4me.com Software LLC
+All rights reserved.
+
+Special Notes
+-------------
+* This is not free software.  Contact Room4m.com Software LLC for distribution and 
+  licensing information.
+
+* The name Room4me.com or Bigfathom or those of the software developers may not 
+  be used to endorse or promote products derived from this software without 
+  specific prior written permission.
+
+* Other software products used in this application may be subject to additional
+  restrictions as per their own licensing and copyright statements.
+
+* Use of other software products in this software does not imply an endorsement
+  of this software by the authors or copyright owners of those products.
+
+Important Notice Read Carefully
+-------------------------------
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+DISCLAIMED. IN NO EVENT SHALL PROGRAMMERS, CONTRIBUTERS, ROOM4ME.COM SOFTWARE LLC 
+OR ITS OFFICERS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, 
+OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF 
+SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS 
+INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, 
+STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY 
+OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+

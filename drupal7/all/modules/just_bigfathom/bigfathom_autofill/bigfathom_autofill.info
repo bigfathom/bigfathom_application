@@ -1,0 +1,17 @@
+;; --------------------------------------------------------------------------------------
+;; Created by Frank Font (mrfont@room4me.com)
+;;
+;; Copyright (c) 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+;; --------------------------------------------------------------------------------------
+
+name = Bigfathom Autofill
+description = The automatic data filling module for the Bigfathom application
+core = 7.x
+
+package = Bigfathom
+
+dependencies[] = bigfathom_core
+dependencies[] = bigfathom_utilization
+
+scripts[] = js/general.js
+

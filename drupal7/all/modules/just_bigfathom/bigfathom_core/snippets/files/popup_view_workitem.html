@@ -1,0 +1,67 @@
+<div class="popupdef" data-role="popup" 
+     id="dlg_view_workitem_container" 
+     data-arrow="t" 
+     data-overlay-theme="b" 
+     align="middle" 
+     data-dismissible="false">
+    <form id='viewform_workitem'>
+        <div class="popupform" id="dlg_view_workitem_form">
+            <h1>View Workitem Detail</h1>
+            <div align="left">
+
+                <input type="hidden" name="nativeid" id="view_nativeid" value="" data-mini="true" >
+
+                <p id="dlg_view_workitem_topinfo"></p>
+                <p id="dlg_view_workitem_statusinfo"></p>
+
+                <p>
+                    <label for="workitem_nm">Name</label>
+                    <input disabled="disabled" type="text" name="workitem_nm" id="view_workitem_nm" class="workitem_nm" value="" data-mini="true"  >
+                </p>
+
+                <p>
+                    <label for="purpose_tx">Purpose</label>
+                    <textarea disabled="disabled" name="purpose_tx" id="view_purpose_tx" class="workitem_purpose_tx" data-mini="true" >
+                    </textarea>
+                </p>
+
+                <p>
+                    <label for="workitem_basetype">Type</label>
+                    <select disabled="disabled" name="workitem_basetype" id="view_workitem_basetype">
+                            <option value="G">Goal</option>
+                            <option value="T">Task</option>
+                    </select>
+                </p>
+
+                <p>
+                    <label for="workitem_status_cd">Status</label>
+                    <select disabled="disabled" name="workitem_status_cd" id="view_workitem_status_cd">
+                    </select>        
+                </p>
+
+                <p>
+                    <label title='An upper bound for the number of hours expected on this workitem, including any effort for antecedent workitems' 
+                           for="branch_effort_hours_est">Branch Effort Hours</label>
+                    <input disabled="disabled" type="text" 
+                           name="branch_effort_hours_est" id="view_branch_effort_hours_est" 
+                           value="" data-mini="true" >
+                </p>
+
+                <p>
+                    <label title='The effort remaining to complete this workitem NOT including any effort that might still be required for antecedent workitems' 
+                           for="remaining_effort_hours">Remaining Effort Hours</label>
+                    <input disabled="disabled" type="text" 
+                           name="remaining_effort_hours" id="view_remaining_effort_hours" 
+                           value="" data-mini="true" >
+                </p>
+                <p></p>
+            </div>        
+
+            <hr>
+
+            <div class='action-buttons'>
+            <button type="button" data-inline="true" id="btn_view_close">Close</button>
+            </div>
+        </div>
+    </form>
+</div>

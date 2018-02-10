@@ -1,0 +1,77 @@
+<?php
+/**
+ * @file
+ * --------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright (c) 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * --------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'install/bigfathom_template_library_schema.inc';
+require_once 'install/DemoData.inc';
+
+function bigfathom_template_library_uninstall()
+{
+    $t = get_t();
+    drupal_set_message($t('Uninstalled bigfathom_template_library'));
+}
+
+/**
+ * Insert baseline rows into tables
+ * @return status
+ */
+function bigfathom_template_library_install()
+{
+    try
+    {
+        $t = get_t();
+        
+        //Install the base data.
+        bigfathom_template_library_basemetadata();
+        bigfathom_template_library_basedata();
+
+        //Install the demo data
+        $demodata = new \bigfathom_template_library\DemoData();
+        $demodata->load();
+        
+        drupal_set_message($t('Installed bigfathom_template_library'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed bigfathom_template_library install'),'error');
+        throw $ex;
+    }
+}
+
+function bigfathom_template_library_basemetadata()
+{
+    try
+    {
+        $t = get_t();
+        $updated_dt = date("Y-m-d H:i", time());
+
+        //TODO
+        
+        drupal_set_message($t('Loaded template basemetadata'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed template basemetadata load'),'error');
+        throw $ex;
+    }
+}
+
+function bigfathom_template_library_basedata()
+{
+    try
+    {
+        $t = get_t();
+        $updated_dt = date("Y-m-d H:i", time());
+        
+        //TODO
+        
+        drupal_set_message($t('Loaded template basedata'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed template basedata load'),'error');
+        throw $ex;
+    }
+}
+

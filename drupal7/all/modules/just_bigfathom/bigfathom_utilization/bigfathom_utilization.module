@@ -1,0 +1,51 @@
+<?php
+/**
+ * @file
+ * ------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright 2015-2017 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * ------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'core/config.php';
+
+
+/** 
+ * Implements hook_help. 
+ */
+function bigfathom_utilization_help($path, $arg) 
+{
+    $contributemsg = 'Contact us at <a href="http://room4me.com/">Room4me.com Software LLC</a> to ask about consulting services.';
+    switch ($path)
+    {
+      case "admin/help#bigfathom_utilization":
+          return '<p>'. t("This module has the resource utilization logic of the application.") .'</p>'
+                .'<p>'.t($contributemsg).'</p>';
+          break;
+    }
+}
+
+/** 
+ * Returns information about this module
+ */
+function bigfathom_utilization_info() 
+{
+    $info = array();
+    $info['version'] = BIGFATHOM_UTILIZATION_VERSION_INFO;
+    return $info;
+}
+
+
+function bigfathom_utilization_menu() 
+{
+    $items = array();
+
+    return $items;
+}
+
+
+
+
+

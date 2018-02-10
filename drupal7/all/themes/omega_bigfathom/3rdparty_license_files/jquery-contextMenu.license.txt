@@ -1,0 +1,20 @@
+jQuery contextMenu plugin & polyfill
+
+Posted to web as MIT license.
+
+https://github.com/swisnl/jQuery-contextMenu
+
+====================
+
+https://swisnl.github.io/jQuery-contextMenu//
+
+Authors
+Björn Brala (SWIS)
+Rodney Rehm
+Christian Baartse (single callback per menu)
+Addy Osmani (compatibility with native context menu in Firefox 8)
+
+
+License
+$.contextMenu is published under the MIT license.
+

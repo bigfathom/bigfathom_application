@@ -1,0 +1,124 @@
+<?php
+/**
+ * @file
+ * --------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright (c) 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * --------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'core/UserAccountHelper.php';
+require_once 'install/bigfathom_core_schema.inc';
+require_once 'install/BaseMetadata.inc';
+require_once 'install/BaseData.inc';
+
+function bigfathom_core_disable()
+{
+    $t = get_t();
+    $_SESSION['selected_projectid'] = NULL;
+    $_SESSION['selected_root_workitem_nm'] = NULL;
+    $_SESSION['selected_root_goalid'] = NULL;
+    $_SESSION['selected_root_purpose_tx'] = NULL;
+    drupal_set_message($t('Disabled bigfathom_core'));
+}
+
+function bigfathom_core_uninstall()
+{
+    $t = get_t();
+    drupal_set_message($t('Uninstalled bigfathom_core'));
+}
+
+/**
+ * Insert baseline rows into tables
+ * @return status
+ */
+function bigfathom_core_install()
+{
+    try
+    {
+        $t = get_t();
+        
+        variable_set('site_name', 'Bigfathom');
+        variable_set('site_slogan', 'Mental Models Matter');
+        variable_set('site_mail', 'collaborate@bigfathom.com');
+        variable_set('site_frontpage', 'bigfathom/topinfo');
+        drupal_set_message("Initialized site information");
+        
+        //Install the base data.
+        bigfathom_core_basemetadata();
+        bigfathom_core_basedata();
+        
+        //Disable some blocks
+        $sql_poweredbyblock = 'UPDATE block SET status=0 WHERE delta=:delta';
+        db_query($sql_poweredbyblock,array(':delta'=>"powered-by"));
+
+        drupal_set_message($t('Installed bigfathom_core'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed bigfathom_core install'),'error');
+        throw $ex;
+    }
+}
+
+function bigfathom_core_basemetadata()
+{
+    try
+    {
+        $t = get_t();
+        $updated_dt = date("Y-m-d H:i", time());
+        
+        $basemetadata = new \bigfathom\BaseMetadata();
+        $basemetadata->load();
+
+        //Create the confidence value lookup tables
+        $lookup_things = array('goal','task','sprint');
+        $lookup_values1 = array();
+        $lookup_values1[-1] = 0;
+        $lookup_values1[0] = 0.5;
+        $lookup_values1[1] = 0.6;
+        $lookup_values1[2] = 0.7;
+        $lookup_values1[5] = 0.8;
+        $lookup_values1[7] = 0.9;
+        $lookup_values1[14] = 0.98;
+        $lookup_values1[28] = 1;
+        
+        foreach($lookup_things as $thingname)
+        {
+            foreach($lookup_values1 as $days=>$p)
+            {
+                db_insert("bigfathom_lookup_confidence_factor_{$thingname}_remaining_days")
+                    ->fields(array(
+                        'forecast_approachid' => 1,
+                        'buffer_days' => $days,
+                        'ot_scf' => $p,
+                        'created_by_personid' => 1,
+                        'created_dt' => $updated_dt,
+                    ))->execute();
+            }
+        }
+        
+        drupal_set_message($t('Loaded autofill basemetadata'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed autofill basemetadata load'),'error');
+        throw $ex;
+    }
+}
+
+function bigfathom_core_basedata()
+{
+    try
+    {
+        $t = get_t();
+        $updated_dt = date("Y-m-d H:i", time());
+        
+        $basedata = new \bigfathom\BaseData();
+        $basedata->load();
+        
+        drupal_set_message($t('Loaded autofill basedata'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed autofill basedata load'),'error');
+        throw $ex;
+    }
+}
+

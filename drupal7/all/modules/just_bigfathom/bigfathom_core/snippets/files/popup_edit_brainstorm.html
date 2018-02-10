@@ -1,0 +1,31 @@
+<div class="popupdef" data-role="popup" 
+     id="dlg_create_brainstorm_item_container" 
+     data-arrow="t" 
+     data-overlay-theme="b" 
+     align="center" 
+     data-dismissible="false">
+    <div class="popupform" id="dlg_create_brainstorm_item_form">
+        <h1>Edit Candidate Topic Item</h1>
+        <div id="dlg_edit_brainstorm_topinfo"></div>
+        <div id="dlg_edit_brainstorm_statusinfo"></div>
+        <p>
+        <label for="edit_brainstom_item_name">Name</label>
+        <input type="text" name="name" id="edit_brainstom_item_name" class="workitem_nm" value="" data-mini="false" />
+        </p>
+        <p>
+        <label for="edit_brainstom_item_purpose">Purpose</label>
+        <textarea name="edit_brainstom_item_purpose" id="edit_brainstom_item_purpose" class="workitem_purpose_tx" data-mini="false" >
+        </textarea>
+        </p>
+        <p>
+        <label for="edit_brainstom_item_type">Type</label>
+        <select name="edit_brainstom_item_type" id="edit_brainstom_item_type">
+                <option value="U">Uncategorized</option>
+                <option value="G">Goal</option>
+                <option value="T">Task</option>
+        </select>        
+        </p>
+        <button type="button" data-inline="true" id="btn_edit_brainstorm_item">Save</button>
+        <button type="button" data-inline="true" id="btn_close">Close</button>
+    </div>
+</div>

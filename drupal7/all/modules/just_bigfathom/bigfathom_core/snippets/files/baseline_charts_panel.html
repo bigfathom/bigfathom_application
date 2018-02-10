@@ -1,0 +1,22 @@
+<!-- Custom controls for baseline charting -->
+<div class='custompanel-content'>
+    <div id='chart_name_choices_div' class="group-standard">
+        <span>
+            Chart: 
+        </span>
+
+        <div class="inline">
+        <label title="Plot the effort hours for each category of workitem" for="chart_name_hours">Effort Hours
+        </label>
+        <input name="chart_modegroup" id="chart_name_hours" value="hours" type="radio">
+        </div>
+
+        <div class="inline">
+        <label title="Plot the workitem counts for each category of workitem" for="chart_name_count">Workitem Counts
+        </label>
+        <input name="chart_modegroup" id="chart_name_count" value="count" type="radio">
+        </div>
+    </div>
+    <canvas id="myChart" width="600" height="300"></canvas>
+
+</div>

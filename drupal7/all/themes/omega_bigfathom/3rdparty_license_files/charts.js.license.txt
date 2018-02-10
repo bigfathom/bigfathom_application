@@ -1,0 +1,2 @@
+http://www.chartjs.org/docs/#notes-license
+Chart.js is open source and available under the MIT license.

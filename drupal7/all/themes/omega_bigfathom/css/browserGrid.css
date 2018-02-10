@@ -1,0 +1,275 @@
+
+/*
+ * Table
+ */
+table.browserGrid {
+    margin: 0 auto;
+    clear: both;
+    width: 100%;
+    display: inline-table;
+}
+
+table:empty {
+    background-color: red;
+}
+
+table.browserGrid thead {
+    border: 1px solid black;
+}
+
+table.browserGrid thead th {
+    padding: 3px 18px 3px 10px;
+    font-weight: bold;
+    cursor: pointer;
+    *cursor: hand;
+}
+
+table.browserGrid tfoot{
+    border: 1px solid black;
+}
+
+table.browserGrid tfoot th {
+    padding: 3px 18px 3px 10px;
+    font-weight: bold;
+}
+
+table.browserGrid td {
+    padding: 2px 2px;
+}
+
+table.browserGrid td.canedit { 
+    border-color: cyan;
+    border-style: inset;
+    border-width: 4px;
+}
+
+table.browserGrid td.locked { 
+    border-color: gray;
+    border-style: inset;
+    border-width: 4px;
+    color: gray;
+}
+
+table.browserGrid td.locked checkbox{ 
+    display: none;
+}
+
+table.browserGrid td.center,
+table.browserGrid td.browserGrids_empty {
+	text-align: center;
+}
+
+table.browserGrid tr:nth-child(even) { 
+    background-color: #EAEBFF; 
+}
+table.browserGrid tr:nth-child(odd) { 
+    background-color: #D3D6FF; 
+}
+
+table.browserGrid tr:nth-child(even) td.canedit { 
+    background-color: white; 
+}
+
+table.browserGrid tr:nth-child(odd) td.canedit { 
+    background-color: whitesmoke; 
+}
+
+table.browserGrid tr:nth-child(even) td.locked { 
+    background-color: #EAEBFF; 
+}
+
+table.browserGrid tr:nth-child(odd) td.locked { 
+    background-color: #D3D6FF;
+}
+
+table.browserGrid tr:nth-child(even) td.notapplicable { 
+    background-color: #EAEBFF; 
+    color: #EAEBFF; 
+}
+
+table.browserGrid tr:nth-child(odd) td.notapplicable { 
+    background-color: #D3D6FF;
+    color: #D3D6FF; 
+}
+
+table.browserGrid tr:nth-child(even) td.notapplicable input{ 
+    display: none;
+}
+
+table.browserGrid tr:nth-child(odd) td.notapplicable input{ 
+    display: none;
+}
+
+/*
+ * Table wrapper
+ */
+.browserGrid_wrapper {
+	position: relative;
+	clear: both;
+	*zoom: 1;
+}
+
+#paginator {
+	font-family:  Helvetica, Arial, sans-serif;
+  	margin: 10px 0;
+	font-size: 12px;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+#paginator a { color:  #0078cc; text-decoration: none; font-size: 12px; }           
+#paginator a:hover { color: #000; }
+#paginator a:active { color: #777; }
+#paginator a:focus { outline: 1px; }
+
+#filter { 
+	width: 250px;
+	margin-bottom: 10px; 
+}
+
+#filtercontrol label {
+	display: inline;
+}
+
+#pagecontrol {
+	padding-bottom: 5px;
+	float: right;
+}
+
+#pagecontrol label {
+	display: inline;
+}
+
+/*
+* Support multiple browserGrids on one page
+*/
+.browserGrid-paginator {
+	font-family:  Helvetica, Arial, sans-serif;
+  	margin: 10px 0;
+	font-size: 12px;
+	text-align: center;
+	margin-bottom: 5px;
+}
+
+.browserGrid-paginator a { color:  #0078cc; text-decoration: none; font-size: 12px; }           
+.browserGrid-paginator a:hover { color: #000; }
+.browserGrid-paginator a:active { color: #777; }
+.browserGrid-paginator a:focus { outline: 1px; }
+
+.browserGrid-filtermargins1em { 
+	margin-top: 1.5em !important;
+	padding-top: 0px !important;
+}
+
+.browserGrid-filter { 
+	width: 250px;
+	margin-bottom: 10px; 
+}
+
+.browserGrid-mainfilter-area div {
+	display: inline;
+        float: left;
+}
+
+div.browserGrid-filtercontrol {
+	display: inline-block;
+        float: left;
+                
+	margin-top: 2px;
+	margin-bottom: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+}
+
+.browserGrid-filtercontrol label {
+	display: inline;
+        float: left;
+        margin-right: 2px;
+}
+
+.browserGrid-filtercontrol input {
+	display: inline;
+        float: left;
+}
+
+.browserGrid-pagecontrol {
+	margin-top: 2px;
+	margin-bottom: 2px;
+	padding-top: 4px;
+	padding-bottom: 4px;
+	float: right;
+}
+
+.browserGrid-pagecontrol label {
+	display: inline;
+}
+
+colgroup.heading-actionrequests {
+}
+
+colgroup.heading-timemanagement {
+}
+
+th.heading-forecasting {
+}
+
+th.heading-actionrequests {
+    color: black;
+    xxxbackground-color: yellow; 
+    background-color:#677;
+}
+
+th.heading-timemanagement {
+    color: black;
+    xxxbackground-color: #b4d7f0;
+    background-color:#888;
+}
+
+th.heading-forecasting {
+    color: black;
+    xxxbackground-color: #1abc9c;
+    background-color: #999;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.grid-totals-container
+{
+    border-style: inset;
+    border-width: 4px;
+    border-color: #000;
+    background-color: #dbfaf4;
+}
+
+.grid-totals-container legend
+{
+    font-size: small;
+    font-weight: lighter;
+}
+
+.grid-totals-container .showvalue
+{
+    background-color: #EAEBFF;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+div .group-standard .inline
+{
+    display: inline;
+    padding-left: .5em;
+    padding-right: .5em;
+}
+
+div .group-standard .block
+{
+    display: block;
+}
+
+.elem-inline
+{
+    display: inline;
+}
+

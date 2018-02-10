@@ -1,0 +1,71 @@
+<div class="popupdef" data-role="popup" id="dlg_creategoal" data-arrow="t" data-overlay-theme="b" align="center" data-dismissible="false">
+
+    <a href="#goalinputl" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a> 
+
+    <label for="goalinput">Goal Name</label>
+    <input type="text" name="name" id="goalinput" value="" data-mini="true" />
+
+    <label for="goalpurpose">Purpose</label>
+    <textarea name="textarea" id="goalpurpose" data-mini="true">
+
+    </textarea>
+    <button type="button" data-inline="true" id="btn_creategoal">Create New Goal</button>
+</div>
+
+<div class="popupdef" data-role="popup" id="dlg_createtask" data-arrow="t" data-overlay-theme="b" align="center" data-dismissible="false">
+
+    <a href="#taskinputl" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a> 
+
+    <label for="taskinput">Task Name</label>
+    <input type="text" name="name" id="taskinput" value="" data-mini="true" />
+
+    <label for="taskpurpose">Purpose</label>
+    <textarea name="textarea" id="taskpurpose" data-mini="true" >
+
+    </textarea>
+
+    <button type="button" data-inline="true" id="btn_createtask">Create New Task</button>
+</div>
+
+<div class="popupdef" data-role="popup" id="dlg_createsprint" data-arrow="t" data-overlay-theme="b" align="center" data-dismissible="false">
+
+    <a href="#sprintinputl" data-rel="back" class="ui-btn ui-corner-all ui-shadow ui-btn ui-icon-delete ui-btn-icon-notext ui-btn-right">Close</a> 
+
+    <label for="new_sprint_name">Sprint Title</label>
+    <input type="text" name="name" id="new_sprint_name" value="" data-mini="true" />
+
+    <label for="new_sprint_iteration_ct">Iteration Number</label>
+    <input type="text" name="new_sprint_iteration_ct" id="new_sprint_iteration_ct" value="5" data-mini="true" />
+
+    <label for="new_sprint_purpose_tx">Purpose</label>
+    <textarea name="new_sprint_purpose_tx" id="new_sprint_purpose_tx" data-mini="true" >
+
+    </textarea>
+
+    <button type="button" data-inline="true" id="btn_createsprint">Create New Sprint</button>
+</div>
+
+<div class="popupdef" data-role="popup" id="dlg_create_brainstorm_item_container" data-arrow="t" data-overlay-theme="b" align="center" data-dismissible="false">
+    <div class="popupform" id="dlg_create_brainstorm_item_form">
+        <p>
+        <label for="new_brainstom_item_name">Name</label>
+        <input type="text" name="name" id="new_brainstom_item_name" value="" data-mini="true" />
+        </p>
+        <p>
+        <label for="new_brainstom_item_purpose">Purpose</label>
+        <textarea name="new_brainstom_item_purpose" id="new_brainstom_item_purpose" data-mini="true" >
+        </textarea>
+        </p>
+        <p>
+        <label for="new_brainstom_item_type">Type</label>
+        <select name="new_brainstom_item_type" id="new_brainstom_item_type">
+                <option value="U">Uncategorized</option>
+                <option value="G">Goal</option>
+                <option value="T">Task</option>
+        </select>        
+        </p>
+        <button type="button" data-inline="true" id="btn_create_brainstorm_item">XXX Save</button>
+        <button type="button" data-inline="true" id="btn_create_brainstorm_and_addmore">Save and Repeat</button>
+        <button type="button" data-inline="true" id="btn_close">Close</button>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+;;  ------------------------------------------------------------------------------------
+;;  Created by Frank Font 2015-2017
+;;  
+;;  Copyright 2015-2017 Room4me.com Software LLC, All Rights Reserved
+;;  ------------------------------------------------------------------------------------
+name = Bigfathom Notify
+description = Notifications module for the Bigfathom Application
+core = 7.x
+
+package = Bigfathom
+
+dependencies[] = bigfathom_core
+
+scripts[] = js/general.js
+

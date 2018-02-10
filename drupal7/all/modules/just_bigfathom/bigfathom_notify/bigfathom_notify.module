@@ -1,0 +1,104 @@
+<?php
+/**
+ * @file
+ * ------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright 2015 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * ------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'core/config.php';
+
+
+/** 
+ * Implements hook_help. 
+ */
+function bigfathom_notify_help($path, $arg) 
+{
+    $contributemsg = 'Contact us at <a href="http://room4me.com/">Room4me.com Software LLC</a> to ask about consulting services.';
+    switch ($path)
+    {
+      case "admin/help#bigfathom_notify":
+          return '<p>'. t("This module has the notification elements of the application.") .'</p>'
+                .'<p>'.t($contributemsg).'</p>';
+          break;
+    }
+}
+
+/** 
+ * Returns information about this module
+ */
+function bigfathom_notify_info() 
+{
+    $info = array();
+    $info['version'] = BIGFATHOM_NOTIFY_VERSION_INFO;
+    return $info;
+}
+
+
+function bigfathom_notify_menu() 
+{
+    $items = array();
+    
+    $oContext = \bigfathom\Context::getInstance();
+    $has_selected_project = $oContext->hasSelectedProject();
+    $selected_projectid = $oContext->getSelectedProjectID();
+    
+    $my_access_arguments = array('test'=>123
+        ,'selected_projectid'=>$selected_projectid);
+
+    $page_arguments_oneproj_finished = array(
+        'layout_name'=>'maxcontent'
+        ,'menu_base'=>'bigfathom/notify/'
+        ,'requires_project'=>TRUE
+    );
+        
+    $page_arguments_oneproj_unfinished = array(
+        'layout_name'=>'maxcontent'
+        ,'menu_base'=>'bigfathom/notify/'
+        ,'requires_project'=>TRUE
+        ,'unfinished'=>TRUE
+    );
+        
+    $page_arguments_multiproj_finished = array(
+        'layout_name'=>'maxcontent_multiproject'
+        ,'menu_base'=>'bigfathom/notify/'
+        ,'requires_project'=>FALSE
+    );
+    
+    $page_arguments_multiproj_unfinished = array(
+        'layout_name'=>'maxcontent_multiproject'
+        ,'menu_base'=>'bigfathom/notify/'
+        ,'requires_project'=>FALSE
+        ,'unfinished'=>TRUE
+    );
+    
+    $page_arguments_useraccountinfo = array(
+        'layout_name'=>'maxcontent_multiproject'
+        ,'menu_base'=>'bigfathom/notify/'
+        ,'requires_project'=>FALSE
+        ,'requires_systemdatatrustee'=>TRUE
+    );
+
+    $items['bigfathom/notify/configure'] = array(
+      'title' => 'Notification Configuration',
+      'page callback' => 'bigfathom_notify_configuration_form',
+      'page arguments' => $page_arguments_useraccountinfo,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Configure the notification module',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'configure.inc',
+      'file path' => BIGFATHOM_NOTIFY_MODULE_PATH.'/functions/',
+    );
+
+    return $items;
+}
+
+
+
+
+

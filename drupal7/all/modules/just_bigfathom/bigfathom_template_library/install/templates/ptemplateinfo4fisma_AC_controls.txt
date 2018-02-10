@@ -1,0 +1,66 @@
+PROJECT_TEMPLATE	FORMAT	PUBLISHER:NAME	PUBLISHER:URI	TYPE	PUBLISHED_TS	TEMPLATE_NM	PUBLISHEDREFNAME	AUTHOR_NAME	PROJECT_CONTEXTID	ROOT_WORKITEMID
+DATA ROW>>	TXT:BFTF1	admin	http://localhost/	project template	2017-08-05T12:01:23-04:00	FISMA_AC_FAMILY	FISMA_AC_FAMILY	Frank Font	104	1
+BEGIN	METADATA	MISSION_TX
+FISMA AC control family
+END	METADATA	MISION_TX
+BEGIN	METADATA	SUBMITTER_BLURB_TX
+FISMA AC control family
+END	METADATA	SUBMITTER_BLURB_TX
+WORKITEMS	WID	NAME	PURPOSE_TX	OWNER_TEMPLATE_PROJECTID	TYPELETTER
+DATA ROW>>	1	AC	Access Controls Family	1	P			
+DATA ROW>>	2	ACCESS CONTROL POLICY AND PROCEDURES	One control of the family	1	G
+DATA ROW>>	3	ACCOUNT MANAGEMENT	One control of the family	1	G
+DATA ROW>>	4	ACCESS ENFORCEMENT	One control of the family	1	G
+DATA ROW>>	5	INFORMATION FLOW ENFORCEMENT	One control of the family	1	G
+DATA ROW>>	6	SEPARATION OF DUTIES	One control of the family	1	G
+DATA ROW>>	7	LEAST PRIVILEGE	One control of the family	1	G
+DATA ROW>>	8	UNSUCCESSFUL LOGON ATTEMPTS	One control of the family	1	G
+DATA ROW>>	9	SYSTEM USE NOTIFICATION	One control of the family	1	G
+DATA ROW>>	10	PREVIOUS LOGON (ACCESS) NOTIFICATION	One control of the family	1	G
+DATA ROW>>	11	CONCURRENT SESSION CONTROL	One control of the family	1	G
+DATA ROW>>	12	SESSION LOCK	One control of the family	1	G
+DATA ROW>>	13	SESSION TERMINATION	One control of the family	1	G
+DATA ROW>>	14	SUPERVISION AND REVIEW - ACCESS CONTROL	One control of the family	1	G
+DATA ROW>>	15	PERMITTED ACTIONS WITHOUT ID OR AUTH	One control of the family	1	G
+DATA ROW>>	16	AUTOMATED MARKING	One control of the family	1	G
+DATA ROW>>	17	SECURITY ATTRIBUTES	One control of the family	1	G
+DATA ROW>>	18	REMOTE ACCESS	One control of the family	1	G
+DATA ROW>>	19	WIRELESS ACCESS	One control of the family	1	G
+DATA ROW>>	20	ACCESS CONTROL FOR MOBILE DEVICES	One control of the family	1	G
+DATA ROW>>	21	USE OF EXTERNAL INFORMATION SYSTEMS	One control of the family	1	G
+DATA ROW>>	22	INFORMATION SHARING	One control of the family	1	G
+DATA ROW>>	23	PUBLICLY ACCESSIBLE CONTENT	One control of the family	1	G
+DATA ROW>>	24	DATA MINING PROTECTION	One control of the family	1	G
+DATA ROW>>	25	ACCESS CONTROL DECISIONS	One control of the family	1	G
+DATA ROW>>	26	REFERENCE MONITOR	One control of the family	1	G
+WORKITEM_SUBMAP_NAME:DAW											
+DATA ROW>>	1	2									
+DATA ROW>>	1	3									
+DATA ROW>>	1	4									
+DATA ROW>>	1	5									
+DATA ROW>>	1	6									
+DATA ROW>>	1	7									
+DATA ROW>>	1	8									
+DATA ROW>>	1	9									
+DATA ROW>>	1	10									
+DATA ROW>>	1	11									
+DATA ROW>>	1	12									
+DATA ROW>>	1	13									
+DATA ROW>>	1	14									
+DATA ROW>>	1	15									
+DATA ROW>>	1	16									
+DATA ROW>>	1	17									
+DATA ROW>>	1	18									
+DATA ROW>>	1	19									
+DATA ROW>>	1	20									
+DATA ROW>>	1	21									
+DATA ROW>>	1	22									
+DATA ROW>>	1	23									
+DATA ROW>>	1	24									
+DATA ROW>>	1	25									
+DATA ROW>>	1	26									
+MAP_RELEVANT_ROLES											
+MAP_WORKITEMID2PROJECTID											
+DATA ROW>>	2	1									
+DATA ROW>>	3	1									
+PROJECT_TEMPLATE_END	WORKITEM_COUNT=26	DAW_LINK_COUNT=25									

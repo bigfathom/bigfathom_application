@@ -1,0 +1,40 @@
+<div class="popupdef" data-role="popup" 
+     id="dlg_create_brainstorm_item_container" 
+     data-arrow="t" 
+     data-overlay-theme="b" 
+     align="center" 
+     data-dismissible="false">
+    <form id='addform_workitem'>
+        <div class="popupform" id="dlg_create_brainstorm_item_form">
+            <h1>Create New Candidate Topic Item</h1>
+            <div align="left">
+                <p id="dlg_add_brainstorm_topinfo"></p>
+                <p id="dlg_add_brainstorm_statusinfo"></p>
+                <p>
+                    <label for="new_brainstom_item_name">Name</label>
+                    <input type="text" name="name" id="new_brainstom_item_name" class="workitem_nm" value="" data-mini="false" />
+                </p>
+                <p>
+                    <label for="new_brainstom_item_purpose">Purpose</label>
+                    <textarea name="new_brainstom_item_purpose" id="new_brainstom_item_purpose" class="workitem_purpose_tx" data-mini="false" >
+                    </textarea>
+                </p>
+                <p>
+                    <label for="new_brainstom_item_type">Type</label>
+                    <select name="new_brainstom_item_type" id="new_brainstom_item_type">
+                            <option value="U">Uncategorized</option>
+                            <option value="G">Goal</option>
+                            <option value="T">Task</option>
+                    </select>        
+                </p>
+            </div>
+            <hr>
+
+            <div class='action-buttons'>
+                <button type="button" data-inline="true" id="btn_create_brainstorm_item">Save</button>
+                <button type="button" data-inline="true" id="btn_create_brainstorm_and_addmore">Save and Repeat</button>
+                <button type="button" data-inline="true" id="btn_close">Close</button>
+            </div>
+        </div>
+    </form>
+</div>

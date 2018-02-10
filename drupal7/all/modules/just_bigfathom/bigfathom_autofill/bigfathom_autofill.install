@@ -1,0 +1,77 @@
+<?php
+/**
+ * @file
+ * --------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright (c) 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * --------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'install/bigfathom_autofill_schema.inc';
+require_once 'install/DemoData.inc';
+
+function bigfathom_autofill_uninstall()
+{
+    $t = get_t();
+    drupal_set_message($t('Uninstalled bigfathom_autofill'));
+}
+
+/**
+ * Insert baseline rows into tables
+ * @return status
+ */
+function bigfathom_autofill_install()
+{
+    try
+    {
+        $t = get_t();
+        
+        //Install the base data.
+        bigfathom_autofill_basemetadata();
+        bigfathom_autofill_basedata();
+
+        //Install the demo data
+        $demodata = new \bigfathom_autofill\DemoData();
+        $demodata->load();
+        
+        drupal_set_message($t('Installed bigfathom_autofill'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed bigfathom_autofill install'),'error');
+        throw $ex;
+    }
+}
+
+function bigfathom_autofill_basemetadata()
+{
+    try
+    {
+        $t = get_t();
+        $updated_dt = date("Y-m-d H:i", time());
+
+        //TODO
+        
+        drupal_set_message($t('Loaded autofill basemetadata'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed autofill basemetadata load'),'error');
+        throw $ex;
+    }
+}
+
+function bigfathom_autofill_basedata()
+{
+    try
+    {
+        $t = get_t();
+        $updated_dt = date("Y-m-d H:i", time());
+        
+        //TODO
+        
+        drupal_set_message($t('Loaded autofill basedata'));
+    } catch (\Exception $ex) {
+        drupal_set_message($t('Failed autofill basedata load'),'error');
+        throw $ex;
+    }
+}
+

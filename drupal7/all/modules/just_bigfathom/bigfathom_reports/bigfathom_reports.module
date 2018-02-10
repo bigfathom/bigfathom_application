@@ -1,0 +1,247 @@
+<?php
+/**
+ * @file
+ * ------------------------------------------------------------------------------------
+ * Created by Frank Font (mrfont@room4me.com)
+ *
+ * Copyright 2015 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * ------------------------------------------------------------------------------------
+ *
+ */
+
+require_once 'core/config.php';
+
+
+/** 
+ * Implements hook_help. 
+ */
+function bigfathom_reports_help($path, $arg) 
+{
+    $contributemsg = 'Contact us at <a href="http://room4me.com/">Room4me.com Software LLC</a> to ask about consulting services.';
+    switch ($path)
+    {
+      case "admin/help#bigfathom_reports":
+          return '<p>'. t("This module has the report elements of the application.") .'</p>'
+                .'<p>'.t($contributemsg).'</p>';
+          break;
+    }
+}
+
+/** 
+ * Returns information about this module
+ */
+function bigfathom_reports_info() 
+{
+    $info = array();
+    $info['version'] = BIGFATHOM_REPORTS_VERSION_INFO;
+    return $info;
+}
+
+
+function bigfathom_reports_menu() 
+{
+    $items = array();
+    
+    $oContext = \bigfathom\Context::getInstance();
+    $has_selected_project = $oContext->hasSelectedProject();
+    $selected_projectid = $oContext->getSelectedProjectID();
+    
+    $my_access_arguments = array('test'=>123
+        ,'selected_projectid'=>$selected_projectid);
+
+    $page_arguments_oneproj_finished = array(
+        'layout_name'=>'maxcontent'
+        ,'menu_base'=>'bigfathom/reports/'
+        ,'requires_project'=>TRUE
+    );
+        
+    $page_arguments_oneproj_unfinished = array(
+        'layout_name'=>'maxcontent'
+        ,'menu_base'=>'bigfathom/reports/'
+        ,'requires_project'=>TRUE
+        ,'unfinished'=>TRUE
+    );
+        
+    $page_arguments_multiproj_finished = array(
+        'layout_name'=>'maxcontent_multiproject'
+        ,'menu_base'=>'bigfathom/reports/'
+        ,'requires_project'=>FALSE
+    );
+    
+    $page_arguments_multiproj_unfinished = array(
+        'layout_name'=>'maxcontent_multiproject'
+        ,'menu_base'=>'bigfathom/reports/'
+        ,'requires_project'=>FALSE
+        ,'unfinished'=>TRUE
+    );
+    
+    $page_arguments_useraccountinfo = array(
+        'layout_name'=>'maxcontent_multiproject'
+        ,'menu_base'=>'bigfathom/reports/'
+        ,'requires_project'=>FALSE
+        ,'requires_systemdatatrustee'=>TRUE
+    );
+
+    $items['bigfathom/reports/userloginhistory'] = array(
+      'title' => 'User Login Summary Report',
+      'page callback' => 'bigfathom_reports_userloginhistory_form',
+      'page arguments' => $page_arguments_useraccountinfo,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Summary of user logins',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+    
+    $items['bigfathom/reports/status4allprojects'] = array(
+      'title' => 'Status of All Projects',
+      'page callback' => 'bigfathom_reports_statusallprojects_form',
+      'page arguments' => $page_arguments_multiproj_unfinished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Status of all projects',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+    
+    $items['bigfathom/reports/pathsoneproject'] = array(
+      'title' => 'Path Analysis of Current Project',
+      'page callback' => 'bigfathom_reports_pathsoneproject_form',
+      'page arguments' => $page_arguments_oneproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Path analysis of one project',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/project2projectpaths'] = array(
+      'title' => 'All Inter-Project Paths',
+      'page callback' => 'bigfathom_reports_project2projectpaths_form',
+      'page arguments' => $page_arguments_multiproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'List of all inter-project connections',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/ganttoneproject'] = array(
+      'title' => 'Gantt Chart of Current Project',
+      'page callback' => 'bigfathom_reports_ganttoneproject_form',
+      'page arguments' => $page_arguments_oneproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Gantt chart of one project',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/ganttacrossallprojects'] = array(
+      'title' => 'Show Gantt across all Projects',
+      'page callback' => 'bigfathom_reports_ganttacrossallprojects_form',
+      'page arguments' => $page_arguments_multiproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Gantt visualization of work across all projects',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'workitem.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+    
+    $items['bigfathom/reports/personavailability'] = array(
+      'title' => 'Person Availability Report',
+      'page callback' => 'bigfathom_reports_personavailability_form',
+      'page arguments' => $page_arguments_multiproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Show the projected availability of a person',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'person.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+        
+    $items['bigfathom/reports/personutilization'] = array(
+      'title' => 'Person Utilization Report',
+      'page callback' => 'bigfathom_reports_personutilization_form',
+      'page arguments' => $page_arguments_multiproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Show the projected utilization of a person',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'person.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/changehistoryoneproject'] = array(
+      'title' => 'Change History of Current Project',
+      'page callback' => 'bigfathom_reports_changehistoryoneproject_form',
+      'page arguments' => $page_arguments_oneproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Change history of one project',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/usecasesoneproject'] = array(
+      'title' => 'Use Case Mapping in Current Project',
+      'page callback' => 'bigfathom_reports_usecasesoneproject_form',
+      'page arguments' => $page_arguments_oneproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Information on use cases mapped in one project',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/testcasesoneproject'] = array(
+      'title' => 'Test Case Mapping in Current Project',
+      'page callback' => 'bigfathom_reports_testcasesoneproject_form',
+      'page arguments' => $page_arguments_oneproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Information on test cases mapped in one project',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/reports/tagmaponeproject'] = array(
+      'title' => 'Tag Mappings in Current Project',
+      'page callback' => 'bigfathom_reports_tagmaponeproject_form',
+      'page arguments' => $page_arguments_oneproj_finished,
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Display the text tags assigned to items of one project',
+      'type' => MENU_NORMAL_ITEM,
+      'expanded' => TRUE,
+      'file' => 'project.inc',
+      'file path' => BIGFATHOM_REPORTS_MODULE_PATH.'/functions/',
+    );
+
+    return $items;
+}
+
+
+
+
+

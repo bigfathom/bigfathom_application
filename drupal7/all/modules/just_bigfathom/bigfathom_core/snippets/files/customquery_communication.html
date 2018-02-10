@@ -1,0 +1,135 @@
+<!-- Custom query controls for communication search -->
+<div class='customquery-content'>
+    <fieldset class='elem-inline'><legend title='Date range for query search'>Communication Date Range</legend><div class='group-standard'>
+           
+        <div class='inline'>
+            <label title='Start date of range, leave blank to query from earliest available' for='gcq_startdate'>Start</label>
+            <input id='gcq_startdate' type='text' size='12' >
+        </div>
+                
+        <div class='inline'>
+            <label title='End date of range, leave blank to query until most recently available' for='gcq_enddate'>End</label>
+            <input id='gcq_enddate' type='text' size='12' >
+        </div>
+            
+    </div></fieldset>
+    
+    <fieldset class='elem-inline'><legend title='Status category of the communication thread'>Communication Status</legend><div class='group-standard'>
+           
+        <div class="group-standard">
+            <div class="inline">
+            <label title="No restriction on status" for="gcq_status_any">Any
+            </label>
+            <input name="gcq_statusgroup" id="gcq_status_any" value="any" checked="checked" type="radio">
+            </div>
+            
+            <div class="inline">
+            <label title="Only include threads that have not yet been resolved/closed/abandoned" for="gcq_status_open">Open
+            </label>
+            <input name="gcq_statusgroup" id="gcq_status_open" value="open" type="radio">
+            </div>
+            
+            <div class="inline">
+            <label title="Only include threads that have been resolved/closed/abandoned" for="gcq_status_closed">Closed
+            </label>
+            <input name="gcq_statusgroup" id="gcq_status_closed" value="closed" type="radio">
+            </div>
+            
+        </div>
+            
+    </div></fieldset>
+    
+    <fieldset class='elem-inline'><legend title='Author of the communications'>Communication Author</legend><div class='group-standard'>
+           
+        <div class="group-standard">
+            <div class="inline">
+            <label title="No restriction on author" for="gcq_author_any">Any
+            </label>
+            <input name="gcq_authorgroup" id="gcq_author_any" value="any" checked="checked" type="radio">
+            </div>
+            
+            <div class="inline">
+            <label title="Only include messages where you are the author or the author of the thread root" for="gcq_author_you">You
+            </label>
+            <input name="gcq_authorgroup" id="gcq_author_you" value="you" type="radio">
+            </div>
+            
+            <div class="inline">
+            <label title="Only include messages where you are NOT the author and are NOT the author of the thread root" for="gcq_author_notyou">Not you
+            </label>
+            <input name="gcq_authorgroup" id="gcq_author_notyou" value="notyou" type="radio">
+            </div>
+        </div>
+            
+    </div></fieldset>    
+    
+    <fieldset class='elem-inline'><legend title='Include communications where some or all text matches this text'>Communication Text Match</legend><div class='group-standard'>
+           
+        <div class='inline'>
+            <label title='Text to match.  Messages will need to match all comma delimited terms entered here' for='gcq_comm_matchtext'>Content Text</label>
+            <input id='gcq_comm_matchtext' type='text' size='40'>
+        </div>
+            
+    </div></fieldset>
+    
+    <fieldset class='elem-inline'><legend title='Include communications with IDs listed here, comma delimited list expected'>Communication ID Match</legend><div class='group-standard'>
+           
+        <div class='inline'>
+            <label title='IDs to match.  Comma delimited list of all the messages you want to retrieve' for='gcq_comids'>IDs</label>
+            <input id='gcq_comids' type='text' size='10'>
+        </div>
+            
+    </div></fieldset>
+    
+    <fieldset class='elem-inline'><legend title='Include communications where workitem matches'>Workitem Text Match</legend><div class='group-standard'>
+           
+        <div class='inline'>
+            <label title='Text to match with the workitem names.  Messages will need to match all comma delimited terms entered here' for='gcq_workitem_namematchtext'>Name Text</label>
+            <input id='gcq_workitem_namematchtext' type='text' size='40'>
+        </div>
+            
+        <div class='inline'>
+            <label title='Text to match against workitem tags, delimit with commas' for='gcq_workitem_tag_matchtext'>Tag Text</label>
+            <input id='gcq_workitem_tag_matchtext' type='text' size='20'>
+        </div>
+            
+    </div></fieldset>
+
+    <fieldset class='elem-inline'><legend title='Owner of the workitem'>Workitem Owner</legend><div class='group-standard'>
+           
+        <div class="group-standard">
+            <div class="inline">
+            <label title="No restriction on ownership" for="gcq_owner_any">Any
+            </label>
+            <input name="gcq_ownergroup" id="gcq_owner_any" value="any" checked="checked" type="radio">
+            </div>
+            
+            <div class="inline">
+            <label title="Only include messages where you are the owner of the associated workitem" for="gcq_owner_you">You
+            </label>
+            <input name="gcq_ownergroup" id="gcq_owner_you" value="you" type="radio">
+            </div>
+            
+            <div class="inline">
+            <label title="Only include messages where you are NOT the owner of the associated workitem" for="gcq_owner_notyou">Not you
+            </label>
+            <input name="gcq_ownergroup" id="gcq_owner_notyou" value="notyou" type="radio">
+            </div>
+        </div>
+            
+    </div></fieldset>    
+    
+    <div title='Click here to fetch the communications matching the criteria you have specified'>
+        <a id="gcq_fetchmatchingrows" class='action-button' href='#gcq_submitquery'>Fetch Matching Records</a>
+    </div>
+    <script>
+    $( 
+        function() {
+                $( "#gcq_startdate,#gcq_enddate" ).datepicker(
+                        {
+                            "dateFormat": "yy-mm-dd"
+                        });
+            } 
+    );
+    </script>
+</div>
