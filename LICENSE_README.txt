@@ -13,7 +13,9 @@ BIGFATHOM LOGO COPYRIGHT RESTRICTIONS
 Bigfathom is a registered service mark of Room4me.com Software LLC
 and Frank Font 2018.  Examples of the restricted Bigfathom logos can
 be found in the copyright-logos folder of the official Bigfathom application 
-git repository.  
+git repository.  The copyright owner of the Bigfathom logos is 
+Room4me.com Software LLC and all rights for their use are retained 
+by Room4me.com Software LLC and Frank Font since 2015. 
 
 OFFICIAL GIT REPOSITORY
 =======================
@@ -41,7 +43,7 @@ of the Bigfathom application software by requesting permission as follows:
     in your commercial setting and confirm it is only for use in the context
     of enhancing the user-community use of the Bigfathom application.
 
-Once your receive written permission, you are free to use the logo for the 
+Once you receive written permission, you are free to use the logo for the 
 described purpose to the extent that it does not damage the Bigfathom brand.  
 Permission is automatically removed if the use of the logo is objectionable in 
 any way to the owner of the logo copyright.
