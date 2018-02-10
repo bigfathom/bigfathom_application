@@ -41,10 +41,14 @@ of the Bigfathom application software by requesting permission as follows:
     in your commercial setting and confirm it is only for use in the context
     of enhancing the user-community use of the Bigfathom application.
 
+Once your receive written permission, you are free to use the logo for the 
+described purpose to the extent that it does not damage the Bigfathom brand.  
+Permission is automatically removed if the use of the logo is objectionable in 
+any way to the owner of the logo copyright.
 
 ADDITIONAL INFORMATION
 ======================
-This LICENSE_README.txt was last updated 2018-02-10 and may evolve over
+This LICENSE_README.txt was last updated 2018-02-10 (rev2) and may evolve over
 a period of time.  Check the official Bigfathom git repository for the latest
 version of this LICENSE_README.txt.
 
