@@ -13,7 +13,7 @@
  */
 
 defined('BIGFATHOM_CORE_VERSION_INFO')
-    or define('BIGFATHOM_CORE_VERSION_INFO', 'PROTOTYPE 20180115.2');
+    or define('BIGFATHOM_CORE_VERSION_INFO', 'PROTOTYPE 20180211.1');
 
 defined('BIGFATHOM_CORE_MODULE_PATH')
     or define('BIGFATHOM_CORE_MODULE_PATH', drupal_get_path('module', 'bigfathom_core'));

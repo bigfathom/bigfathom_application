@@ -95,7 +95,21 @@ class ManageProjectBaselinesPage extends \bigfathom\ASimpleFormPage
         $iso8601_created_dttm = NULL;
         $MIN_iso8601_created_dttm = NULL;
         $MAX_iso8601_created_dttm = NULL;
+      
+        //Initialize these now otherwise errors later on blank data situation
+        $count_unstarted_workitems = 0;
+        $count_started_open_workitems = 0;
+        $count_closed_workitems = 0;
+        $ere_unstarted_workitems = 0;
+        $ere_started_open_workitems = 0;
+        $ere_closed_workitems = 0;
+        $act_worked_started_open_workitems = 0;
+        $act_worked_closed_workitems = 0;
+        $est_worked_started_open_workitems = 0;
+        $est_worked_closed_workitems = 0;
         
+        drupal_set_message("LOOK 33333 DEBUGING");
+
         foreach($project_baseline_lookup as $project_baselineid=>$record)
         {
 
