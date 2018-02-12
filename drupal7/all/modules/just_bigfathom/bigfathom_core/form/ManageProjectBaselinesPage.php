@@ -107,8 +107,6 @@ class ManageProjectBaselinesPage extends \bigfathom\ASimpleFormPage
         $act_worked_closed_workitems = 0;
         $est_worked_started_open_workitems = 0;
         $est_worked_closed_workitems = 0;
-        
-        drupal_set_message("LOOK 33333 DEBUGING");
 
         foreach($project_baseline_lookup as $project_baselineid=>$record)
         {
