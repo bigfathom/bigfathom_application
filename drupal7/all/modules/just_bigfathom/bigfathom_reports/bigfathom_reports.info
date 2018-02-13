@@ -1,7 +1,7 @@
 ;;  ------------------------------------------------------------------------------------
 ;;  Created by Frank Font 2015
 ;;  
-;;  Copyright 2015-2017 Room4me.com Software LLC, All Rights Reserved
+;;  Copyright 2015-2018 Room4me.com Software LLC, All Rights Reserved
 ;;  ------------------------------------------------------------------------------------
 name = Bigfathom Reports
 description = Reports module for the Bigfathom Application

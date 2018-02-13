@@ -122,7 +122,7 @@ class BasicNotifyTests extends \bigfathom\AbstractActionTestGroup
             $oEmailHelper = new \bigfathom_notify\EmailHelper();
             
             $post_fields = [];
-            $post_fields['mailto'] = 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx';
+            $post_fields['mailto'] = 'frankfont123@gmail.com';
             $post_fields['subject'] = "TEST testSingleMailto";
             $oEmailHelper->sendTestNotification($post_fields);
             
@@ -149,7 +149,7 @@ class BasicNotifyTests extends \bigfathom\AbstractActionTestGroup
             $oEmailHelper = new \bigfathom_notify\EmailHelper();
             
             $post_fields = [];
-            $post_fields['mailto'] = array('xxxxxxxxxxxxxxxxxxxxxxxxxxx','xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
+            $post_fields['mailto'] = array('frankfont123@gmail.com','mrfont@room4me.com');
             $post_fields['subject'] = "TEST testArrayMailto";
             $oEmailHelper->sendTestNotification($post_fields);
             
