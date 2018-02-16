@@ -8188,11 +8188,11 @@ class WriteHelper
                 'root_goalid'=>$root_goalid,
             );
             $resultbundle['created_new_goal_yn'] = $created_new_goal ? 1 : 0;
-            if(isset($myvalues['planned_start_dt_locked_yn']))
+            if(isset($myvalues['planned_start_dt_locked_yn']) && $myvalues['planned_start_dt_locked_yn'] != 0)
             {
                 $resultbundle['locked_planned_start_dt'] = $myvalues['planned_start_dt'];
             }
-            if(isset($myvalues['planned_end_dt_locked_yn']))
+            if(isset($myvalues['planned_end_dt_locked_yn']) && $myvalues['planned_end_dt_locked_yn'] != 0)
             {
                 $resultbundle['locked_planned_end_dt'] = $myvalues['planned_end_dt'];
             }
