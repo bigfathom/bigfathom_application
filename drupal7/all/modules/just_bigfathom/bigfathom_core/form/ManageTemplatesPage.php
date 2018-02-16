@@ -184,9 +184,21 @@ class ManageTemplatesPage extends \bigfathom\ASimpleFormPage
                 
                 $owner_personid = $record['owner_personid'];
                 $isowner = $user->uid == $owner_personid;
-                $owner_persondetail = $all_people[$owner_personid];
-                $owner_personname = $owner_persondetail['first_nm'] . " " . $owner_persondetail['last_nm'];
-                $owner_txt = "#{$owner_personid}";
+                if(empty($all_people[$owner_personid]))
+                {
+                    if($owner_personid > 0)
+                    {
+                        $owner_personname = "Unknown";
+                        $owner_txt = "#{$owner_personid}";
+                    } else {
+                        $owner_personname = "External";
+                        $owner_txt = "";
+                    }
+                } else {
+                    $owner_persondetail = $all_people[$owner_personid];
+                    $owner_personname = $owner_persondetail['first_nm'] . " " . $owner_persondetail['last_nm'];
+                    $owner_txt = "#{$owner_personid}";
+                }
                 $owner_markup = "<span title='$owner_txt'>".$owner_personname."</span>";
                 
                 $template_contextid = $record['project_contextid'];
