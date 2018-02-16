@@ -569,8 +569,8 @@ class ProjectPageHelper
                 }
             }
 
-            $d_sdt = !empty($myvalues['actual_start_dt']) ? $myvalues['actual_start_dt'] : $myvalues['planned_start_dt'];
-            $d_edt = !empty($myvalues['actual_end_dt']) ? $myvalues['actual_end_dt'] : $myvalues['planned_end_dt'];
+            $d_sdt = !empty($myvalues['actual_start_dt']) ? $myvalues['actual_start_dt'] : !empty($myvalues['planned_start_dt']) ? $myvalues['planned_start_dt'] : NULL;
+            $d_edt = !empty($myvalues['actual_end_dt']) ? $myvalues['actual_end_dt'] : !empty($myvalues['planned_end_dt']) ? $myvalues['planned_end_dt'] : NULL;
             
             if(!empty($d_sdt) && !empty($d_edt) && $d_sdt > $d_edt)
             {
