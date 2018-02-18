@@ -25,8 +25,8 @@ if(!bigfathom_util.env.hasOwnProperty("multilevelhierarchy"))
     //Create the object property because it does not already exist
     bigfathom_util.env.multilevelhierarchy = {
         "version": "20180218.1", 
-        "hierarchy_lane":1, 
-        "unassigned_lane":2, 
+        "hierarchy_lane":2, 
+        "unassigned_lane":1, 
         "show_unassigned_lane":true,
         "unassigned_lane_width": 300,
         "min_sublane_width": 300,
@@ -227,7 +227,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
         //See if we are in a lane
         for(laneidx = 1; laneidx < corefacts.lane_count; laneidx++)
         {
-            if(x < corefacts.lanes[laneidx].start_x)
+            if(x >= corefacts.lanes[laneidx].start_x) //REVERSEDX
             {
                 lanenum = laneidx;
                 break;
@@ -2533,7 +2533,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                             , sublane_start_x, sublane_top_y
                             , sublane_width, corefacts.lane_height);         
                 selected_lane.sublanes[sublaneidx] = onesublane_def;
-                sublane_start_x += sublane_width;
+                sublane_start_x -= sublane_width;   //REVERSEDX
                 sublane_end_x = sublane_start_x + sublane_width;
             }
             
@@ -2552,7 +2552,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                             , sublane_width, corefacts.lane_height);         
                 selected_lane.sublanes[sublaneidx] = onesublane_def;
                 selected_lane.sublanes.push(onesublane_def);
-                sublane_start_x += sublane_width;
+                sublane_start_x -= sublane_width;   //REVERSEDX
                 sublane_end_x = sublane_start_x + sublane_width;
             }
         }
@@ -2906,8 +2906,8 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 var sublane_hpad = sublane_width / 10;
                 var sublane_count = onelanedef_input.sublane_defs.length;
                 var sublane_width = thislane_width / sublane_count;
-                var sublane_start_x = start_x + sublane_hpad;
-                var sublane_end_x = sublane_start_x + sublane_width;
+                var sublane_start_x = start_x - sublane_hpad;   //REVERSEDX
+                var sublane_end_x = sublane_start_x - sublane_width;  //REVERSEDX
                 for(var sublaneidx = 0; sublaneidx < sublane_count; sublaneidx++)
                 {
                     var onesublane_def = onelanedef_input.sublane_defs[sublaneidx];
