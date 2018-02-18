@@ -2837,8 +2837,8 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 //A tree is displayed here. (hierarchy area)
                 lanenum = bigfathom_util.env.multilevelhierarchy.hierarchy_lane;
                 thislane_width = total_hierarchy_lane_width;
-                start_x = total_hierarchy_lane_visible_width - total_hierarchy_lane_width;
-                end_x = total_hierarchy_lane_visible_width;
+                start_x = 200 + total_hierarchy_lane_visible_width - total_hierarchy_lane_width; //total_hierarchy_lane_visible_width - total_hierarchy_lane_width;
+                end_x = start_x + thislane_width; //total_hierarchy_lane_visible_width;
                 onelanedef_input = h_lane_def_input;
                 hmargin = thislane_width / 10;
                 content_center = {
@@ -2923,8 +2923,8 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                                 , sublane_width, corefacts.lane_height);         
 
                     sublanes.push(onesublane_def);
-                    sublane_start_x = sublane_start_x + sublane_width;
-                    sublane_end_x = sublane_start_x + sublane_width;
+                    sublane_start_x = sublane_start_x - sublane_width;  //REVERSEDX
+                    sublane_end_x = sublane_start_x - sublane_width;  //REVERSEDX
                 }
                 onelane['sublane_hpad'] = sublane_hpad;
                 onelane['sublane_width'] = sublane_width;
