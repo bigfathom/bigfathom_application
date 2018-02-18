@@ -2837,7 +2837,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 //A tree is displayed here. (hierarchy area)
                 lanenum = bigfathom_util.env.multilevelhierarchy.hierarchy_lane;
                 thislane_width = total_hierarchy_lane_width;
-                start_x = 200 + total_hierarchy_lane_visible_width - total_hierarchy_lane_width; //total_hierarchy_lane_visible_width - total_hierarchy_lane_width;
+                start_x = total_hierarchy_lane_visible_width - total_hierarchy_lane_width; //total_hierarchy_lane_visible_width - total_hierarchy_lane_width;
                 end_x = start_x + thislane_width; //total_hierarchy_lane_visible_width;
                 onelanedef_input = h_lane_def_input;
                 hmargin = thislane_width / 10;
@@ -2853,13 +2853,18 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 lanenum = bigfathom_util.env.multilevelhierarchy.unassigned_lane;
                 thislane_width = unassigned_lane_width; //simple_lane_width;
                 hmargin = Math.max(30, thislane_width / 100);
+                start_x = hmargin;    //REVERSEDX
                 if(!minimized_candidate_tray)
                 {
-                    start_x = Math.min(visible_coordinates.x2 - thislane_width, prevlane_end_x);
+                    //REVERSEDX
+                    //start_x = Math.min(visible_coordinates.x2 - thislane_width, prevlane_end_x);
+                    end_x = start_x + thislane_width;
                 } else {
-                    start_x = Math.min(visible_coordinates.x2 - hmargin, prevlane_end_x);
+                    //REVERSEDX
+                    //start_x = Math.min(visible_coordinates.x2 - hmargin, prevlane_end_x);
+                    end_x = start_x + hmargin;    
                 }
-                end_x = start_x + thislane_width;
+                //end_x = start_x + thislane_width;
                 onelanedef_input = u_lane_def_input;
                 
                 content_center = {
@@ -2867,6 +2872,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                         "y": center_y
                     };
             }
+            
             is_simple_lane = onelanedef_input.is_simple_lane;
             if(onelanedef_input.hasOwnProperty("label"))
             {
@@ -2882,6 +2888,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 console.log("LOOK end_x=" + end_x);
                 throw "ERROR computing start_x for i=" + i + " of " + JSON.stringify(onelanedef_input);
             }
+            
             onelane = {
                 "label" : label_tx,
                 'is_simple_lane': is_simple_lane,
@@ -2906,7 +2913,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 var sublane_hpad = sublane_width / 10;
                 var sublane_count = onelanedef_input.sublane_defs.length;
                 var sublane_width = thislane_width / sublane_count;
-                var sublane_start_x = start_x - sublane_hpad;   //REVERSEDX
+                var sublane_start_x = usable_w - sublane_hpad;   //REVERSEDX
                 var sublane_end_x = sublane_start_x - sublane_width;  //REVERSEDX
                 for(var sublaneidx = 0; sublaneidx < sublane_count; sublaneidx++)
                 {
