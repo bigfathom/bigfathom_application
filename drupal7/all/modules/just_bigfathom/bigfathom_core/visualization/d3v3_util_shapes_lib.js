@@ -20,7 +20,7 @@ if (typeof bigfathom_util === 'undefined' || !bigfathom_util.hasOwnProperty("sha
 if(!bigfathom_util.shapes.hasOwnProperty("lib"))
 {
     //Create the object property because it does not already exist
-    bigfathom_util.shapes.lib = {version: "20170205.1"};
+    bigfathom_util.shapes.lib = {version: "20180218.1"};
 };
 bigfathom_util.shapes.lib.loaded = true;
 
@@ -29,23 +29,23 @@ bigfathom_util.shapes.lib.loaded = true;
 bigfathom_util.shapes.lib.keyprops = {
     proj: {item_radius: 15
             , label:{offset:{dy:"-.5em"}}
-            , status_cd:{offset:{dx:40, dy:".5em"}}
+            , status_cd:{offset:{dx:-40, dy:".5em"}}
             , connector: {
-                 d: "M15,0 L20,-4 L20,4 Z M20,0 L26,0 M30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
+                 d: "M-15,0 L-20,-4 L-20,4 Z M-20,0 L-26,0 M-30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
                 ,stroke_width: 1
                 ,stroke: "black"
                 ,fill: "cyan"
                 ,r:4
-                ,offset:{x:30,y:0}
+                ,offset:{x:-30,y:0}
                 ,flagsymbol:{
-                     status:{offset:{x:30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
-                    ,proj:{letter:'P', offset:{x:15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,goal:{letter:'G', offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,task:{letter:'T', offset:{x:25, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equip:{letter:'Q', offset:{x:30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,extrc:{letter:'X', offset:{x:35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equjb:{letter:'q', offset:{x:40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,xrcjb:{letter:'x', offset:{x:45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                     status:{offset:{x:-30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
+                    ,proj:{letter:'P', offset:{x:-15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,goal:{letter:'G', offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,task:{letter:'T', offset:{x:-25, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equip:{letter:'Q', offset:{x:-30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,extrc:{letter:'X', offset:{x:-35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equjb:{letter:'q', offset:{x:-40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,xrcjb:{letter:'x', offset:{x:-45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
                 }
             }
     },
@@ -53,21 +53,21 @@ bigfathom_util.shapes.lib.keyprops = {
             , label:{offset:{dy:"-.5em"}}
             , status_cd:{offset:{dx:40, dy:"0.5em"}}
             , connector: {
-                 d: "M15,0 L20,-4 L20,4 Z M20,0 L26,0 M30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
+                 d: "M-15,0 L-20,-4 L-20,4 Z M-20,0 L-26,0 M-30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
                 ,stroke_width: 1
                 ,stroke: "black"
                 ,fill: "green"
                 ,r:4
-                ,offset:{x:30,y:0}
+                ,offset:{x:-30,y:0}
                 ,flagsymbol:{
-                     status:{offset:{x:30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
-                    ,proj:{letter:'P', offset:{x:15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,goal:{letter:'G', offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,task:{letter:'T', offset:{x:25, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equip:{letter:'Q', offset:{x:30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,extrc:{letter:'X', offset:{x:35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equjb:{letter:'q', offset:{x:40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,xrcjb:{letter:'x', offset:{x:45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                     status:{offset:{x:-30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
+                    ,proj:{letter:'P', offset:{x:-15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,goal:{letter:'G', offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,task:{letter:'T', offset:{x:-25, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equip:{letter:'Q', offset:{x:-30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,extrc:{letter:'X', offset:{x:-35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equjb:{letter:'q', offset:{x:-40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,xrcjb:{letter:'x', offset:{x:-45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
                 }
             }
     },
@@ -75,75 +75,75 @@ bigfathom_util.shapes.lib.keyprops = {
             , label:{offset:{dy:"-.5em"}}
             , status_cd:{offset:{dx:40, dy:".5em"}}
             , connector: {
-                 d: "M15,0 L20,-4 L20,4 Z M20,0 L26,0 M30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
+                 d: "M-15,0 L-20,-4 L-20,4 Z M-20,0 L-26,0 M-30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
                 ,stroke_width: 1
                 ,stroke: "black"
                 ,fill: "blue"
                 ,r:4
-                ,offset:{x:30, y:0}
+                ,offset:{x:-30, y:0}
                 ,flagsymbol:{
-                    status:{offset:{x:30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
-                    ,proj:{letter:'P', offset:{x:15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,goal:{letter:'G', offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,task:{letter:'T',offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equip:{letter:'Q', offset:{x:30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,extrc:{letter:'X', offset:{x:35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equjb:{letter:'q', offset:{x:40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,xrcjb:{letter:'x', offset:{x:45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    status:{offset:{x:-30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
+                    ,proj:{letter:'P', offset:{x:-15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,goal:{letter:'G', offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,task:{letter:'T',offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equip:{letter:'Q', offset:{x:-30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,extrc:{letter:'X', offset:{x:-35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equjb:{letter:'q', offset:{x:-40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,xrcjb:{letter:'x', offset:{x:-45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
                 }
             }
     },
     equjb: {item_radius: 15
             , label:{offset:{dy:"-.5em"}}
-            , status_cd:{offset:{dx:40, dy:".5em"}}
+            , status_cd:{offset:{dx:-40, dy:".5em"}}
             , connector: {
-                 d: "M15,0 L20,-4 L20,4 Z M20,0 L26,0 M30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
+                 d: "M-15,0 L-20,-4 L-20,4 Z M-20,0 L-26,0 M-30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
                 ,stroke_width: 1
                 ,stroke: "black"
                 ,fill: "gray"
                 ,r:4
-                ,offset:{x:35, y:0}
+                ,offset:{x:-35, y:0}
                 ,flagsymbol:{
-                    status:{offset:{x:30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
-                    ,proj:{letter:'P', offset:{x:15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,goal:{letter:'G', offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,task:{letter:'T',offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equip:{letter:'Q', offset:{x:30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,extrc:{letter:'X', offset:{x:35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equjb:{letter:'q', offset:{x:40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,xrcjb:{letter:'x', offset:{x:45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    status:{offset:{x:-30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
+                    ,proj:{letter:'P', offset:{x:-15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,goal:{letter:'G', offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,task:{letter:'T',offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equip:{letter:'Q', offset:{x:-30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,extrc:{letter:'X', offset:{x:-35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equjb:{letter:'q', offset:{x:-40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,xrcjb:{letter:'x', offset:{x:-45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
                 }
             }
     },
     xrcjb: {item_radius: 15
             , label:{offset:{dy:"-.5em"}}
-            , status_cd:{offset:{dx:40, dy:".5em"}}
+            , status_cd:{offset:{dx:-40, dy:".5em"}}
             , connector: {
-                 d: "M15,0 L20,-4 L20,4 Z M20,0 L26,0 M30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
+                 d: "M-15,0 L-20,-4 L-20,4 Z M-20,0 L-26,0 M-30,0 m-4,0 a 4,4 0 1,1 0,.01 Z"
                 ,stroke_width: 1
                 ,stroke: "black"
                 ,fill: "gray"
                 ,r:4
-                ,offset:{x:35, y:0}
+                ,offset:{x:-35, y:0}
                 ,flagsymbol:{
-                    status:{offset:{x:30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
-                    ,proj:{letter:'P', offset:{x:15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,goal:{letter:'G', offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,task:{letter:'T',offset:{x:20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equip:{letter:'Q', offset:{x:30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,extrc:{letter:'X', offset:{x:35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,equjb:{letter:'q', offset:{x:40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
-                    ,xrcjb:{letter:'x', offset:{x:45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    status:{offset:{x:-30, y:0}, font:{size:".6em",dy:".25em",text_anchor:"middle",stroke_width:1, stroke:"black",fill:"green"}}
+                    ,proj:{letter:'P', offset:{x:-15, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,goal:{letter:'G', offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,task:{letter:'T',offset:{x:-20, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equip:{letter:'Q', offset:{x:-30, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,extrc:{letter:'X', offset:{x:-35, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,equjb:{letter:'q', offset:{x:-40, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
+                    ,xrcjb:{letter:'x', offset:{x:-45, y:15}, font:{size:".5em",stroke_width:1, stroke:"black",fill:"gray"}}
                 }
             }
     },
     equip: {item_radius: 15
             , label:{offset:{dy:"-.5em"}}
-            , status_cd:{offset:{dx:40, dy:".5em"}}
+            , status_cd:{offset:{dx:-40, dy:".5em"}}
     },
     extrc: {item_radius: 15
             , label:{offset:{dy:"-.5em"}}
-            , status_cd:{offset:{dx:40, dy:".5em"}}
+            , status_cd:{offset:{dx:-40, dy:".5em"}}
     }
 };
 
