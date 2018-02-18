@@ -310,8 +310,8 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
         } else {
             throw "Did NOT recognize type for clicked element d=" + JSON.stringify(d);
         }
-        
-        var xdif = Math.abs(fromcenter_x - connector_offset_x);
+ 
+        var xdif = Math.abs(fromcenter_x + connector_offset_x); //REVERSEDX
         var ydif = Math.abs(fromcenter_y - connector_offset_y);
         if(xdif < connector_r && ydif < connector_r)
         {

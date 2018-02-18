@@ -25,8 +25,8 @@ if(!bigfathom_util.env.hasOwnProperty("multilevelhierarchy"))
     //Create the object property because it does not already exist
     bigfathom_util.env.multilevelhierarchy = {
         "version": "20180218.1", 
-        "hierarchy_lane":2, 
-        "unassigned_lane":1, 
+        "hierarchy_lane":1, 
+        "unassigned_lane":2, 
         "show_unassigned_lane":true,
         "unassigned_lane_width": 300,
         "min_sublane_width": 300,
@@ -2820,7 +2820,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
         var cur_x = hgap;
         var start_x = cur_x;
         var start_y = corefacts.vgap;
-        var center_y = start_y + corefacts.usable_h / 2;
+        var center_y = start_y + usable_h / 2; //corefacts.usable_h / 2;
         var thislane_width;
         var prevlane_end_x;
         var is_simple_lane;   //Is TRUE only for the lane(s) with unassigned stuff

@@ -277,7 +277,7 @@ bigfathom_util.env.lanes.manager = function (canvas, lane_defs)
         var label_tx;
         var start_x;
         var cur_x = hgap;
-        var center_y = corefacts.vgap + corefacts.usable_h / 2;
+        var center_y = corefacts.vgap + usable_h / 2; // corefacts.usable_h / 2;
         for(i = 0; i < corefacts.lane_count; i++)
         {
             lanenum = i+1;
