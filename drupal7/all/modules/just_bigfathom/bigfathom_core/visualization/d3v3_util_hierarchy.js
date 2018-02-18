@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.hierarchy = {
-        "version": "20171017.1",
+        "version": "20180218.1",
         "default_workitem_opacity":.9,
         "context_type":null,
         "readonly":false
@@ -74,7 +74,7 @@ bigfathom_util.hierarchy.createEverything = function (canvas_container_id, conte
         var pagetweaks = {
                   'scrollto_y': scrollto_y
                 , 'initial_canvas_scale_factor': initial_canvas_scale_factor
-                , 'reduce_canvas_height': top_elem_height + 100
+                , 'reduce_canvas_height': top_elem_height + 120
         };        
         
         var callbacks = {};
