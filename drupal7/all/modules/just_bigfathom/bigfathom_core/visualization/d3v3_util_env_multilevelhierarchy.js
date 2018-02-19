@@ -2606,6 +2606,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
      */
     methods.recomputeCoreFacts = function (graphdata)
     {
+        console.log("LOOK FRANK at recomputeCoreFacts");
         if(typeof action_manager === 'undefined')
         {
             throw "How can we be missing action_manager here???";
@@ -2697,7 +2698,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
         {
             minimized_candidate_tray = !bigfathom_util.env.multilevelhierarchy.show_unassigned_lane;
         }
-        
+console.log("LOOK FRANK at getCoreFacts minimized_candidate_tray="+minimized_candidate_tray);        
         //Already defined?
         if(corefacts.hasOwnProperty("defined") && corefacts.defined)
         {
@@ -2853,20 +2854,22 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 lanenum = bigfathom_util.env.multilevelhierarchy.unassigned_lane;
                 thislane_width = unassigned_lane_width; //simple_lane_width;
                 hmargin = Math.max(30, thislane_width / 100);
-                start_x = hmargin;    //REVERSEDX
                 if(!minimized_candidate_tray)
                 {
                     //REVERSEDX
                     //start_x = Math.min(visible_coordinates.x2 - thislane_width, prevlane_end_x);
-                    end_x = start_x + thislane_width;
+                    start_x = visible_coordinates.x1 + hmargin;    //REVERSEDX
+                    //end_x = visible_coordinates.x1 + thislane_width;
                 } else {
                     //REVERSEDX
                     //start_x = Math.min(visible_coordinates.x2 - hmargin, prevlane_end_x);
-                    end_x = start_x + hmargin;    
+                    start_x = visible_coordinates.x1 + hmargin - thislane_width;    //REVERSEDX
+                    //end_x = start_x + hmargin;    
                 }
-                //end_x = start_x + thislane_width;
+                end_x = start_x + thislane_width;
                 onelanedef_input = u_lane_def_input;
-                
+console.log("LOOK FRANK at getCoreFacts candidate tray start_x=" + start_x);                 
+console.log("LOOK FRANK at getCoreFacts candidate tray end_x=" + end_x);                 
                 content_center = {
                         "x": start_x + hmargin,
                         "y": center_y
