@@ -24,7 +24,7 @@ if(!bigfathom_util.env.hasOwnProperty("multilevelhierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.env.multilevelhierarchy = {
-        "version": "20180218.1", 
+        "version": "20180219.1", 
         "hierarchy_lane":1, 
         "unassigned_lane":2, 
         "show_unassigned_lane":true,
@@ -2606,7 +2606,6 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
      */
     methods.recomputeCoreFacts = function (graphdata)
     {
-        console.log("LOOK FRANK at recomputeCoreFacts");
         if(typeof action_manager === 'undefined')
         {
             throw "How can we be missing action_manager here???";
@@ -2698,7 +2697,6 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
         {
             minimized_candidate_tray = !bigfathom_util.env.multilevelhierarchy.show_unassigned_lane;
         }
-console.log("LOOK FRANK at getCoreFacts minimized_candidate_tray="+minimized_candidate_tray);        
         //Already defined?
         if(corefacts.hasOwnProperty("defined") && corefacts.defined)
         {
@@ -2823,6 +2821,7 @@ console.log("LOOK FRANK at getCoreFacts minimized_candidate_tray="+minimized_can
         var start_y = corefacts.vgap;
         var center_y = start_y + usable_h / 2; //corefacts.usable_h / 2;
         var thislane_width;
+        var prevlane_start_x;
         var prevlane_end_x;
         var is_simple_lane;   //Is TRUE only for the lane(s) with unassigned stuff
         var node_start_x_factor = 4;
@@ -2848,6 +2847,7 @@ console.log("LOOK FRANK at getCoreFacts minimized_candidate_tray="+minimized_can
                         "y_zones" : y_zones
                     };
                prevlane_end_x = end_x;
+               prevlane_start_x = start_x;
                     
             } else {
                 //No tree displayed here. (unassigned node area)
@@ -2856,20 +2856,12 @@ console.log("LOOK FRANK at getCoreFacts minimized_candidate_tray="+minimized_can
                 hmargin = Math.max(30, thislane_width / 100);
                 if(!minimized_candidate_tray)
                 {
-                    //REVERSEDX
-                    //start_x = Math.min(visible_coordinates.x2 - thislane_width, prevlane_end_x);
-                    start_x = visible_coordinates.x1 + hmargin;    //REVERSEDX
-                    //end_x = visible_coordinates.x1 + thislane_width;
+                    start_x = Math.max(visible_coordinates.x1 + corefacts.hgap, prevlane_start_x - hmargin);    //REVERSEDX
                 } else {
-                    //REVERSEDX
-                    //start_x = Math.min(visible_coordinates.x2 - hmargin, prevlane_end_x);
-                    start_x = visible_coordinates.x1 + hmargin - thislane_width;    //REVERSEDX
-                    //end_x = start_x + hmargin;    
+                    start_x = Math.max(visible_coordinates.x1 + corefacts.hgap - thislane_width, prevlane_start_x - hmargin);    //REVERSEDX
                 }
                 end_x = start_x + thislane_width;
                 onelanedef_input = u_lane_def_input;
-console.log("LOOK FRANK at getCoreFacts candidate tray start_x=" + start_x);                 
-console.log("LOOK FRANK at getCoreFacts candidate tray end_x=" + end_x);                 
                 content_center = {
                         "x": start_x + hmargin,
                         "y": center_y
