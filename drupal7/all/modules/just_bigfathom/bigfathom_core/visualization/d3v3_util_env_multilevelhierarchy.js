@@ -2855,9 +2855,9 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 hmargin = Math.max(30, thislane_width / 100);
                 if(!minimized_candidate_tray)
                 {
-                    start_x = Math.max(visible_coordinates.x1 + corefacts.hgap, prevlane_start_x - hmargin);    //REVERSEDX
+                    start_x = Math.max(visible_coordinates.x1 + corefacts.hgap, prevlane_start_x - corefacts.hgap - thislane_width);    //REVERSEDX
                 } else {
-                    start_x = Math.max(visible_coordinates.x1 + corefacts.hgap - thislane_width, prevlane_start_x - hmargin);    //REVERSEDX
+                    start_x = Math.max(visible_coordinates.x1 + corefacts.hgap - thislane_width, prevlane_start_x - corefacts.hgap - thislane_width);    //REVERSEDX
                 }
                 end_x = start_x + thislane_width;
                 onelanedef_input = u_lane_def_input;
