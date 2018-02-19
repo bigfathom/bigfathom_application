@@ -2907,7 +2907,13 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 var sublane_hpad = sublane_width / 10;
                 var sublane_count = onelanedef_input.sublane_defs.length;
                 var sublane_width = thislane_width / sublane_count;
-                var sublane_start_x = usable_w - sublane_width;   //REVERSEDX
+                var sublane_start_x = Math.max(usable_w - sublane_width, usable_w / 2);   //REVERSEDX
+                if (sublane_count === 1)
+                {
+                    sublane_start_x = usable_w / 2;   //REVERSEDX
+                } else {
+                    sublane_start_x = usable_w - sublane_width;   //REVERSEDX
+                }
                 var sublane_end_x = sublane_start_x + sublane_width;  //REVERSEDX
                 for(var sublaneidx = 0; sublaneidx < sublane_count; sublaneidx++)
                 {
