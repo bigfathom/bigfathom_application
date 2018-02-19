@@ -113,7 +113,6 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 , 'over':[(center_y + y_zones_dy)]};
         }
         onesublane_def['content_center'] = content_center;
-
         return onesublane_def;
     };
     
@@ -2846,8 +2845,8 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                         "y": center_y,
                         "y_zones" : y_zones
                     };
-               prevlane_end_x = end_x;
-               prevlane_start_x = start_x;
+                prevlane_end_x = end_x;
+                prevlane_start_x = start_x;
                     
             } else {
                 //No tree displayed here. (unassigned node area)
@@ -2908,8 +2907,8 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
                 var sublane_hpad = sublane_width / 10;
                 var sublane_count = onelanedef_input.sublane_defs.length;
                 var sublane_width = thislane_width / sublane_count;
-                var sublane_start_x = usable_w - sublane_hpad;   //REVERSEDX
-                var sublane_end_x = sublane_start_x - sublane_width;  //REVERSEDX
+                var sublane_start_x = usable_w - sublane_width;   //REVERSEDX
+                var sublane_end_x = sublane_start_x + sublane_width;  //REVERSEDX
                 for(var sublaneidx = 0; sublaneidx < sublane_count; sublaneidx++)
                 {
                     var onesublane_def = onelanedef_input.sublane_defs[sublaneidx];
@@ -2926,7 +2925,7 @@ bigfathom_util.env.multilevelhierarchy.manager = function (canvas, lane_defs, co
 
                     sublanes.push(onesublane_def);
                     sublane_start_x = sublane_start_x - sublane_width;  //REVERSEDX
-                    sublane_end_x = sublane_start_x - sublane_width;  //REVERSEDX
+                    sublane_end_x = sublane_start_x + sublane_width;  //REVERSEDX
                 }
                 onelane['sublane_hpad'] = sublane_hpad;
                 onelane['sublane_width'] = sublane_width;
