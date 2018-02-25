@@ -1,21 +1,26 @@
 /**
  * Created by Frank Font (mrfont@room4me.com)
  *
- * Copyright 2015-2017 Room4me.com Software LLC, a Maryland USA company (room4me.com)
+ * Copyright 2015-2018 Room4me.com Software LLC, a Maryland USA company (room4me.com)
  */
 
 function isURIInWhitelistBundle(rawuri, whitelistbundle)
 {
+    
+    console.log("LOOK rawuri=" + JSON.stringify(rawuri));
+    console.log("LOOK whitelistbundle=" + JSON.stringify(whitelistbundle));
+    
     var uriparts = getURIParts(rawuri);
     var scheme_whitelist = whitelistbundle['scheme_whitelist'];
     if(!scheme_whitelist.hasOwnProperty(uriparts.scheme))
     {
+        console.log("URICHECK: uriparts missing shema member uriparts=[" + JSON.stringify(uriparts) + "]");
         return false;
     }
     var domain_whitelist = whitelistbundle['domain_whitelist'];
     if(!domain_whitelist.hasOwnProperty(uriparts.domain))
     {
-        console.log("LOOK domain NOT IN WHITELIST For domain=[" + uriparts.domain + "]");
+        console.log("URICHECK: domain NOT IN WHITELIST For domain=[" + uriparts.domain + "]");
         return false;
     }
     //Looks okay.
@@ -27,6 +32,7 @@ function getURIParts(rawuri)
     var uri = rawuri.trim().toLowerCase();
     var host = null;
     var fulldomain = null;
+    var portnum = null;
     var topleveldomain = null;
     var subdomain = null;
     var coredomain = null;
@@ -40,20 +46,34 @@ function getURIParts(rawuri)
     if(fulldomainstart > hostend)
     {
         var realdomainstart = fulldomainstart+2;
+        var fulldomainend_portdelim = uri.indexOf(":", realdomainstart);
         var fulldomainend1 = uri.indexOf("/", realdomainstart);
         var fulldomainend2 = uri.indexOf("?", realdomainstart);
         var fulldomainend3 = uri.length;
         
-        if(fulldomainend1 < fulldomainend2 && fulldomainend1 > -1 || fulldomainend1 > -1 && fulldomainend2 === -1)
+        if(fulldomainend_portdelim > -1)
         {
-            fulldomainend = fulldomainend1;
-        } else
-        if(fulldomainend2 < fulldomainend1 && fulldomainend2 > -1 || fulldomainend1 > -1 && fulldomainend1 === -1)
-        {
-            fulldomainend = fulldomainend2;
+            fulldomainend = fulldomainend_portdelim;
+            if(fulldomainend2 > -1)
+            {
+                portnum=uri.substr(fulldomainend, fulldomainend2-fulldomainend);
+            } else if(fulldomainend1 > -1) {
+                portnum=uri.substr(fulldomainend, fulldomainend1-fulldomainend);
+            }
+                
         } else {
-            fulldomainend = uri.length;
+            if(fulldomainend1 < fulldomainend2 && fulldomainend1 > -1 || fulldomainend1 > -1 && fulldomainend2 === -1)
+            {
+                fulldomainend = fulldomainend1;
+            } else
+            if(fulldomainend2 < fulldomainend1 && fulldomainend2 > -1 || fulldomainend1 > -1 && fulldomainend1 === -1)
+            {
+                fulldomainend = fulldomainend2;
+            } else {
+                fulldomainend = uri.length;
+            }
         }
+        
         if(fulldomainend > -1)
         {
             fulldomain = uri.substr(realdomainstart, fulldomainend-realdomainstart);
@@ -79,7 +99,11 @@ function getURIParts(rawuri)
         }
     }
     
-    return {'scheme':host, 'fulldomain': fulldomain, 'topleveldomain': topleveldomain, 'subdomain': subdomain, 'domain': coredomain};
+    return {'scheme':host, 'fulldomain': fulldomain
+        , 'topleveldomain': topleveldomain
+        , 'subdomain': subdomain
+        , 'domain': coredomain
+        , 'portnum':portnum};
     
 }
 
