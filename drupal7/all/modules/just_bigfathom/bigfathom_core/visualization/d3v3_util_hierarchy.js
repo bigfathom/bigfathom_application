@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.hierarchy = {
-        "version": "20180218.1",
+        "version": "20180308.1",
         "default_workitem_opacity":.9,
         "context_type":null,
         "readonly":false
@@ -719,346 +719,366 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
 
     var getContextMenuDef = function (d, context_attribs)
     {
-        var menudef = {};
-        console.log("LOOK build menu for " + JSON.stringify(d));
-        console.log("LOOK context_attribs=" + JSON.stringify(context_attribs));
-        menudef['callback'] = function(key, options) 
+        try
+        {
+            var menudef = {};
+            console.log("LOOK build menu for " + JSON.stringify(d));
+            console.log("LOOK context_attribs=" + JSON.stringify(context_attribs));
+            menudef['callback'] = function(key, options) 
+                {
+                    if(key === "toggle_branch")
+                    {
+                        toggle_branch(d);
+                    } else 
+                    if(key === "view_info")
+                    {
+                        instance.viewWorkitem(d);
+                        //var coordinates = [d.x,d.y];
+                        //var coordinates = d3.mouse(instance.mycanvas);
+                        //instance.show_info_balloon(coordinates, d.tooltip);
+                    } else 
+                    if(key === "edit_info")
+                    {
+                        instance.editWorkitem(d);
+                    } else {
+                        var m = "clicked: " + key;
+                        window.console && console.log(m) || alert(m); 
+                    }
+                };
+            var menudef_items = {};
+            if(d.is_candidate)
             {
-                if(key === "toggle_branch")
-                {
-                    toggle_branch(d);
-                } else 
-                if(key === "view_info")
-                {
-                    instance.viewWorkitem(d);
-                    //var coordinates = [d.x,d.y];
-                    //var coordinates = d3.mouse(instance.mycanvas);
-                    //instance.show_info_balloon(coordinates, d.tooltip);
-                } else 
-                if(key === "edit_info")
-                {
-                    instance.editWorkitem(d);
-                } else {
-                    var m = "clicked: " + key;
-                    window.console && console.log(m) || alert(m); 
-                }
+                menudef_items["commit_onenode"] = {name: "Commit This", icon: "save"};
+                menudef_items["sep1"] = "---------";
+            }
+            var has_ants = bigfathom_util.nodes.hasAntecedents(d);
+            var is_completed_branch_root = instance.graphdata.completed_branch_rootids.hasOwnProperty(d.nativeid);
+            var is_incompleted_branch_rootids = instance.graphdata.incompleted_branch_rootids.hasOwnProperty(d.nativeid);
+            var show_toggle = is_incompleted_branch_rootids || (instance.graphdata.hide_completed_branches && !is_completed_branch_root);
+            if(!context_attribs.is_disconnected && has_ants && show_toggle)
+            {
+                menudef_items["toggle_branch"] = {name: "Toggle #" + d.nativeid + " branch", icon: "hide"};
+                menudef_items["sep2"] = "---------";
+            }
+            menudef_items["view_info"] = {name: "View Details", icon: ""};
+            //menudef_items["view_status_history"] = {name: "Status History", icon: "cut"};
+            //menudef_items["view_comments"] = {name: "Comments", icon: "copy"};
+            //menudef_items["view_forecast_details"] = {name: "Forecasts", icon: "paste"};
+
+            var nodeoffset =  instance.graphdata.fastlookup_maps.nodes.id2offset[instance.graphdata.rootnodeid];
+            var rootprojectnode = instance.graphdata.nodes[nodeoffset];                    
+            var user_can_edit_target = userCanEditNode(rootprojectnode, instance.graphdata.my_userinfo_map, d);
+            if(user_can_edit_target)
+            {
+                menudef_items["sep3"] = "---------";
+                menudef_items["edit_info"] = {name: "Edit", icon: "edit"};
             };
-        var menudef_items = {};
-        if(d.is_candidate)
-        {
-            menudef_items["commit_onenode"] = {name: "Commit This", icon: "save"};
-            menudef_items["sep1"] = "---------";
+
+            menudef['items'] = menudef_items;
+            return menudef;
         }
-        var has_ants = bigfathom_util.nodes.hasAntecedents(d);
-        var is_completed_branch_root = instance.graphdata.completed_branch_rootids.hasOwnProperty(d.nativeid);
-        var is_incompleted_branch_rootids = instance.graphdata.incompleted_branch_rootids.hasOwnProperty(d.nativeid);
-        var show_toggle = is_incompleted_branch_rootids || (instance.graphdata.hide_completed_branches && !is_completed_branch_root);
-        if(!context_attribs.is_disconnected && has_ants && show_toggle)
+        catch(err)
         {
-            menudef_items["toggle_branch"] = {name: "Toggle #" + d.nativeid + " branch", icon: "hide"};
-            menudef_items["sep2"] = "---------";
+            console.error(err);
         }
-        menudef_items["view_info"] = {name: "View Details", icon: ""};
-        //menudef_items["view_status_history"] = {name: "Status History", icon: "cut"};
-        //menudef_items["view_comments"] = {name: "Comments", icon: "copy"};
-        //menudef_items["view_forecast_details"] = {name: "Forecasts", icon: "paste"};
-        
-        var nodeoffset =  instance.graphdata.fastlookup_maps.nodes.id2offset[instance.graphdata.rootnodeid];
-        var rootprojectnode = instance.graphdata.nodes[nodeoffset];                    
-        var user_can_edit_target = userCanEditNode(rootprojectnode, instance.graphdata.my_userinfo_map, d);
-        if(user_can_edit_target)
-        {
-            menudef_items["sep3"] = "---------";
-            menudef_items["edit_info"] = {name: "Edit", icon: "edit"};
-        };
-        
-        menudef['items'] = menudef_items;
-        return menudef;
     };
 
     var nodefilter = new bigfathom_util.nodes.filter(graphdata);
 
     var my_dataselections = function()
     {
-
-        instance.node_h_background_sel = instance.mycanvas.hierarchy_area_layer.selectAll("g.custom").filter("g.hierarchy_area")
-            .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","hierarchy_area"), function (d) {
-                            return d.key;
-                        });
-
-        instance.node_c_background_sel = instance.mycanvas.candidate_area_layer.selectAll("g.custom").filter("g.candidate_area")
-            .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","candidate_area"), function (d) {
-                            return d.key;
-                        });
-
-        var typenames_ar = ['goal','task','equjb','xrcjb'];
-
-        //Candidate tray content
-        var myfilter_cn_ar = [];
-        myfilter_cn_ar.push({fn:"getAllIncludedNoneExcluded"
-            , typename:typenames_ar
-            , include_subtypename:null
-            , assignment:bigfathom_util.env.multilevelhierarchy.unassigned_lane
-            , ignore_removed:true
-            , exclude_subtypename:null});
-        if(typeof instance.node_c_goal_sel !== 'undefined')
+        try
         {
-            instance.node_c_goal_sel.remove();
-        }
-        instance.node_c_goal_sel 
-                = instance.mycanvas.candidate_goals_layer
-                    .selectAll("g")
-                    .data(nodefilter.getMatching(
-                        instance.graphdata.nodes, myfilter_cn_ar), function (d) {
-                            return d.key;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-                        
-        var current_lane = instance.actionlayout.methods.getLaneInfo(2);
-        var content_center = current_lane.content_center;
-        var x_min = current_lane.content_center.x - 20;
-        var x_max = current_lane.content_center.x + 30;
-        var ideal_center_x = content_center.x;
-        instance.node_c_goal_sel.immediateMoveX(ideal_center_x, x_min, x_max);
-
-        //Goal nodes without antecedents and without disconnect warning
-        var myfilter_noant_ar = [];
-        myfilter_noant_ar.push({fn:"getAllWithoutAntecedents"
-            , typename:typenames_ar
-            , include_subtypename:null
-            , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
-            , ignore_removed:true
-            , exclude_subtypename:["warn_disconnected_rootnode"]});
-        if(typeof instance.node_h_goal_sel !== 'undefined')
-        {
-            instance.node_h_goal_sel.remove();
-        }
-        instance.node_h_goal_sel 
-                = instance.mycanvas.hierarchy_goals_layer
-                    .selectAll("g")
-            .data(nodefilter.getMatching(
-                instance.graphdata.nodes, myfilter_noant_ar), function (d) {
-                            return d.key;
-                        }).attr("class", function(d) {
-                            return d.type;
-                        }).classed("candidate", function (d) {
-                            return d.is_candidate;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-
-        //Workitem nodes without antecedents and WITH disconnect warning
-        var myfilter_noant_with_dw_ar = [];
-        myfilter_noant_with_dw_ar.push({fn:"getAllWithoutAntecedents"
-            , typename:typenames_ar
-            , include_subtypename:["warn_disconnected_rootnode"]
-            , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
-            , ignore_removed:true
-            , exclude_subtypename:null});
-        if(typeof instance.node_h_warn_disconnected_rootnode_sel !== 'undefined')
-        {
-            instance.node_h_warn_disconnected_rootnode_sel.remove();
-        }
-        instance.node_h_warn_disconnected_rootnode_sel 
-                = instance.mycanvas.hierarchy_warn_disconnected_layer
-                    .selectAll("g")
-            .data(nodefilter.getMatching(
-                instance.graphdata.nodes, myfilter_noant_with_dw_ar), function (d) { 
-                            return d.key;
-                        }).attr("class", function(d) {
-                            return d.type;
-                        }).classed("candidate", function (d) {
-                            return d.is_candidate;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-
-        //Workitem nodes WITH HIDE antecedents and without disconnect warning
-        var myfilter_hide_ant_subsequent_goal = [];
-        myfilter_hide_ant_subsequent_goal.push({fn:"getAllHavingAnyHiddenAntecedents"
-            , typename:typenames_ar
-            , include_subtypename:null
-            , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
-            , ignore_removed:true
-            , exclude_subtypename:["warn_disconnected_rootnode"]});
-        if(typeof instance.node_h_hide_ant_subsequent_goal_sel !== 'undefined')
-        {
-            instance.node_h_hide_ant_subsequent_goal_sel.remove();
-        }
-        instance.node_h_hide_ant_subsequent_goal_sel 
-                = instance.mycanvas.hierarchy_hide_ant_subsequent_layer
-                    .selectAll("g")
-            .data(nodefilter.getMatching(
-                instance.graphdata.nodes, myfilter_hide_ant_subsequent_goal), function (d) { 
-                            return d.key;
-                        }).attr("class", function(d) {
-                            return d.type;
-                        }).classed("candidate", function (d) {
-                            return d.is_candidate;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-
-        //Workitem nodes WITH HIDE antecedents and WITH disconnect warning
-        var myfilter_hide_ant_warn_subsequent_disconnected_rootnode = [];
-        myfilter_hide_ant_warn_subsequent_disconnected_rootnode.push({fn:"getAllHavingAnyHiddenAntecedents"
-            , typename:typenames_ar
-            , include_subtypename:["warn_disconnected_rootnode"]
-            , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
-            , ignore_removed:true
-            , exclude_subtypename:null});
-        if(typeof instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel !== 'undefined')
-        {
-            instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.remove();
-        }
-        instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel 
-                = instance.mycanvas.hierarchy_hide_ant_subsequent_warn_disconnected_layer
-                    .selectAll("g")
-            .data(nodefilter.getMatching(
-                instance.graphdata.nodes, myfilter_hide_ant_warn_subsequent_disconnected_rootnode), function (d) { 
-                            return d.key;
-                        }).attr("class", function(d) {
-                            return d.type;
-                        }).classed("candidate", function (d) {
-                            return d.is_candidate;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-
-	//Workitem nodes WITH SHOW antecedents and without disconnect warning
-        var myfilter_show_ant_subsequent_goal = [];
-        myfilter_show_ant_subsequent_goal.push({fn:"getAllHavingAllShowingAntecedents"
-            , typename:typenames_ar
-            , include_subtypename:null
-            , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
-            , ignore_removed:true
-            , exclude_subtypename:["warn_disconnected_rootnode"]});
-        if(typeof instance.node_h_show_ant_subsequent_goal_sel !== 'undefined')
-        {
-            instance.node_h_show_ant_subsequent_goal_sel.remove();
-        }
-        instance.node_h_show_ant_subsequent_goal_sel 
-                = instance.mycanvas.hierarchy_show_ant_subsequent_layer
-                    .selectAll("g")
-            .data(nodefilter.getMatching(
-                instance.graphdata.nodes, myfilter_show_ant_subsequent_goal), function (d) {        
-                            return d.key;
-                        }).attr("class", function(d) {
-                            return d.type;
-                        }).classed("candidate", function (d) {
-                            return d.is_candidate;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-
-        //Workitem nodes WITH SHOW antecedents and WITH disconnect warning
-        var myfilter_show_ant_warn_subsequent_disconnected_rootnode = [];
-        myfilter_show_ant_warn_subsequent_disconnected_rootnode.push({fn:"getAllHavingAllShowingAntecedents"
-            , typename:typenames_ar
-            , include_subtypename:["warn_disconnected_rootnode"]
-            , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
-            , ignore_removed:true
-            , exclude_subtypename:null});
-        if(typeof instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel !== 'undefined')
-        {
-            instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.remove();
-        }
-        instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel 
-                = instance.mycanvas.hierarchy_show_ant_subsequent_warn_disconnected_layer
-                    .selectAll("g")
-            .data(nodefilter.getMatching(
-                instance.graphdata.nodes, myfilter_show_ant_warn_subsequent_disconnected_rootnode), function (d) {        
-                            return d.key;
-                        }).attr("class", function(d) {
-                            return d.type;
-                        }).classed("candidate", function (d) {
-                            return d.is_candidate;
-                        }).on("contextmenu", function(d, index) {
-                            showContextMenuForOneWorkitem(d);
-                        });
-/*
-        instance.node_h_goal_sel.on("dblclick", function (d) {
-                d3.event.stopPropagation();
-                var currenturl = window.location.href;     // Returns full URL
-                var newurl;
-                if(currenturl.indexOf("?") > -1)
-                {
-                    newurl = currenturl + "&goalid=" + d.nativeid;
-                } else {
-                    newurl = currenturl + "?goalid=" + d.nativeid;
-                }
-                //TODO $("#loader").addClass("overlay-loader");
-                //TODO window.location.replace(newurl);
-            });
-*/        
-        instance.link_sel = instance.mycanvas.hierarchy_lines_layer.selectAll(".link")
-            .data(bigfathom_util.nodes.getLinkSubset4D3(instance.graphdata), function (d) {
-                            return d.key;
-                        });
-        instance.link_sel.classed("selected", function(d) 
-                            { 
-                                return selected_link !== null && d.key === selected_link.key;
-                            }).classed("highlight", function(d) 
-                            { 
-                                return highlight_link !== null && d.key === highlight_link.key;
-                            }).classed("special", function(d) 
-                            { 
-                                return isSpecialLink(d);
+            instance.node_h_background_sel = instance.mycanvas.hierarchy_area_layer.selectAll("g.custom").filter("g.hierarchy_area")
+                .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","hierarchy_area"), function (d) {
+                                return d.key;
                             });
-                        
+
+            instance.node_c_background_sel = instance.mycanvas.candidate_area_layer.selectAll("g.custom").filter("g.candidate_area")
+                .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","candidate_area"), function (d) {
+                                return d.key;
+                            });
+
+            var typenames_ar = ['goal','task','equjb','xrcjb'];
+
+            //Candidate tray content
+            var myfilter_cn_ar = [];
+            myfilter_cn_ar.push({fn:"getAllIncludedNoneExcluded"
+                , typename:typenames_ar
+                , include_subtypename:null
+                , assignment:bigfathom_util.env.multilevelhierarchy.unassigned_lane
+                , ignore_removed:true
+                , exclude_subtypename:null});
+            if(typeof instance.node_c_goal_sel !== 'undefined')
+            {
+                instance.node_c_goal_sel.remove();
+            }
+            instance.node_c_goal_sel 
+                    = instance.mycanvas.candidate_goals_layer
+                        .selectAll("g")
+                        .data(nodefilter.getMatching(
+                            instance.graphdata.nodes, myfilter_cn_ar), function (d) {
+                                return d.key;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+
+            var current_lane = instance.actionlayout.methods.getLaneInfo(2);
+            var content_center = current_lane.content_center;
+            var x_min = current_lane.content_center.x - 20;
+            var x_max = current_lane.content_center.x + 30;
+            var ideal_center_x = content_center.x;
+            instance.node_c_goal_sel.immediateMoveX(ideal_center_x, x_min, x_max);
+
+            //Goal nodes without antecedents and without disconnect warning
+            var myfilter_noant_ar = [];
+            myfilter_noant_ar.push({fn:"getAllWithoutAntecedents"
+                , typename:typenames_ar
+                , include_subtypename:null
+                , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
+                , ignore_removed:true
+                , exclude_subtypename:["warn_disconnected_rootnode"]});
+            if(typeof instance.node_h_goal_sel !== 'undefined')
+            {
+                instance.node_h_goal_sel.remove();
+            }
+            instance.node_h_goal_sel 
+                    = instance.mycanvas.hierarchy_goals_layer
+                        .selectAll("g")
+                .data(nodefilter.getMatching(
+                    instance.graphdata.nodes, myfilter_noant_ar), function (d) {
+                                return d.key;
+                            }).attr("class", function(d) {
+                                return d.type;
+                            }).classed("candidate", function (d) {
+                                return d.is_candidate;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+
+            //Workitem nodes without antecedents and WITH disconnect warning
+            var myfilter_noant_with_dw_ar = [];
+            myfilter_noant_with_dw_ar.push({fn:"getAllWithoutAntecedents"
+                , typename:typenames_ar
+                , include_subtypename:["warn_disconnected_rootnode"]
+                , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
+                , ignore_removed:true
+                , exclude_subtypename:null});
+            if(typeof instance.node_h_warn_disconnected_rootnode_sel !== 'undefined')
+            {
+                instance.node_h_warn_disconnected_rootnode_sel.remove();
+            }
+            instance.node_h_warn_disconnected_rootnode_sel 
+                    = instance.mycanvas.hierarchy_warn_disconnected_layer
+                        .selectAll("g")
+                .data(nodefilter.getMatching(
+                    instance.graphdata.nodes, myfilter_noant_with_dw_ar), function (d) { 
+                                return d.key;
+                            }).attr("class", function(d) {
+                                return d.type;
+                            }).classed("candidate", function (d) {
+                                return d.is_candidate;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+
+            //Workitem nodes WITH HIDE antecedents and without disconnect warning
+            var myfilter_hide_ant_subsequent_goal = [];
+            myfilter_hide_ant_subsequent_goal.push({fn:"getAllHavingAnyHiddenAntecedents"
+                , typename:typenames_ar
+                , include_subtypename:null
+                , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
+                , ignore_removed:true
+                , exclude_subtypename:["warn_disconnected_rootnode"]});
+            if(typeof instance.node_h_hide_ant_subsequent_goal_sel !== 'undefined')
+            {
+                instance.node_h_hide_ant_subsequent_goal_sel.remove();
+            }
+            instance.node_h_hide_ant_subsequent_goal_sel 
+                    = instance.mycanvas.hierarchy_hide_ant_subsequent_layer
+                        .selectAll("g")
+                .data(nodefilter.getMatching(
+                    instance.graphdata.nodes, myfilter_hide_ant_subsequent_goal), function (d) { 
+                                return d.key;
+                            }).attr("class", function(d) {
+                                return d.type;
+                            }).classed("candidate", function (d) {
+                                return d.is_candidate;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+
+            //Workitem nodes WITH HIDE antecedents and WITH disconnect warning
+            var myfilter_hide_ant_warn_subsequent_disconnected_rootnode = [];
+            myfilter_hide_ant_warn_subsequent_disconnected_rootnode.push({fn:"getAllHavingAnyHiddenAntecedents"
+                , typename:typenames_ar
+                , include_subtypename:["warn_disconnected_rootnode"]
+                , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
+                , ignore_removed:true
+                , exclude_subtypename:null});
+            if(typeof instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel !== 'undefined')
+            {
+                instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.remove();
+            }
+            instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel 
+                    = instance.mycanvas.hierarchy_hide_ant_subsequent_warn_disconnected_layer
+                        .selectAll("g")
+                .data(nodefilter.getMatching(
+                    instance.graphdata.nodes, myfilter_hide_ant_warn_subsequent_disconnected_rootnode), function (d) { 
+                                return d.key;
+                            }).attr("class", function(d) {
+                                return d.type;
+                            }).classed("candidate", function (d) {
+                                return d.is_candidate;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+
+            //Workitem nodes WITH SHOW antecedents and without disconnect warning
+            var myfilter_show_ant_subsequent_goal = [];
+            myfilter_show_ant_subsequent_goal.push({fn:"getAllHavingAllShowingAntecedents"
+                , typename:typenames_ar
+                , include_subtypename:null
+                , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
+                , ignore_removed:true
+                , exclude_subtypename:["warn_disconnected_rootnode"]});
+            if(typeof instance.node_h_show_ant_subsequent_goal_sel !== 'undefined')
+            {
+                instance.node_h_show_ant_subsequent_goal_sel.remove();
+            }
+            instance.node_h_show_ant_subsequent_goal_sel 
+                    = instance.mycanvas.hierarchy_show_ant_subsequent_layer
+                        .selectAll("g")
+                .data(nodefilter.getMatching(
+                    instance.graphdata.nodes, myfilter_show_ant_subsequent_goal), function (d) {        
+                                return d.key;
+                            }).attr("class", function(d) {
+                                return d.type;
+                            }).classed("candidate", function (d) {
+                                return d.is_candidate;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+
+            //Workitem nodes WITH SHOW antecedents and WITH disconnect warning
+            var myfilter_show_ant_warn_subsequent_disconnected_rootnode = [];
+            myfilter_show_ant_warn_subsequent_disconnected_rootnode.push({fn:"getAllHavingAllShowingAntecedents"
+                , typename:typenames_ar
+                , include_subtypename:["warn_disconnected_rootnode"]
+                , assignment:bigfathom_util.env.multilevelhierarchy.hierarchy_lane
+                , ignore_removed:true
+                , exclude_subtypename:null});
+            if(typeof instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel !== 'undefined')
+            {
+                instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.remove();
+            }
+            instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel 
+                    = instance.mycanvas.hierarchy_show_ant_subsequent_warn_disconnected_layer
+                        .selectAll("g")
+                .data(nodefilter.getMatching(
+                    instance.graphdata.nodes, myfilter_show_ant_warn_subsequent_disconnected_rootnode), function (d) {        
+                                return d.key;
+                            }).attr("class", function(d) {
+                                return d.type;
+                            }).classed("candidate", function (d) {
+                                return d.is_candidate;
+                            }).on("contextmenu", function(d, index) {
+                                showContextMenuForOneWorkitem(d);
+                            });
+    /*
+            instance.node_h_goal_sel.on("dblclick", function (d) {
+                    d3.event.stopPropagation();
+                    var currenturl = window.location.href;     // Returns full URL
+                    var newurl;
+                    if(currenturl.indexOf("?") > -1)
+                    {
+                        newurl = currenturl + "&goalid=" + d.nativeid;
+                    } else {
+                        newurl = currenturl + "?goalid=" + d.nativeid;
+                    }
+                    //TODO $("#loader").addClass("overlay-loader");
+                    //TODO window.location.replace(newurl);
+                });
+    */        
+            instance.link_sel = instance.mycanvas.hierarchy_lines_layer.selectAll(".link")
+                .data(bigfathom_util.nodes.getLinkSubset4D3(instance.graphdata), function (d) {
+                                return d.key;
+                            });
+            instance.link_sel.classed("selected", function(d) 
+                                { 
+                                    return selected_link !== null && d.key === selected_link.key;
+                                }).classed("highlight", function(d) 
+                                { 
+                                    return highlight_link !== null && d.key === highlight_link.key;
+                                }).classed("special", function(d) 
+                                { 
+                                    return isSpecialLink(d);
+                                });
+
+        }
+        catch(err)
+        {
+            console.error(err);
+        }
     };
     
     my_dataselections();
     
     var my_resize = function()
     {
-        var nodefilter = new bigfathom_util.nodes.filter(graphdata);
-        var oldcorefacts = instance.actionlayout.methods.getCoreFacts();
-        var corefacts = instance.actionlayout.methods.recomputeCoreFacts(instance.graphdata);
-        
-        var container_attribs = instance.actionlayout.methods.getAllContainerAttribs();
-        bigfathom_util.hierarchy_data.redimensionGraphData(container_attribs, instance.graphdata);
-
-        //Change the background now
-        instance.node_h_background_sel = instance.mycanvas.hierarchy_area_layer.selectAll("g.custom").filter("g.hierarchy_area")
-            .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","hierarchy_area"), function (d) {
-                            return d.key;
-                        });
-        instance.node_h_background_sel.updateForceNodeShapes(instance.shape_manager,"custom");
-
-        instance.node_c_background_sel = instance.mycanvas.candidate_area_layer.selectAll("g.custom").filter("g.candidate_area")
-            .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","candidate_area"), function (d) {
-                            return d.key;
-                        });
-        instance.node_c_background_sel.updateForceNodeShapes(instance.shape_manager,"custom");
-        
-        //Make sure the unassigned nodes stay in the unassigned node area
-        var current_lane = instance.actionlayout.methods.getLaneInfo(2);
-        var content_center = current_lane.content_center;
-        var ideal_center_x = content_center.x;
-        //instance.node_c_goal_sel.immediateMoveX(ideal_center_x, x_min, x_max);        
-        var attention_circle_target_key = instance.mycanvas.attention_circle.target_key;
-        instance.node_c_goal_sel.attr("transform", function(d) 
-                {
-                    if(isNaN(d.x) || isNaN(d.y))
-                    {
-                        throw "Hit NaN in node_c_goal_sel for " + JSON.stringify(d);
-                    }
-                    if(attention_circle_target_key === d.key)
-                    {
-                        //Move the attention circle to track with the node
-                        instance.mycanvas.attention_circle.move(ideal_center_x, d.y);    
-                    }
-                    return "translate(" + ideal_center_x + "," + d.y + ")";
-                });
-        
-        //See if we really need to redraw
-        var sublane_count1 = oldcorefacts.lanes[0].sublanes.length;
-        var sublane_count2 = corefacts.lanes[0].sublanes.length;
-        if(sublane_count1 !== sublane_count2)
+        try
         {
-            instance.redraw();
+            var nodefilter = new bigfathom_util.nodes.filter(graphdata);
+            var oldcorefacts = instance.actionlayout.methods.getCoreFacts();
+            var corefacts = instance.actionlayout.methods.recomputeCoreFacts(instance.graphdata);
+
+            var container_attribs = instance.actionlayout.methods.getAllContainerAttribs();
+            bigfathom_util.hierarchy_data.redimensionGraphData(container_attribs, instance.graphdata);
+
+            //Change the background now
+            instance.node_h_background_sel = instance.mycanvas.hierarchy_area_layer.selectAll("g.custom").filter("g.hierarchy_area")
+                .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","hierarchy_area"), function (d) {
+                                return d.key;
+                            });
+            instance.node_h_background_sel.updateForceNodeShapes(instance.shape_manager,"custom");
+
+            instance.node_c_background_sel = instance.mycanvas.candidate_area_layer.selectAll("g.custom").filter("g.candidate_area")
+                .data(nodefilter.getAllIncludedNoneExcluded(instance.graphdata.nodes,"custom","candidate_area"), function (d) {
+                                return d.key;
+                            });
+            instance.node_c_background_sel.updateForceNodeShapes(instance.shape_manager,"custom");
+
+            //Make sure the unassigned nodes stay in the unassigned node area
+            var current_lane = instance.actionlayout.methods.getLaneInfo(2);
+            var content_center = current_lane.content_center;
+            var ideal_center_x = content_center.x;
+            //instance.node_c_goal_sel.immediateMoveX(ideal_center_x, x_min, x_max);        
+            var attention_circle_target_key = instance.mycanvas.attention_circle.target_key;
+            instance.node_c_goal_sel.attr("transform", function(d) 
+                    {
+                        if(isNaN(d.x) || isNaN(d.y))
+                        {
+                            throw "Hit NaN in node_c_goal_sel for " + JSON.stringify(d);
+                        }
+                        if(attention_circle_target_key === d.key)
+                        {
+                            //Move the attention circle to track with the node
+                            instance.mycanvas.attention_circle.move(ideal_center_x, d.y);    
+                        }
+                        return "translate(" + ideal_center_x + "," + d.y + ")";
+                    });
+
+            //See if we really need to redraw
+            var sublane_count1 = oldcorefacts.lanes[0].sublanes.length;
+            var sublane_count2 = corefacts.lanes[0].sublanes.length;
+            if(sublane_count1 !== sublane_count2)
+            {
+                instance.redraw();
+            }
+        }
+        catch(err)
+        {
+            console.error(err);
         }
     };
 
@@ -1090,256 +1110,270 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
     
     var my_redraw = function()
     {
-        if(instance.auto_datarefresh.isBlockedByNamedRequester("my_redraw"))
+        try
         {
-            console.log("Already running my_redraw!");
-            return;
+            if(instance.auto_datarefresh.isBlockedByNamedRequester("my_redraw"))
+            {
+                console.log("Already running my_redraw!");
+                return;
+            }
+            instance.auto_datarefresh.markBlocked("my_redraw");
+            if(true)  //ALWAYS GET A NEW MANAGER ELSE NODE CHANGES NOT REFLECTED!!!! instance.shape_manager === null)
+            {
+                var my_data = instance.graphdata;
+
+                var my_node_handlers = {};
+                var my_link_handlers = {};
+
+                /*NODE CLICK DOES NOT WORK RELIABLY WITH DRAG IN D3!!!
+                my_node_handlers["click"] = {
+                        "handler_type" : "on",
+                        "replacement" : true,
+                        "function" : function(d) { 
+                                if (d3.event.defaultPrevented) alert("LOOK HEY " + JSON.stringify(d)); // click suppressed
+                                node_click(d);
+                            }
+                    };
+                */
+
+                my_node_handlers["drag"] = {
+                        "handler_type" : "call",
+                        "replacement" : true,
+                        "function" : my_drag
+                    };
+
+                my_node_handlers["mousedown"] = {
+                        "handler_type" : "on",
+                        "replacement" : true,
+                        "function" : function(d) { 
+                                d3.event.stopPropagation(); //Otherwise pans the entire canvas
+                                mousedown_item = d;
+                            }
+                    };
+
+                my_node_handlers["mouseover"] = {
+                        "handler_type" : "on",
+                        "replacement" : true,
+                        "function" : function(d) { 
+                                //d3.event.stopPropagation();
+                                node_over(d);
+                            }
+                    };
+
+                my_node_handlers["mouseout"] = {
+                        "handler_type" : "on",
+                        "replacement" : true,
+                        "function" : function(d) { 
+                                //d3.event.stopPropagation();
+                                node_out(d);
+                            }
+                    };
+
+                my_link_handlers["mouseover"] = {
+                        "handler_type" : "on",
+                        "replacement" : true,
+                        "function" : link_over
+                    };
+
+                my_link_handlers["click"] = {
+                        "handler_type" : "on",
+                        "replacement" : true,
+                        "function" : link_click 
+                    };
+
+                var my_overrides = {};
+                my_overrides["styles"] = {};
+                my_overrides["attribs"] = {};
+
+                //Simply map this data name to a known existing name
+                my_overrides["shape_name_alias"] = {};
+
+                //Attributes that only apply to labels    
+                my_overrides["label_attribs"] = {};
+                my_overrides["label_styles"] = {};
+
+                var my_handlers = {'nodes': my_node_handlers, 'links': my_link_handlers};
+                instance.shape_manager = bigfathom_util.shapes.getManager(my_data, my_handlers, my_overrides);
+            }
+
+            my_dataselections();
+
+            instance.node_h_background_sel.enter().joinForceNodeShapes(instance.shape_manager,"custom");
+            instance.node_h_background_sel.exit().remove();
+
+            instance.node_c_background_sel.enter().joinForceNodeShapes(instance.shape_manager,"custom");
+            instance.node_c_background_sel.exit().remove();
+
+            instance.node_c_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_c_goal_sel.exit().remove();
+            instance.node_c_goal_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            //Goal nodes without antecedents and without disconnect warning
+            instance.node_h_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_h_goal_sel.exit().remove();
+            instance.node_h_goal_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).classed("editable", function(d) 
+                    { 
+                        return isEditableNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            //Goal nodes without antecedents and WITH disconnect warning
+            instance.node_h_warn_disconnected_rootnode_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_h_warn_disconnected_rootnode_sel.exit().remove();
+            instance.node_h_warn_disconnected_rootnode_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).classed("editable", function(d) 
+                    { 
+                        return isEditableNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            //Goal nodes WITH HIDDEN antecedents and without disconnect warning
+            instance.node_h_hide_ant_subsequent_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_h_hide_ant_subsequent_goal_sel.exit().remove();
+            instance.node_h_hide_ant_subsequent_goal_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).classed("editable", function(d) 
+                    { 
+                        return isEditableNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            //Goal nodes WITH HIDDEN antecedents and WITH disconnect warning
+            instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.exit().remove();
+            instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).classed("editable", function(d) 
+                    { 
+                        return isEditableNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            //Goal nodes WITH SHOWN antecedents and without disconnect warning
+            instance.node_h_show_ant_subsequent_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_h_show_ant_subsequent_goal_sel.exit().remove();
+            instance.node_h_show_ant_subsequent_goal_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).classed("editable", function(d) 
+                    { 
+                        return isEditableNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            //Goal nodes WITH SHOWN antecedents and WITH disconnect warning
+            instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
+            instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.exit().remove();
+            instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.classed("special", function(d) 
+                    { 
+                        return isSpecialNode(d);
+                    }).classed("editable", function(d) 
+                    { 
+                        return isEditableNode(d);
+                    }).on("contextmenu", function(d, index) {
+                        showContextMenuForOneWorkitem(d);
+                    });
+
+            instance.link_sel.enter().joinForceLinkShapes(instance.shape_manager);
+            instance.link_sel.exit().remove();
+            instance.link_sel.classed("selected", function(d) 
+                    { 
+                        return selected_link !== null && d.key === selected_link.key;
+                    }).classed("highlight", function(d) 
+                    { 
+                        return highlight_link !== null && d.key === highlight_link.key;
+                    }).classed("special", function(d) 
+                    { 
+                        return isSpecialLink(d);
+                    });
+
+            instance.auto_datarefresh.markAllowed("my_redraw");
+            instance.force
+                    .nodes(instance.graphdata.nodes)
+                    .links(instance.graphdata.linksbundle.link_by_offset)
+                    .start();
         }
-        instance.auto_datarefresh.markBlocked("my_redraw");
-        if(true)  //ALWAYS GET A NEW MANAGER ELSE NODE CHANGES NOT REFLECTED!!!! instance.shape_manager === null)
+        catch(err)
         {
-            var my_data = instance.graphdata;
-                
-            var my_node_handlers = {};
-            var my_link_handlers = {};
-
-            /*NODE CLICK DOES NOT WORK RELIABLY WITH DRAG IN D3!!!
-            my_node_handlers["click"] = {
-                    "handler_type" : "on",
-                    "replacement" : true,
-                    "function" : function(d) { 
-                            if (d3.event.defaultPrevented) alert("LOOK HEY " + JSON.stringify(d)); // click suppressed
-                            node_click(d);
-                        }
-                };
-            */
-            
-            my_node_handlers["drag"] = {
-                    "handler_type" : "call",
-                    "replacement" : true,
-                    "function" : my_drag
-                };
-
-            my_node_handlers["mousedown"] = {
-                    "handler_type" : "on",
-                    "replacement" : true,
-                    "function" : function(d) { 
-                            d3.event.stopPropagation(); //Otherwise pans the entire canvas
-                            mousedown_item = d;
-                        }
-                };
-
-            my_node_handlers["mouseover"] = {
-                    "handler_type" : "on",
-                    "replacement" : true,
-                    "function" : function(d) { 
-                            //d3.event.stopPropagation();
-                            node_over(d);
-                        }
-                };
-                
-            my_node_handlers["mouseout"] = {
-                    "handler_type" : "on",
-                    "replacement" : true,
-                    "function" : function(d) { 
-                            //d3.event.stopPropagation();
-                            node_out(d);
-                        }
-                };
-
-            my_link_handlers["mouseover"] = {
-                    "handler_type" : "on",
-                    "replacement" : true,
-                    "function" : link_over
-                };
-
-            my_link_handlers["click"] = {
-                    "handler_type" : "on",
-                    "replacement" : true,
-                    "function" : link_click 
-                };
-
-            var my_overrides = {};
-            my_overrides["styles"] = {};
-            my_overrides["attribs"] = {};
-
-            //Simply map this data name to a known existing name
-            my_overrides["shape_name_alias"] = {};
-
-            //Attributes that only apply to labels    
-            my_overrides["label_attribs"] = {};
-            my_overrides["label_styles"] = {};
-
-            var my_handlers = {'nodes': my_node_handlers, 'links': my_link_handlers};
-            instance.shape_manager = bigfathom_util.shapes.getManager(my_data, my_handlers, my_overrides);
+            console.error(err);
         }
-
-        my_dataselections();
-
-        instance.node_h_background_sel.enter().joinForceNodeShapes(instance.shape_manager,"custom");
-        instance.node_h_background_sel.exit().remove();
-
-        instance.node_c_background_sel.enter().joinForceNodeShapes(instance.shape_manager,"custom");
-        instance.node_c_background_sel.exit().remove();
-        
-        instance.node_c_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_c_goal_sel.exit().remove();
-        instance.node_c_goal_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-
-        //Goal nodes without antecedents and without disconnect warning
-        instance.node_h_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_h_goal_sel.exit().remove();
-        instance.node_h_goal_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).classed("editable", function(d) 
-                { 
-                    return isEditableNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-
-        //Goal nodes without antecedents and WITH disconnect warning
-        instance.node_h_warn_disconnected_rootnode_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_h_warn_disconnected_rootnode_sel.exit().remove();
-        instance.node_h_warn_disconnected_rootnode_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).classed("editable", function(d) 
-                { 
-                    return isEditableNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-
-        //Goal nodes WITH HIDDEN antecedents and without disconnect warning
-        instance.node_h_hide_ant_subsequent_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_h_hide_ant_subsequent_goal_sel.exit().remove();
-        instance.node_h_hide_ant_subsequent_goal_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).classed("editable", function(d) 
-                { 
-                    return isEditableNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-        
-        //Goal nodes WITH HIDDEN antecedents and WITH disconnect warning
-        instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.exit().remove();
-        instance.node_h_hide_ant_warn_subsequent_disconnected_rootnode_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).classed("editable", function(d) 
-                { 
-                    return isEditableNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-
-        //Goal nodes WITH SHOWN antecedents and without disconnect warning
-        instance.node_h_show_ant_subsequent_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_h_show_ant_subsequent_goal_sel.exit().remove();
-        instance.node_h_show_ant_subsequent_goal_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).classed("editable", function(d) 
-                { 
-                    return isEditableNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-        
-        //Goal nodes WITH SHOWN antecedents and WITH disconnect warning
-        instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
-        instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.exit().remove();
-        instance.node_h_show_ant_warn_subsequent_disconnected_rootnode_sel.classed("special", function(d) 
-                { 
-                    return isSpecialNode(d);
-                }).classed("editable", function(d) 
-                { 
-                    return isEditableNode(d);
-                }).on("contextmenu", function(d, index) {
-                    showContextMenuForOneWorkitem(d);
-                });
-
-        instance.link_sel.enter().joinForceLinkShapes(instance.shape_manager);
-        instance.link_sel.exit().remove();
-        instance.link_sel.classed("selected", function(d) 
-                { 
-                    return selected_link !== null && d.key === selected_link.key;
-                }).classed("highlight", function(d) 
-                { 
-                    return highlight_link !== null && d.key === highlight_link.key;
-                }).classed("special", function(d) 
-                { 
-                    return isSpecialLink(d);
-                });
-
-        instance.auto_datarefresh.markAllowed("my_redraw");
-        instance.force
-                .nodes(instance.graphdata.nodes)
-                .links(instance.graphdata.linksbundle.link_by_offset)
-                .start();
     };
 
     var userCanEditNode = function(rootprojectnode, my_userinfo_map, target)
     {
-        console.log("LOOK my_userinfo_map=" + JSON.stringify(my_userinfo_map));
-        console.log("LOOK target=" + JSON.stringify(target));
-        var okay = false;
-        if(rootprojectnode.key === target.key)
+        try
         {
-            //All project members can map to the project root!
-            okay = true;
-        } else
-        if(my_userinfo_map.systemroles.summary.is_systemadmin)
-        {
-            //Can do whatever they want in the system
-            okay = true;
-        } else {
-            var mypersonid = my_userinfo_map.personid;
-            var isOwner = function(target)
+            console.log("LOOK my_userinfo_map=" + JSON.stringify(my_userinfo_map));
+            console.log("LOOK target=" + JSON.stringify(target));
+            var okay = false;
+            if(rootprojectnode.key === target.key)
             {
-                //Check ownership
-                okay = false;
-                if(mypersonid === target.maps.owner_personid)
+                //All project members can map to the project root!
+                okay = true;
+            } else
+            if(my_userinfo_map.systemroles.summary.is_systemadmin)
+            {
+                //Can do whatever they want in the system
+                okay = true;
+            } else {
+                var mypersonid = my_userinfo_map.personid;
+                var isOwner = function(target)
                 {
-                    okay = true;
-                } else {
-                    //Check delegates
-                    if(target.hasOwnProperty("maps") && target.maps.hasOwnProperty("delegate_owner"))
+                    //Check ownership
+                    okay = false;
+                    if(mypersonid === target.maps.owner_personid)
                     {
-                        var maxidx = target.maps.delegate_owner.length;
-                        for (var i = 0; i < maxidx; i++) {
-                            if(mypersonid == target.maps.delegate_owner[i]) //Must use == NOT ===!!!
-                            {
-                                okay = true;
-                                break;
+                        okay = true;
+                    } else {
+                        //Check delegates
+                        if(target.hasOwnProperty("maps") && target.maps.hasOwnProperty("delegate_owner"))
+                        {
+                            var maxidx = target.maps.delegate_owner.length;
+                            for (var i = 0; i < maxidx; i++) {
+                                if(mypersonid == target.maps.delegate_owner[i]) //Must use == NOT ===!!!
+                                {
+                                    okay = true;
+                                    break;
+                                }
                             }
                         }
                     }
+                    return okay;
+                };
+
+                if(isOwner(rootprojectnode))
+                {
+                    //Owns the project!
+                    okay = true;
+                } else {
+                    //Owns the target!
+                    okay = isOwner(target);
                 }
-                return okay;
-            };
-
-            if(isOwner(rootprojectnode))
-            {
-                //Owns the project!
-                okay = true;
-            } else {
-                //Owns the target!
-                okay = isOwner(target);
             }
-        }
 
-        return okay;
+            return okay;
+        }
+        catch(err)
+        {
+            console.error(err);
+        }
     };
 
     var my_drag = d3.behavior.drag()
@@ -1711,65 +1745,72 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
 
     var getCleanLinksForSave = function (raw_wid_links, action_override)
     {
-        console.log("STARTING sendpackage raw_link_by_offset=" + JSON.stringify(raw_wid_links));
-        if (typeof action_override === "undefined")
+        try
         {
-            action_override = null;   
-        }
-        var raw_nodes = instance.graphdata.nodes;
-        //var raw_link_by_offset = instance.graphdata.linksbundle.link_by_offset;
-        var raw_sourcenode;
-        var raw_targetnode;
-        var clean_links = [];
-        for(var i=0; i<raw_wid_links.length; i++)
-        {
-            var onelink = raw_wid_links[i];
+            console.log("STARTING sendpackage raw_link_by_offset=" + JSON.stringify(raw_wid_links));
+            if (typeof action_override === "undefined")
+            {
+                action_override = null;   
+            }
+            var raw_nodes = instance.graphdata.nodes;
+            //var raw_link_by_offset = instance.graphdata.linksbundle.link_by_offset;
+            var raw_sourcenode;
+            var raw_targetnode;
+            var clean_links = [];
+            for(var i=0; i<raw_wid_links.length; i++)
+            {
+                var onelink = raw_wid_links[i];
 
-            if(onelink.type === "link_by_wid")
-            {
-                var srcwid = onelink['srcwid'];
-                var trgwid = onelink['trgwid'];
-                var srcno = instance.graphdata.fastlookup_maps.nodes.id2offset[srcwid];
-                var trgno = instance.graphdata.fastlookup_maps.nodes.id2offset[trgwid];
-                raw_sourcenode = raw_nodes[srcno];
-                raw_targetnode = raw_nodes[trgno];
-            } else            
-            if(onelink.type === "link_by_key")
-            {
-                var srcnk = onelink['srcnk'];
-                var trgnk = onelink['trgnk'];
-                var srcno = instance.graphdata.fastlookup_maps.nodes.key2offset[srcnk];
-                var trgno = instance.graphdata.fastlookup_maps.nodes.key2offset[trgnk];
-                raw_sourcenode = raw_nodes[srcno];
-                raw_targetnode = raw_nodes[trgno];
-            } else {
-                raw_sourcenode = raw_nodes[onelink.srcno];
-                raw_targetnode = raw_nodes[onelink.trgno];
-            }
-            var cleanlink = {
-                                'key': onelink.key,
-                                'srcnk': raw_sourcenode.key,
-                                'trgnk': raw_targetnode.key,
-                                'srcnid': raw_sourcenode.nativeid,
-                                'trgnid': raw_targetnode.nativeid,
-                                'src_is_candidate': raw_sourcenode.is_candidate,
-                                'trg_is_candidate': raw_targetnode.is_candidate
-                            };
-            if(action_override !== null)
-            {
-                cleanlink['action'] = action_override;
-            } else {
-                if(onelink.is_new)
+                if(onelink.type === "link_by_wid")
                 {
-                    cleanlink['action'] = 'add';
+                    var srcwid = onelink['srcwid'];
+                    var trgwid = onelink['trgwid'];
+                    var srcno = instance.graphdata.fastlookup_maps.nodes.id2offset[srcwid];
+                    var trgno = instance.graphdata.fastlookup_maps.nodes.id2offset[trgwid];
+                    raw_sourcenode = raw_nodes[srcno];
+                    raw_targetnode = raw_nodes[trgno];
+                } else            
+                if(onelink.type === "link_by_key")
+                {
+                    var srcnk = onelink['srcnk'];
+                    var trgnk = onelink['trgnk'];
+                    var srcno = instance.graphdata.fastlookup_maps.nodes.key2offset[srcnk];
+                    var trgno = instance.graphdata.fastlookup_maps.nodes.key2offset[trgnk];
+                    raw_sourcenode = raw_nodes[srcno];
+                    raw_targetnode = raw_nodes[trgno];
                 } else {
-                    cleanlink['action'] = 'none';
+                    raw_sourcenode = raw_nodes[onelink.srcno];
+                    raw_targetnode = raw_nodes[onelink.trgno];
                 }
-            }
-            clean_links.push(cleanlink);
-        }    
-        console.log("DONE sendpackage clean_links=" + JSON.stringify(clean_links));
-        return clean_links;
+                var cleanlink = {
+                                    'key': onelink.key,
+                                    'srcnk': raw_sourcenode.key,
+                                    'trgnk': raw_targetnode.key,
+                                    'srcnid': raw_sourcenode.nativeid,
+                                    'trgnid': raw_targetnode.nativeid,
+                                    'src_is_candidate': raw_sourcenode.is_candidate,
+                                    'trg_is_candidate': raw_targetnode.is_candidate
+                                };
+                if(action_override !== null)
+                {
+                    cleanlink['action'] = action_override;
+                } else {
+                    if(onelink.is_new)
+                    {
+                        cleanlink['action'] = 'add';
+                    } else {
+                        cleanlink['action'] = 'none';
+                    }
+                }
+                clean_links.push(cleanlink);
+            }    
+            console.log("DONE sendpackage clean_links=" + JSON.stringify(clean_links));
+            return clean_links;
+        }
+        catch(err)
+        {
+            console.error(err);
+        }
     };
 
     instance.saveOneNewLinkBundle = function (onelinkbundle, change_comment)
@@ -1864,79 +1905,93 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
      */
     instance.saveCurrentChanges = function (node_changes, link_changes, changeid, change_comment)
     {
-        instance.auto_datarefresh.markBlocked("saveCurrentChanges");
-        var projectid = instance.graphdata.projectid;
-        if (typeof node_changes === 'undefined')
+        try
         {
-            node_changes = [];   
-        }
-        if (typeof link_changes === 'undefined')
-        {
-            link_changes = [];   
-        }
-        if (typeof changeid === 'undefined')
-        {
-            changeid = "p#" + projectid;   
-        }
-        if (typeof change_comment === 'undefined')
-        {
-            change_comment = "p#" + projectid + " " + node_changes.length + " node changes and " + link_changes.length + " link changes";   
-        }
-       
-        var dataname = 'hierarchy_changes';
-        var send_fullurl = bigfathom_util.data.getSendDataUrl(dataname);
-         
-        var sendpackage = {
-                "dataname": dataname,
-                "databundle":{
-                        "projectid": projectid,
-                        "link_changes": link_changes,
-                        "node_changes": node_changes,
-                        "change_comment": change_comment
-                    }
-                };
-        //console.log("LOOK sendpackage=" + JSON.stringify(sendpackage));
-        //alert("LOOK called saveCurrentChanges");
-        var callbackActionFunction = function(callbackid, responseBundle)
-        {
-            //Now, update the display to show nodes as they are now saved
-            var needs_redraw = false;
-            if(responseBundle.responseDetail.hasOwnProperty('map_brainstormid2wid'))
+            instance.auto_datarefresh.markBlocked("saveCurrentChanges");
+            var projectid = instance.graphdata.projectid;
+            if (typeof node_changes === 'undefined')
             {
-                var map_brainstormid2wid = responseBundle.responseDetail.map_brainstormid2wid;
-                if(map_brainstormid2wid.length > 0)
-                {
-                    console.log("LOOK saveCurrentChanges map_brainstormid2wid=" + JSON.stringify(map_brainstormid2wid));
-                    instance.actionlayout.methods.updateWIDMastersForBrainstormConversions(graphdata, map_brainstormid2wid);
-                    instance.actionlayout.methods.refreshAllLookupMaps(instance.graphdata);
-                    needs_redraw = true;
-                }
+                node_changes = [];   
             }
-            
-            if(node_changes.length > 0)
+            if (typeof link_changes === 'undefined')
             {
-                for(var i=0; i<node_changes.length; i++)
+                link_changes = [];   
+            }
+            if (typeof changeid === 'undefined')
+            {
+                changeid = "p#" + projectid;   
+            }
+            if (typeof change_comment === 'undefined')
+            {
+                change_comment = "p#" + projectid + " " + node_changes.length + " node changes and " + link_changes.length + " link changes";   
+            }
+
+            var dataname = 'hierarchy_changes';
+            var send_fullurl = bigfathom_util.data.getSendDataUrl(dataname);
+
+            var sendpackage = {
+                    "dataname": dataname,
+                    "databundle":{
+                            "projectid": projectid,
+                            "link_changes": link_changes,
+                            "node_changes": node_changes,
+                            "change_comment": change_comment
+                        }
+                    };
+            //console.log("LOOK sendpackage=" + JSON.stringify(sendpackage));
+            //alert("LOOK called saveCurrentChanges");
+            var callbackActionFunction = function(callbackid, responseBundle)
+            {
+                try
                 {
-                    var nodedetail = node_changes[i];
-                    var actionname = nodedetail['action'];
-                    if(actionname === 'change')
+                    //Now, update the display to show nodes as they are now saved
+                    var needs_redraw = false;
+                    if(responseBundle.responseDetail.hasOwnProperty('map_brainstormid2wid'))
                     {
-                        var onenodeoffset = bigfathom_util.hierarchy_data.getOneNodeOffsetByNativeID(instance.graphdata.nodes, nodedetail.workitemid);
-                        instance.graphdata.nodes[onenodeoffset].workitem_nm = "*" + nodedetail.workitem_nm;
+                        var map_brainstormid2wid = responseBundle.responseDetail.map_brainstormid2wid;
+                        if(map_brainstormid2wid.length > 0)
+                        {
+                            console.log("LOOK saveCurrentChanges map_brainstormid2wid=" + JSON.stringify(map_brainstormid2wid));
+                            instance.actionlayout.methods.updateWIDMastersForBrainstormConversions(graphdata, map_brainstormid2wid);
+                            instance.actionlayout.methods.refreshAllLookupMaps(instance.graphdata);
+                            needs_redraw = true;
+                        }
+                    }
+
+                    if(node_changes.length > 0)
+                    {
+                        for(var i=0; i<node_changes.length; i++)
+                        {
+                            var nodedetail = node_changes[i];
+                            var actionname = nodedetail['action'];
+                            if(actionname === 'change')
+                            {
+                                var onenodeoffset = bigfathom_util.hierarchy_data.getOneNodeOffsetByNativeID(instance.graphdata.nodes, nodedetail.workitemid);
+                                instance.graphdata.nodes[onenodeoffset].workitem_nm = "*" + nodedetail.workitem_nm;
+                            }
+                        }
+                        needs_redraw = true;
+                    }
+
+                    instance.auto_datarefresh.markAllowed("saveCurrentChanges");
+                    if(needs_redraw)
+                    {
+                        instance.updateGraphDataTopologyValues(needs_redraw);
                     }
                 }
-                needs_redraw = true;
-            }
-            
-            instance.auto_datarefresh.markAllowed("saveCurrentChanges");
-            if(needs_redraw)
-            {
-                instance.updateGraphDataTopologyValues(needs_redraw);
-            }
-        };
-        
-        //uiblocker.show("tr#" + workitemid);
-        bigfathom_util.data.writeData2Server(send_fullurl, sendpackage, callbackActionFunction, changeid);
+                catch(err)
+                {
+                    console.error("FAILED callbackActionFunction because " + err);
+                }
+            };
+
+            //uiblocker.show("tr#" + workitemid);
+            bigfathom_util.data.writeData2Server(send_fullurl, sendpackage, callbackActionFunction, changeid);
+        }
+        catch(err)
+        {
+            console.error("FAILED saveCurrentChanges because " + err);
+        }
     };
     
     instance.createNewWorkitem = function ()
@@ -1963,116 +2018,123 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
     
     instance.popupWorkitem = function (nodeinfo, actionname)
     {
-        var nativeid = nodeinfo.nativeid;
-        //console.log("LOOK nodeinfo=" + JSON.stringify(nodeinfo));
-        $("#dlg_loading_container").css("display","block");
-
-        var callbackid = actionname + "_workitem#" + nativeid;
-        var grab_fullurl = bigfathom_util.data.getGrabDataUrl('one_workitem_with_lookupinfo',{"nativeid": nativeid});
-        var callbackActionFunction = function(callbackid, responseBundle)
+        try
         {
-            if(responseBundle == null || responseBundle.data == null)
+            var nativeid = nodeinfo.nativeid;
+            //console.log("LOOK nodeinfo=" + JSON.stringify(nodeinfo));
+            $("#dlg_loading_container").css("display","block");
+
+            var callbackid = actionname + "_workitem#" + nativeid;
+            var grab_fullurl = bigfathom_util.data.getGrabDataUrl('one_workitem_with_lookupinfo',{"nativeid": nativeid});
+            var callbackActionFunction = function(callbackid, responseBundle)
             {
-                console.log("ERROR getting result for nativeid=" + nativeid + "; we got response=" + JSON.stringify(responseBundle));
-                alert("Unable to complete request for workitem#" + nativeid + "!  You may need to refresh your browser.");
-            } else {
-                var workitemdetail = responseBundle.data.data;
-                
-//console.log("LOOK workitemdetail=" + JSON.stringify(workitemdetail));
-//alert("LOOK now got data for workitem#" + nativeid);
-                var maps = workitemdetail.maps;
-                var lookups = workitemdetail.lookups;
-                var peopledetail = lookups.people;
-                var ownerdetail = peopledetail[workitemdetail.owner_personid];
-                var delegate_ownerpersonids = maps.delegate_owner;
-                var count_delegate_owners = delegate_ownerpersonids.length;
-                var topinfomarkup = "<fieldset>";
-                topinfomarkup += "<label for='ownerinfo'>Owner</label> ";
-                topinfomarkup += "<span id='ownerinfo' title='id#" + workitemdetail.owner_personid + " and " + count_delegate_owners + " delegate owners'>" + ownerdetail.first_nm + " " + ownerdetail.last_nm + "</span><br>";
-                if(count_delegate_owners > 0)
+                if(responseBundle == null || responseBundle.data == null)
                 {
-                    var do_markup = "";
-                    for (var i = 0; i < count_delegate_owners; i++)
-                    {
-                        var do_personid = delegate_ownerpersonids[i];
-                        if(i > 0)
-                        {
-                            do_markup += ", ";   
-                        }
-                        if(!peopledetail.hasOwnProperty(do_personid))
-                        {
-                            console.log("ERROR MISSING do_personid=" + do_personid + " IN peopledetail=" + JSON.stringify(peopledetail));  
-                            do_markup += "<span title='id#" + do_personid + "'>USER#" + do_personid + "</span><br>";
-                        } else {
-                            var do_detail = peopledetail[do_personid];
-                            do_markup += "<span title='id#" + do_personid + "'>" + do_detail.first_nm + " " + do_detail.last_nm + "</span><br>";
-                        }
-                    }
-                    topinfomarkup += "<label for='do_info'>Delegate Owner(s)</label> ";
-                    topinfomarkup += "<span id='do_info'>" + do_markup + "</span><br>";
-                }
-                topinfomarkup += "<label for='uniqueid'>ID</label> ";
-                topinfomarkup += "<span id='uniqueid' title='the unique ID of this existing record'>" + workitemdetail.nativeid + "</span><br>";
-                topinfomarkup += "</fieldset>";
+                    console.log("ERROR getting result for nativeid=" + nativeid + "; we got response=" + JSON.stringify(responseBundle));
+                    alert("Unable to complete request for workitem#" + nativeid + "!  You may need to refresh your browser.");
+                } else {
+                    var workitemdetail = responseBundle.data.data;
 
-                var infoelem = $("#dlg_"+ actionname +"_workitem_topinfo");
-                infoelem.empty();
-                infoelem.append(topinfomarkup);
-                if(actionname === 'edit')
-                {
-                    var status_cd_dropdown = $("#edit_workitem_status_cd");
-                    status_cd_dropdown.find('option').remove().end();
-                    for(var key in graphdata.status_cd_lookup)
+    //console.log("LOOK workitemdetail=" + JSON.stringify(workitemdetail));
+    //alert("LOOK now got data for workitem#" + nativeid);
+                    var maps = workitemdetail.maps;
+                    var lookups = workitemdetail.lookups;
+                    var peopledetail = lookups.people;
+                    var ownerdetail = peopledetail[workitemdetail.owner_personid];
+                    var delegate_ownerpersonids = maps.delegate_owner;
+                    var count_delegate_owners = delegate_ownerpersonids.length;
+                    var topinfomarkup = "<fieldset>";
+                    topinfomarkup += "<label for='ownerinfo'>Owner</label> ";
+                    topinfomarkup += "<span id='ownerinfo' title='id#" + workitemdetail.owner_personid + " and " + count_delegate_owners + " delegate owners'>" + ownerdetail.first_nm + " " + ownerdetail.last_nm + "</span><br>";
+                    if(count_delegate_owners > 0)
                     {
-                        if(graphdata.status_cd_lookup.hasOwnProperty(key))
+                        var do_markup = "";
+                        for (var i = 0; i < count_delegate_owners; i++)
                         {
-                            var sdetail =  graphdata.status_cd_lookup[key];
-                            var thelabel = key + " - " + sdetail.title_tx;
-                            if(sdetail.terminal_yn !== '0')
+                            var do_personid = delegate_ownerpersonids[i];
+                            if(i > 0)
                             {
-                                thelabel += ' (terminal)';
+                                do_markup += ", ";   
                             }
-                            status_cd_dropdown.append($("<option />").val(key).text(thelabel));
-//console.log("LOOK sdetail=" + JSON.stringify(sdetail));                            
+                            if(!peopledetail.hasOwnProperty(do_personid))
+                            {
+                                console.log("ERROR MISSING do_personid=" + do_personid + " IN peopledetail=" + JSON.stringify(peopledetail));  
+                                do_markup += "<span title='id#" + do_personid + "'>USER#" + do_personid + "</span><br>";
+                            } else {
+                                var do_detail = peopledetail[do_personid];
+                                do_markup += "<span title='id#" + do_personid + "'>" + do_detail.first_nm + " " + do_detail.last_nm + "</span><br>";
+                            }
                         }
+                        topinfomarkup += "<label for='do_info'>Delegate Owner(s)</label> ";
+                        topinfomarkup += "<span id='do_info'>" + do_markup + "</span><br>";
                     }
-//alert("LOOK sdetail now!");
-                    $("#edit_nativeid").val(workitemdetail.nativeid);
-                    $("#edit_workitem_nm").val(workitemdetail.workitem_nm);
-                    $("#edit_purpose_tx").val(workitemdetail.purpose_tx);
-                    $("#edit_workitem_basetype").val(workitemdetail.workitem_basetype);
-                    $("#edit_workitem_status_cd").val(workitemdetail.status_cd);
-                    $("#edit_branch_effort_hours_est").val(workitemdetail.branch_effort_hours_est);
-                    $("#edit_remaining_effort_hours").val(workitemdetail.remaining_effort_hours);
-                    $("#dlg_edit_workitem_container").css("display","block");
-                } else if(actionname === 'view') {
-                    var status_cd_dropdown = $("#view_workitem_status_cd");
-                    for(var key in graphdata.status_cd_lookup)
+                    topinfomarkup += "<label for='uniqueid'>ID</label> ";
+                    topinfomarkup += "<span id='uniqueid' title='the unique ID of this existing record'>" + workitemdetail.nativeid + "</span><br>";
+                    topinfomarkup += "</fieldset>";
+
+                    var infoelem = $("#dlg_"+ actionname +"_workitem_topinfo");
+                    infoelem.empty();
+                    infoelem.append(topinfomarkup);
+                    if(actionname === 'edit')
                     {
-                        if(graphdata.status_cd_lookup.hasOwnProperty(key))
+                        var status_cd_dropdown = $("#edit_workitem_status_cd");
+                        status_cd_dropdown.find('option').remove().end();
+                        for(var key in graphdata.status_cd_lookup)
                         {
-                            var sdetail =  graphdata.status_cd_lookup[key];
-                            var thelabel = key + " - " + sdetail.title_tx;
-                            status_cd_dropdown.append($("<option />").val(key).text(thelabel));
+                            if(graphdata.status_cd_lookup.hasOwnProperty(key))
+                            {
+                                var sdetail =  graphdata.status_cd_lookup[key];
+                                var thelabel = key + " - " + sdetail.title_tx;
+                                if(sdetail.terminal_yn !== '0')
+                                {
+                                    thelabel += ' (terminal)';
+                                }
+                                status_cd_dropdown.append($("<option />").val(key).text(thelabel));
+    //console.log("LOOK sdetail=" + JSON.stringify(sdetail));                            
+                            }
                         }
+    //alert("LOOK sdetail now!");
+                        $("#edit_nativeid").val(workitemdetail.nativeid);
+                        $("#edit_workitem_nm").val(workitemdetail.workitem_nm);
+                        $("#edit_purpose_tx").val(workitemdetail.purpose_tx);
+                        $("#edit_workitem_basetype").val(workitemdetail.workitem_basetype);
+                        $("#edit_workitem_status_cd").val(workitemdetail.status_cd);
+                        $("#edit_branch_effort_hours_est").val(workitemdetail.branch_effort_hours_est);
+                        $("#edit_remaining_effort_hours").val(workitemdetail.remaining_effort_hours);
+                        $("#dlg_edit_workitem_container").css("display","block");
+                    } else if(actionname === 'view') {
+                        var status_cd_dropdown = $("#view_workitem_status_cd");
+                        for(var key in graphdata.status_cd_lookup)
+                        {
+                            if(graphdata.status_cd_lookup.hasOwnProperty(key))
+                            {
+                                var sdetail =  graphdata.status_cd_lookup[key];
+                                var thelabel = key + " - " + sdetail.title_tx;
+                                status_cd_dropdown.append($("<option />").val(key).text(thelabel));
+                            }
+                        }
+                        $("#view_nativeid").val(workitemdetail.nativeid);
+                        $("#view_workitem_nm").val(workitemdetail.workitem_nm);
+                        $("#view_purpose_tx").val(workitemdetail.purpose_tx);
+                        $("#view_workitem_basetype").val(workitemdetail.workitem_basetype);
+                        $("#view_workitem_status_cd").val(workitemdetail.status_cd);
+                        $("#view_branch_effort_hours_est").val(workitemdetail.branch_effort_hours_est);
+                        $("#view_remaining_effort_hours").val(workitemdetail.remaining_effort_hours);
+                        $("#dlg_view_workitem_container").css("display","block");
                     }
-                    $("#view_nativeid").val(workitemdetail.nativeid);
-                    $("#view_workitem_nm").val(workitemdetail.workitem_nm);
-                    $("#view_purpose_tx").val(workitemdetail.purpose_tx);
-                    $("#view_workitem_basetype").val(workitemdetail.workitem_basetype);
-                    $("#view_workitem_status_cd").val(workitemdetail.status_cd);
-                    $("#view_branch_effort_hours_est").val(workitemdetail.branch_effort_hours_est);
-                    $("#view_remaining_effort_hours").val(workitemdetail.remaining_effort_hours);
-                    $("#dlg_view_workitem_container").css("display","block");
                 }
+                $("#dlg_loading_container").css("display","none");
+            };
+            if(previous_project_edit_key !== null)
+            {
+                callbackid = callbackid + "_" + previous_project_edit_key;
             }
-            $("#dlg_loading_container").css("display","none");
-        };
-        if(previous_project_edit_key !== null)
-        {
-            callbackid = callbackid + "_" + previous_project_edit_key;
+            bigfathom_util.data.getDataFromServer(grab_fullurl, {}, callbackActionFunction, callbackid);
         }
-        bigfathom_util.data.getDataFromServer(grab_fullurl, {}, callbackActionFunction, callbackid);
+        catch(err)
+        {
+            console.error(err);
+        }
         
 ////////////////////////////////////        
         
@@ -2085,117 +2147,145 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
 
     function keyup() 
     {
-        if (d3.event.ctrlKey)
+        try
         {
-            console.log("LOOK RELEASED CTRL KEY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            if (d3.event.ctrlKey)
+            {
+                console.log("LOOK RELEASED CTRL KEY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+            if (d3.event.shiftKey)
+            {
+                //SHIFT to prevent dragbehavior
+                instance.just_drag_nodes_activated_ts = 0;
+                instance.deactivate_drag_line();
+                //console.log("LOOK UP SHIFT KEY just_drag_nodes=" + instance.just_drag_nodes_activated_ts);
+            }
         }
-        if (d3.event.shiftKey)
+        catch(err)
         {
-            //SHIFT to prevent dragbehavior
-            instance.just_drag_nodes_activated_ts = 0;
-            instance.deactivate_drag_line();
-            //console.log("LOOK UP SHIFT KEY just_drag_nodes=" + instance.just_drag_nodes_activated_ts);
+            console.error(err);
         }
     };
     
     function keydown() 
     {
-        if (d3.event.ctrlKey)
+        try
         {
-            console.log("LOOK PRESSED CTRL KEY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-        }
-        if (d3.event.shiftKey)
-        {
-            //SHIFT to prevent dragbehavior
-            instance.just_drag_nodes_activated_ts = Date.now();
-            //console.log("LOOK PRESSED SHIFT KEY just_drag_nodes=" + instance.just_drag_nodes_activated_ts);
-        }
-        if (d3.event.keyCode === 27) {
-            //ESC to clear all selections and balloons
-            instance.hide_info_balloon();
-            instance.clear_all_node_selections();
-            instance.clear_all_line_selections();
-            instance.redraw();
-        } else
-        if (d3.event.keyCode === 32) {
-            //SPACEBAR to stop simulation
-            instance.force.stop();
-        } else 
-        if (d3.event.keyCode === 46 || d3.event.keyCode === 8) {
-            //DEL or BACKSPACE key pressed
-            if (selected_link !== null)
+            if (d3.event.ctrlKey)
             {
-                var nodes = graphdata.nodes;
-                var targetnode = nodes[selected_link.trgno];
-                
-                var okay = true;
-                var nodeoffset =  instance.graphdata.fastlookup_maps.nodes.id2offset[instance.graphdata.rootnodeid];
-                var rootprojectnode = instance.graphdata.nodes[nodeoffset];                    
-                var user_can_edit_target = userCanEditNode(rootprojectnode, instance.graphdata.my_userinfo_map, targetnode);
-                if(targetnode.status_cd !== 'B' && !user_can_edit_target)
+                console.log("LOOK PRESSED CTRL KEY!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+            }
+            if (d3.event.shiftKey)
+            {
+                //SHIFT to prevent dragbehavior
+                instance.just_drag_nodes_activated_ts = Date.now();
+                //console.log("LOOK PRESSED SHIFT KEY just_drag_nodes=" + instance.just_drag_nodes_activated_ts);
+            }
+            if (d3.event.keyCode === 27) {
+                //ESC to clear all selections and balloons
+                instance.hide_info_balloon();
+                instance.clear_all_node_selections();
+                instance.clear_all_line_selections();
+                instance.redraw();
+            } else
+            if (d3.event.keyCode === 32) {
+                //SPACEBAR to stop simulation
+                instance.force.stop();
+            } else 
+            if (d3.event.keyCode === 46 || d3.event.keyCode === 8) {
+                //DEL or BACKSPACE key pressed
+                if (selected_link !== null)
                 {
-                    //TODO tell the user with a nice looking balloon!
-                    console.log("No permission to edit node " + targetnode.key + " target=" + JSON.stringify(targetnode));
-                    console.log("my_userinfo_map = " + JSON.stringify(instance.graphdata.my_userinfo_map));
-                    alert("You cannot remove this dependency declaration from " 
-                            + targetnode.key 
-                            + " because you are not the owner and are not a delegate owner of " 
-                            + targetnode.key + " and the status is not 'B'");
-                    okay = false;
-                };
-                
-                if(okay)
-                {
-                    var sourcenode = nodes[selected_link.srcno];
-                    instance.saveOneLinkRemoval(sourcenode.nativeid, targetnode.nativeid);
-                    instance.actionlayout.methods.removeDirectedLink(instance.graphdata, sourcenode.nativeid, targetnode.nativeid);
-                    selected_link = null;
-                    instance.updateGraphDataTopologyValues(true);
+                    var nodes = graphdata.nodes;
+                    var targetnode = nodes[selected_link.trgno];
+
+                    var okay = true;
+                    var nodeoffset =  instance.graphdata.fastlookup_maps.nodes.id2offset[instance.graphdata.rootnodeid];
+                    var rootprojectnode = instance.graphdata.nodes[nodeoffset];                    
+                    var user_can_edit_target = userCanEditNode(rootprojectnode, instance.graphdata.my_userinfo_map, targetnode);
+                    if(targetnode.status_cd !== 'B' && !user_can_edit_target)
+                    {
+                        //TODO tell the user with a nice looking balloon!
+                        console.log("No permission to edit node " + targetnode.key + " target=" + JSON.stringify(targetnode));
+                        console.log("my_userinfo_map = " + JSON.stringify(instance.graphdata.my_userinfo_map));
+                        alert("You cannot remove this dependency declaration from " 
+                                + targetnode.key 
+                                + " because you are not the owner and are not a delegate owner of " 
+                                + targetnode.key + " and the status is not 'B'");
+                        okay = false;
+                    };
+
+                    if(okay)
+                    {
+                        var sourcenode = nodes[selected_link.srcno];
+                        instance.saveOneLinkRemoval(sourcenode.nativeid, targetnode.nativeid);
+                        instance.actionlayout.methods.removeDirectedLink(instance.graphdata, sourcenode.nativeid, targetnode.nativeid);
+                        selected_link = null;
+                        instance.updateGraphDataTopologyValues(true);
+                    }
                 }
             }
+        }
+        catch(err)
+        {
+            console.error(err);
         }
     }
     
     function window_mousedown()
     {
-        if(highlight_link_start_mouse_coord !== null)
+        try
         {
-            //Give wiggle room for associating mousedown with a line
-            var dist = instance.mycanvas.getDistanceOldCoordVsCanvasNow(highlight_link_start_mouse_coord);
-            if(dist < link_clear_distance)
+            if(highlight_link_start_mouse_coord !== null)
             {
-                selected_link = highlight_link;
-                highlight_link = null;
-                highlight_link_start_mouse_coord = null;
-                instance.redraw();
+                //Give wiggle room for associating mousedown with a line
+                var dist = instance.mycanvas.getDistanceOldCoordVsCanvasNow(highlight_link_start_mouse_coord);
+                if(dist < link_clear_distance)
+                {
+                    selected_link = highlight_link;
+                    highlight_link = null;
+                    highlight_link_start_mouse_coord = null;
+                    instance.redraw();
+                }
             }
+        }
+        catch(err)
+        {
+            console.error(err);
         }
     };
     
     function window_mousemove()
     {
-        if(highlight_link_start_mouse_coord !== null)
+        try
         {
-            var dist = instance.mycanvas.getDistanceOldCoordVsCanvasNow(highlight_link_start_mouse_coord);
-            if(dist > link_clear_distance)
+            if(highlight_link_start_mouse_coord !== null)
             {
-                highlight_link = null;
-                highlight_link_start_mouse_coord = null;
+                var dist = instance.mycanvas.getDistanceOldCoordVsCanvasNow(highlight_link_start_mouse_coord);
+                if(dist > link_clear_distance)
+                {
+                    highlight_link = null;
+                    highlight_link_start_mouse_coord = null;
+                }
+            }
+
+            if(instance.infoballoon_flags.showing)
+            {
+                var dist = instance.mycanvas.getDistanceOldCoordVsPageNow(instance.infoballoon_flags.coordinates);
+                if(dist > node_clear_distance)
+                {
+                    instance.hide_info_balloon();
+                    cleared = true;
+                }
+            } else {
+                //TODO --- remove this once I find reason for opacity not to clear
+                instance.myinfoballoon.element.style("opacity", 0);
+                //instance.hide_info_balloon();
             }
         }
-
-        if(instance.infoballoon_flags.showing)
+        catch(err)
         {
-            var dist = instance.mycanvas.getDistanceOldCoordVsPageNow(instance.infoballoon_flags.coordinates);
-            if(dist > node_clear_distance)
-            {
-                instance.hide_info_balloon();
-                cleared = true;
-            }
-        } else {
-            //TODO --- remove this once I find reason for opacity not to clear
-            instance.myinfoballoon.element.style("opacity", 0);
-            //instance.hide_info_balloon();
+            console.error("FAILED window_mousemove because " + err);
         }
     };
 
@@ -2322,111 +2412,130 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
      */
     instance.updateGraphDataTopologyValues = function (redraw)
     {
-        if(typeof redraw === 'undefined')
+        try
         {
-            redraw = true;
-        }
-        var new_topoplogy = bigfathom_util.hierarchy_data.getWorkitemTopologyInfo(instance.graphdata); //Always call this
-        instance.graphdata.assigned_nodeids = new_topoplogy.assigned_nodeids;
-        instance.graphdata.unassigned_nodeids = new_topoplogy.unassigned_nodeids;
-        instance.graphdata.completed_branch_rootids = new_topoplogy.completed_branch_rootids;
-        instance.graphdata.incompleted_branch_rootids = new_topoplogy.incompleted_branch_rootids;
-
-        //Clean up the show attributes if we are hiding completed branches
-        if(instance.graphdata.hide_completed_branches)
-        {
-            for(var i=0; i<graphdata.nodes.length; i++)
+            if(typeof redraw === 'undefined')
             {
-                var nodedetail = graphdata.nodes[i];
-                //Only workitems have nativeid, check for this.
-                if(typeof nodedetail.nativeid !== "undefined")
+                redraw = true;
+            }
+            var new_topoplogy = bigfathom_util.hierarchy_data.getWorkitemTopologyInfo(instance.graphdata); //Always call this
+            instance.graphdata.assigned_nodeids = new_topoplogy.assigned_nodeids;
+            instance.graphdata.unassigned_nodeids = new_topoplogy.unassigned_nodeids;
+            instance.graphdata.completed_branch_rootids = new_topoplogy.completed_branch_rootids;
+            instance.graphdata.incompleted_branch_rootids = new_topoplogy.incompleted_branch_rootids;
+
+            //Clean up the show attributes if we are hiding completed branches
+            if(instance.graphdata.hide_completed_branches)
+            {
+                for(var i=0; i<graphdata.nodes.length; i++)
                 {
-                    if(bigfathom_util.hierarchy_data.hasTerminalStatus(nodedetail, instance.graphdata.status_cd_lookup))
+                    var nodedetail = graphdata.nodes[i];
+                    //Only workitems have nativeid, check for this.
+                    if(typeof nodedetail.nativeid !== "undefined")
                     {
-                        nodedetail.show_node = false;
+                        if(bigfathom_util.hierarchy_data.hasTerminalStatus(nodedetail, instance.graphdata.status_cd_lookup))
+                        {
+                            nodedetail.show_node = false;
+                        }
                     }
                 }
             }
+
+            if(redraw)
+            {
+                instance.resize();
+                instance.redraw();
+            };
         }
-        
-        if(redraw)
+        catch(err)
         {
-            instance.resize();
-            instance.redraw();
-        };
-        
+            console.error("FAILED updateGraphDataTopologyValues because " + err);
+        }
     };
 
     instance.applyDataChanges = function (freshdata, map_brainstormid2wid, update_topology)
     {
-        if(typeof update_topology === 'undefined')
+        try
         {
-            update_topology = true;
+            if(typeof update_topology === 'undefined')
+            {
+                update_topology = true;
+            }
+            instance.auto_datarefresh.markBlocked("applyDataChanges");
+            instance.actionlayout.methods.updateWIDMastersForBrainstormConversions(instance.graphdata, map_brainstormid2wid);
+            var needs_redraw = bigfathom_util.hierarchy_data.updateGraphdataWithChanges(instance.graphdata, freshdata, instance.actionlayout.methods);
+            if(update_topology)
+            {
+                instance.updateGraphDataTopologyValues(needs_redraw);
+            }
+            instance.auto_datarefresh.markAllowed("applyDataChanges");
         }
-        instance.auto_datarefresh.markBlocked("applyDataChanges");
-        instance.actionlayout.methods.updateWIDMastersForBrainstormConversions(instance.graphdata, map_brainstormid2wid);
-        var needs_redraw = bigfathom_util.hierarchy_data.updateGraphdataWithChanges(instance.graphdata, freshdata, instance.actionlayout.methods);
-        if(update_topology)
+        catch(err)
         {
-            instance.updateGraphDataTopologyValues(needs_redraw);
+            console.error("FAILED applyDataChanges because " + err);
         }
-        instance.auto_datarefresh.markAllowed("applyDataChanges");
     };
     
     function getLatestDataChanges()
     {
-        
-        if(instance.auto_datarefresh.isBlocked() || dragging_started_node !== null)
+        try
         {
-            //No refresh on this iteration, check again later.
-            if(instance.auto_datarefresh.isBlocked())
+            if(instance.auto_datarefresh.isBlocked() || dragging_started_node !== null)
             {
-                console.log("LOOK dastarefresh is blocked " + JSON.stringify(instance.auto_datarefresh.getInfo()));
-            }
-            console.log("Skipping automatic_page_refresh in getLatestDataChanges next check=" + bigfathom_util.data.defaultNewDataCheckInterval);
-            my_data_refresher = setTimeout(getLatestDataChanges, bigfathom_util.data.defaultNewDataCheckInterval);
-        } else {
-            
-            //Perform a refresh now.
-            instance.auto_datarefresh.markBlocked("getLatestDataChanges");
-            //console.log("LOOK get latest changes since " + instance.graphdata.refreshed_timestamp);
-            
-            var projectid = instance.graphdata.projectid;
-            if(projectid == null || typeof projectid == 'undefined')
-            {
-                console.log("DEBUG graphdata=" + JSON.stringify(instance.graphdata));
-                throw "Missing required projectid in graphdata!!!";
-            }
-            var grab_fullurl = bigfathom_util.data.getGrabDataUrl("hierarchy_updates",{
-                    "projectid": projectid,
-                    "previous_project_edit_key": previous_project_edit_key,
-                    "previous_project_edit_timestamp": instance.graphdata.refreshed_timestamp
-                });
-            var callbackActionFunction = function(callbackid, responseBundle)
-            {
-                if(responseBundle !== null && responseBundle.data !== null)
+                //No refresh on this iteration, check again later.
+                if(instance.auto_datarefresh.isBlocked())
                 {
-                    var record = responseBundle.data.data;
-                    previous_project_edit_key = record.most_recent_edit_key;
-                    instance.graphdata.refreshed_timestamp = record.most_recent_edit_timestamp; //In sync with the server instead of local machine time.
-                    if(record.has_newdata)
-                    {
-                        //Incorporate information from the server
-                        var map_brainstormid2wid = record.map_brainstormid2wid;
-                        instance.applyDataChanges(record.newdata, map_brainstormid2wid);
-                    }
+                    console.log("LOOK dastarefresh is blocked " + JSON.stringify(instance.auto_datarefresh.getInfo()));
                 }
-
-                //Setup for another check to happen in a little while
-                instance.auto_datarefresh.markAllowed("getLatestDataChanges");
+                console.log("Skipping automatic_page_refresh in getLatestDataChanges next check=" + bigfathom_util.data.defaultNewDataCheckInterval);
                 my_data_refresher = setTimeout(getLatestDataChanges, bigfathom_util.data.defaultNewDataCheckInterval);
-            };
-            var callbackid = "latestdata";
-            if(previous_project_edit_key !== null)
-            {
-                callbackid = callbackid + "_" + previous_project_edit_key;
+            } else {
+
+                //Perform a refresh now.
+                instance.auto_datarefresh.markBlocked("getLatestDataChanges");
+                //console.log("LOOK get latest changes since " + instance.graphdata.refreshed_timestamp);
+
+                var projectid = instance.graphdata.projectid;
+                if(projectid == null || typeof projectid == 'undefined')
+                {
+                    console.log("DEBUG graphdata=" + JSON.stringify(instance.graphdata));
+                    throw "Missing required projectid in graphdata!!!";
+                }
+                var grab_fullurl = bigfathom_util.data.getGrabDataUrl("hierarchy_updates",{
+                        "projectid": projectid,
+                        "previous_project_edit_key": previous_project_edit_key,
+                        "previous_project_edit_timestamp": instance.graphdata.refreshed_timestamp
+                    });
+                var callbackActionFunction = function(callbackid, responseBundle)
+                {
+                    if(responseBundle !== null && responseBundle.data !== null)
+                    {
+                        var record = responseBundle.data.data;
+                        previous_project_edit_key = record.most_recent_edit_key;
+                        instance.graphdata.refreshed_timestamp = record.most_recent_edit_timestamp; //In sync with the server instead of local machine time.
+                        if(record.has_newdata)
+                        {
+                            //Incorporate information from the server
+                            var map_brainstormid2wid = record.map_brainstormid2wid;
+                            instance.applyDataChanges(record.newdata, map_brainstormid2wid);
+                        }
+                    }
+
+                    //Setup for another check to happen in a little while
+                    instance.auto_datarefresh.markAllowed("getLatestDataChanges");
+                    my_data_refresher = setTimeout(getLatestDataChanges, bigfathom_util.data.defaultNewDataCheckInterval);
+                };
+                var callbackid = "latestdata";
+                if(previous_project_edit_key !== null)
+                {
+                    callbackid = callbackid + "_" + previous_project_edit_key;
+                }
+                bigfathom_util.data.getDataFromServer(grab_fullurl, {}, callbackActionFunction, callbackid);
             }
-            bigfathom_util.data.getDataFromServer(grab_fullurl, {}, callbackActionFunction, callbackid);
+        }
+        catch(err)
+        {
+            console.error("FAILED getLatestDataChanges because " + err);
         }
     };
     
