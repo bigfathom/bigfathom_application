@@ -990,7 +990,8 @@ d3.selection.enter.prototype.joinForceNodeShapes = function(manager, typename)
             if(d.hasOwnProperty("subtype") //d.type === 'goal' 
                 && d.subtype.indexOf("warn_disconnected_rootnode") > -1)
             {
-                return "-30,0 0,-30 0,30";
+                //Point to the right
+                return "30,0 0,-30 0,30";
             } else {
                 return "";
             }
