@@ -17,7 +17,7 @@ if (typeof bigfathom_util === 'undefined')
 if(!bigfathom_util.hasOwnProperty("shapes"))
 {
     //Create the object property because it does not already exist
-    bigfathom_util.shapes = {version: "20170205.1"};
+    bigfathom_util.shapes = {version: "20180331.1"};
 }
 
 //see shape names from http://fiddle.jshell.net/994XM/9/
