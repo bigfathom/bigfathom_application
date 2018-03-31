@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("d3v3_svg"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.d3v3_svg = {
-                            "version": "20161022.1",
+                            "version": "20180331.1",
                             "attention_circle" : {
                                     "radius":90,
                                     "duration":987,
@@ -35,12 +35,19 @@ if(!bigfathom_util.hasOwnProperty("d3v3_svg"))
  */
 bigfathom_util.d3v3_svg.applyd3rescale = function (canvas, duration)
 {
-    if(canvas.enable_zoompan)
+    try
     {
-        d3.event.sourceEvent.stopPropagation();
-        var trans = d3.event.translate;
-        var scale = d3.event.scale;
-        bigfathom_util.d3v3_svg.rescale(canvas, trans, scale, duration);
+        if(canvas.enable_zoompan)
+        {
+            d3.event.sourceEvent.stopPropagation();
+            var trans = d3.event.translate;
+            var scale = d3.event.scale;
+            bigfathom_util.d3v3_svg.rescale(canvas, trans, scale, duration);
+        }
+    }
+    catch(err)
+    {
+        console.error(err);
     }
 };
 
@@ -49,65 +56,79 @@ bigfathom_util.d3v3_svg.applyd3rescale = function (canvas, duration)
  */
 bigfathom_util.d3v3_svg.rescale = function (canvas, trans, scale, duration)
 {
-    if(canvas.enable_zoompan)
+    try
     {
-        if (typeof trans === 'undefined' || trans === null)
+        if(canvas.enable_zoompan)
         {
-            trans = [0, 0];
-        };
-        if (typeof scale === 'undefined' || scale === null)
-        {
-            scale = 1;
-        };
-        if (typeof duration === 'undefined' || duration === null)
-        {
-            duration = 100;
-        };
+            if (typeof trans === 'undefined' || trans === null)
+            {
+                trans = [0, 0];
+            };
+            if (typeof scale === 'undefined' || scale === null)
+            {
+                scale = 1;
+            };
+            if (typeof duration === 'undefined' || duration === null)
+            {
+                duration = 100;
+            };
 
-        canvas.prev_scale = scale;
-        canvas.prev_trans = trans;
+            canvas.prev_scale = scale;
+            canvas.prev_trans = trans;
 
-        //Make sure D3 has the same values we now have in SVG
-        canvas.zoom.translate(trans);
-        canvas.zoom.scale(scale);
-        
-        //Update SVG
-        canvas.zoom_area.transition()
-                .duration(duration)
-                .attr("transform",
-                    "translate(" + trans + ")"
-                    + " scale(" + scale + ")"
-                    );
-    
-        //Let everyone know we are done with the rescale operation
-        if(canvas.callbacks.hasOwnProperty("after_rescale"))
-        {
-            canvas.callbacks.after_rescale();
+            //Make sure D3 has the same values we now have in SVG
+            canvas.zoom.translate(trans);
+            canvas.zoom.scale(scale);
+
+            //Update SVG
+            canvas.zoom_area.transition()
+                    .duration(duration)
+                    .attr("transform",
+                        "translate(" + trans + ")"
+                        + " scale(" + scale + ")"
+                        );
+
+            //Let everyone know we are done with the rescale operation
+            if(canvas.callbacks.hasOwnProperty("after_rescale"))
+            {
+                canvas.callbacks.after_rescale();
+            }
         }
+    }
+    catch(err)
+    {
+        console.error(err);
     }
 };
 
 bigfathom_util.d3v3_svg.move_drag_line = function (mycanvas, d)
 {
-    if(mycanvas.layers_elem == null)
+    try
     {
-        console.log("DEBUG why is mycanvas.layers_elem null??????");
-        return;
+        if(mycanvas.layers_elem == null)
+        {
+            console.log("DEBUG why is mycanvas.layers_elem null??????");
+            return;
+        }
+        var mouse = d3.mouse(mycanvas.layers_elem);
+
+        var real_x1 = d.x;
+        var real_y1 = d.y;
+
+        var real_x2 = mouse[0];
+        var real_y2 = mouse[1];
+
+        mycanvas.drag_line
+                .attr("class", "drag_line")
+                .attr("x1", real_x1)
+                .attr("y1", real_y1)
+                .attr("x2", real_x2)
+                .attr("y2", real_y2); 
     }
-    var mouse = d3.mouse(mycanvas.layers_elem);
-
-    var real_x1 = d.x;
-    var real_y1 = d.y;
-
-    var real_x2 = mouse[0];
-    var real_y2 = mouse[1];
-
-    mycanvas.drag_line
-            .attr("class", "drag_line")
-            .attr("x1", real_x1)
-            .attr("y1", real_y1)
-            .attr("x2", real_x2)
-            .attr("y2", real_y2); 
+    catch(err)
+    {
+        console.error(err);
+    }
 };
 
 bigfathom_util.d3v3_svg.enable_zoompan = function (canvas, enable)
@@ -454,33 +475,47 @@ bigfathom_util.d3v3_svg.createCanvas = function (element_id
 
 bigfathom_util.d3v3_svg.refreshCanvasDimensions = function (mycanvas)
 {
-    //var canvas_name = mycanvas.canvas_name;
-    var element_id = mycanvas.element_id;
-    var el   = document.getElementById(element_id); // or other selector like querySelector()
-    var rect = el.getBoundingClientRect(); // get the bounding rectangle
-    var canvas_width = rect.width;
-    var canvas_height = rect.height > bigfathom_util.d3v3_svg.height_trigger ? rect.height : rect.width / 2;
-    mycanvas.w = canvas_width;
-    mycanvas.h = canvas_height;
+    try
+    {
+        //var canvas_name = mycanvas.canvas_name;
+        var element_id = mycanvas.element_id;
+        var el   = document.getElementById(element_id); // or other selector like querySelector()
+        var rect = el.getBoundingClientRect(); // get the bounding rectangle
+        var canvas_width = rect.width;
+        var canvas_height = rect.height > bigfathom_util.d3v3_svg.height_trigger ? rect.height : rect.width / 2;
+        mycanvas.w = canvas_width;
+        mycanvas.h = canvas_height;
+    }
+    catch(err)
+    {
+        console.error(err);
+    }    
 };
 
 bigfathom_util.d3v3_svg.addArrows = function (mycanvas, all_mymarker_detail)
 {
-    var svg_grouping = mycanvas.zBottom; //This is to group shapes together
-    var mymarker_info;
-    for(var mymarker_name in all_mymarker_detail)
+    try
     {
-        mymarker_info = all_mymarker_detail[mymarker_name];
-        svg_grouping.append("defs").append("marker")
-                .attr("id", mymarker_info.attr.id)
-                .attr("viewBox", mymarker_info.attr.viewBox)
-                .attr("refX", mymarker_info.attr.refX)   //I think this must MATCH the circle radius
-                .attr("refY", mymarker_info.attr.refY)
-                .attr("markerWidth", mymarker_info.attr.markerWidth)
-                .attr("markerHeight", mymarker_info.attr.markerHeight)
-                .attr("orient", mymarker_info.attr.orient)
-                .append("path")
-                .attr("d", mymarker_info.path.d);
+        var svg_grouping = mycanvas.zBottom; //This is to group shapes together
+        var mymarker_info;
+        for(var mymarker_name in all_mymarker_detail)
+        {
+            mymarker_info = all_mymarker_detail[mymarker_name];
+            svg_grouping.append("defs").append("marker")
+                    .attr("id", mymarker_info.attr.id)
+                    .attr("viewBox", mymarker_info.attr.viewBox)
+                    .attr("refX", mymarker_info.attr.refX)   //I think this must MATCH the circle radius
+                    .attr("refY", mymarker_info.attr.refY)
+                    .attr("markerWidth", mymarker_info.attr.markerWidth)
+                    .attr("markerHeight", mymarker_info.attr.markerHeight)
+                    .attr("orient", mymarker_info.attr.orient)
+                    .append("path")
+                    .attr("d", mymarker_info.path.d);
+        }    
+    }
+    catch(err)
+    {
+        console.error(err);
     }    
 };
 
