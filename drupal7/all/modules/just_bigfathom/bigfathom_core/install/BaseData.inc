@@ -38,7 +38,7 @@ class BaseData
             $this->loadCoreUserData();
             $this->loadCoreGroupData();
             $this->loadVisionStatementData();
-            $this->loadTemplateData();
+            //$this->loadTemplateData();
             $this->loadProjectData();
             $this->loadHolidayData();
             $this->loadUseCaseData();
@@ -746,7 +746,7 @@ class BaseData
             $t = get_t();
             $updated_dt = date("Y-m-d H:i", time());
 
-            //TODO
+            //DEPRECATED --- loaded from template_libraray module instead
             
             drupal_set_message($t('Loaded base template data') . " at $updated_dt");
         } catch (\Exception $ex) {
