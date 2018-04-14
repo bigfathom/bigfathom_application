@@ -1,0 +1,31 @@
+PROJECT_TEMPLATE	FORMAT	PUBLISHER:NAME	PUBLISHER:URI	TYPE	PUBLISHED_TS	TEMPLATE_NM	PUBLISHEDREFNAME	AUTHOR_NAME	PROJECT_CONTEXTID	ROOT_WORKITEMID
+DATA ROW>>	TXT:BFTF1	frank.font	http://localhost/	project template	2018-04-14T12:01:23-04:00	FLOURISH_IN_LIFE	FLOURISH_IN_LIFE	Frank Font	46	1
+BEGIN	METADATA	MISSION_TX
+Improve the duration and intensity of real well-being in your life
+END	METADATA	MISION_TX
+BEGIN	METADATA	SUBMITTER_BLURB_TX
+This template is based on research published by Martin Seligman in his book titled 'Flourish'.  Flourishing is the goal of Positive Psychology and this template captures 
+the components currently identified that contribute to such a life.  To use this template, consider what goals and tasks you can bring into your life to influence each 
+of these components and then work on those.  Continuously improve in each of the areas for best results.
+END	METADATA	SUBMITTER_BLURB_TX
+WORKITEMS	WID	NAME	PURPOSE_TX	OWNER_TEMPLATE_PROJECTID	TYPELETTER
+DATA ROW>>	1	Flourish	Have a real and significant sense of well-being in your life	1	P		
+DATA ROW>>	2	Positive Emotion	Experience positive emotions and recognize that you feel well when you feel well	1	G
+DATA ROW>>	3	Engagement	Participate in activities that matter to you	1	G
+DATA ROW>>	4	Relationships	Connect with people in ways that are meaningful to you and them	1	G
+DATA ROW>>	5	Meaning	Contribute to efforts that make a positive difference in a way that is larger than you	1	G
+DATA ROW>>	6	Achievement	Recognize those times when your efforts and practice have created an ability in you that is significant to you or others.  A=Skill x Effort	1	G
+WORKITEM_SUBMAP_NAME:DAW
+DATA ROW>>	1	2
+DATA ROW>>	1	3
+DATA ROW>>	1	4
+DATA ROW>>	1	5
+DATA ROW>>	1	6
+MAP_RELEVANT_ROLES
+MAP_WORKITEMID2PROJECTID
+DATA ROW>>	2	1
+DATA ROW>>	3	1
+DATA ROW>>	4	1
+DATA ROW>>	5	1
+DATA ROW>>	6	1
+PROJECT_TEMPLATE_END	WORKITEM_COUNT=6	DAW_LINK_COUNT=5
