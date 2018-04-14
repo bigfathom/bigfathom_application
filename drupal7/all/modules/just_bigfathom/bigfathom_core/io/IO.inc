@@ -696,7 +696,7 @@ class IO
             $all_workitems = $bundle['all_workitems'];
             $raw_workitemid2projectid = [];
             $just_raw_pidmap = [];
-DebugHelper::showNeatMarkup(array('$templateinfo'=>$templateinfo,'$bundle'=>$bundle),'LOOK template stuff');            
+            //DebugHelper::showNeatMarkup(array('$templateinfo'=>$templateinfo,'$bundle'=>$bundle),'LOOK template stuff');            
             foreach($all_workitems as $wid=>$detail)
             {
                 $oneworkitem = [];
