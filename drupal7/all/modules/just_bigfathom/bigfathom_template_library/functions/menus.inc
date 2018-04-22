@@ -15,6 +15,27 @@
 
 function bigfathom_template_library_menu_core_callbacks(&$items)
 {
+
+    $items['admin/config/system/bigfathom_template_library'] = array(
+      'title'            => 'Bigfathom Template Library Administration',
+      'page callback'   => array('bigfathom_template_library_configure_form'),
+      'access arguments' => array('administer bigfathom_template_library module'),
+      'description'      => 'Administrative actions on the bigfathom template library.',
+      'file'             => 'templates.inc',
+      'file path' => BIGFATHOM_TEMPLATE_LIBRARY_MODULE_PATH.'/functions/',
+    );
+
+    $items['bigfathom/templates/reload_core_template_files'] = array(
+      'title' => 'Reload Core Bigfathom Template Library Files',
+      'page callback' => 'bigfathom_template_library_exportjson_form',
+      'access arguments' => array('access content'),
+      'access callback' => TRUE,        
+      'description' => 'Reload core bigfathom template library files',
+      'type' => MENU_CALLBACK,
+      'file'             => 'templates.inc',
+      'file path' => BIGFATHOM_TEMPLATE_LIBRARY_MODULE_PATH.'/functions/',
+    );
+        
     $items['bigfathom/templates/exportjson'] = array(
       'title' => 'JSON Format Export',
       'page callback' => 'bigfathom_template_library_exportjson_form',
@@ -50,4 +71,6 @@ function bigfathom_template_library_menu_core_callbacks(&$items)
       'file path' => BIGFATHOM_TEMPLATE_LIBRARY_MODULE_PATH.'/functions/',
       'weight' => 800,
     );
+    
+ 
 }

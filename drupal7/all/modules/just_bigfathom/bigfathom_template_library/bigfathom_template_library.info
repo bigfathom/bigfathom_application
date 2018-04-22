@@ -10,6 +10,8 @@ core = 7.x
 
 package = Bigfathom
 
+configure = admin/config/system/bigfathom_template_library
+
 dependencies[] = bigfathom_core
 
 scripts[] = js/general.js
