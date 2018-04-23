@@ -28,9 +28,9 @@ class DeleteProjectPage extends \bigfathom\ASimpleFormPage
     protected $m_projectid        = NULL;
     protected $m_urls_arr       = NULL;
     protected $m_oPageHelper = NULL;
-    protected $m_project_tablename = 'bigfathom_project';
-    protected $m_map_group2project_tablename = 'bigfathom_map_group2project';
-    protected $m_map_prole2project_tablename = 'bigfathom_map_role2project';
+    //protected $m_project_tablename = 'bigfathom_project';
+    //protected $m_map_group2project_tablename = 'bigfathom_map_group2project';
+    //protected $m_map_prole2project_tablename = 'bigfathom_map_role2project';
     
     function __construct($projectid, $urls_override_arr=NULL)
     {
@@ -93,7 +93,11 @@ class DeleteProjectPage extends \bigfathom\ASimpleFormPage
         try
         {
             $project_id = $myvalues['id'];
-            
+
+            $loaded2 = module_load_include('php','bigfathom_core','core/WriteHelper');
+            $oWriteHelper = new \bigfathom\WriteHelper();
+            $oWriteHelper->deleteProject($project_id);
+            /*
             db_delete($this->m_project_tablename)
               ->condition('id', $project_id)
               ->execute(); 
@@ -105,7 +109,7 @@ class DeleteProjectPage extends \bigfathom\ASimpleFormPage
             db_delete($this->m_map_prole2project_tablename)
               ->condition('projectid', $project_id)
               ->execute(); 
-            
+            */
             //If we are here then we had success.
             $msg = 'Deleted project #' . $project_id;
             drupal_set_message($msg);
