@@ -641,18 +641,17 @@ class WriteHelper
                 error_log("SECURITY WARNING: $errmsg");
                 throw new \Exception($errmsg);
             }
-            
-            //NOW PHYSICALLY REMOVE THE RECORDS...
-            db_delete(DatabaseNamesHelper::$m_project_tablename)
-              ->condition('id', $templateid)
+ 
+            db_delete(DatabaseNamesHelper::$m_map_tag2tp_tablename)
+              ->condition('template_projectid', $templateid)
               ->execute(); 
 
-            db_delete(DatabaseNamesHelper::$m_map_group2project_tablename)
-              ->condition('projectid', $templateid)
+            db_delete(DatabaseNamesHelper::$m_template_workitem_tablename)
+              ->condition('owner_template_projectid', $templateid)
               ->execute(); 
-            
-            db_delete(DatabaseNamesHelper::$m_map_prole2project_tablename)
-              ->condition('projectid', $templateid)
+
+            db_delete(DatabaseNamesHelper::$m_template_project_library_tablename)
+              ->condition('id', $templateid)
               ->execute(); 
             
         } catch (\Exception $ex) {

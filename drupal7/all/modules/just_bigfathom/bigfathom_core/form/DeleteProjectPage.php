@@ -12,7 +12,6 @@
  *
  */
 
-
 namespace bigfathom;
 
 require_once 'helper/ASimpleFormPage.php';
