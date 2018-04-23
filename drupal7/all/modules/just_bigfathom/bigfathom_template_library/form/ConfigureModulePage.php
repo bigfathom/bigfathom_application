@@ -163,8 +163,7 @@ class ConfigureModulePage extends \bigfathom_template_library\ASimpleFormPage
             
             $demodata = new \bigfathom_template_library\DemoData();
             $demodata->load();
-            $files_markup = "<p>RELOADED</p>";
-            
+           
         }
         
         $form['data_entry_area1']['body']['files_info'] = array('#type' => 'item'

@@ -21,7 +21,7 @@ namespace bigfathom_template_library;
  */
 class DemoData
 {
-    private function importTemplateFiles($replace_existing=FALSE)
+    private function importTemplateFiles($replace_existing=TRUE)
     {
         $install_realpath = dirname(__FILE__);
         $install_templates_realpath = "$install_realpath/templates";
@@ -46,21 +46,21 @@ class DemoData
                     $file_contents = file_get_contents($file_path,FALSE);
                     $parsed_file = \bigfathom\UtilityProjectTemplate::convertProjectTemplateTabText2Bundle($file_contents);
                     $resultbundle = $oWriteHelper->createTemplateFromImport($parsed_file, NULL, $replace_existing);
-                    $template_msg_ar[] = $resultbundle['message'];
+                    $template_msg_ar[] = $resultbundle['message'] . " ($filename)";
                     $core_template_count++;
                 }
             } catch (\Exception $ex) {
                 drupal_set_message("Failed to load $filename",'error');
             }
         }
-        if(count($templates_ar) == 0)
+        if($core_template_count == 0)
         {
-            $msg = "No templates loaded";
+            $msg = "No core project templates loaded";
         } else {
-            $msg = "<ol><li>".implode("<li>", $template_msg_ar)."</ol>";
+            $msg = "Loaded $core_template_count core project template files:<ol><li>".implode("<li>", $template_msg_ar)."</ol>";
         }
         drupal_set_message($msg);
-        drupal_set_message("Load of $core_template_count core project templates completed!");
+        //drupal_set_message("Load of $core_template_count core project templates completed!");
         
     }
     

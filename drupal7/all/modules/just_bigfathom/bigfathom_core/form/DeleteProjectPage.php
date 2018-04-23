@@ -27,9 +27,6 @@ class DeleteProjectPage extends \bigfathom\ASimpleFormPage
     protected $m_projectid        = NULL;
     protected $m_urls_arr       = NULL;
     protected $m_oPageHelper = NULL;
-    //protected $m_project_tablename = 'bigfathom_project';
-    //protected $m_map_group2project_tablename = 'bigfathom_map_group2project';
-    //protected $m_map_prole2project_tablename = 'bigfathom_map_role2project';
     
     function __construct($projectid, $urls_override_arr=NULL)
     {

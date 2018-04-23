@@ -642,6 +642,34 @@ class WriteHelper
                 throw new \Exception($errmsg);
             }
  
+            $this->deleteTemplateDependents($templateid);
+
+            db_delete(DatabaseNamesHelper::$m_template_project_library_tablename)
+              ->condition('id', $templateid)
+              ->execute(); 
+            
+        } catch (\Exception $ex) {
+            $transaction->rollback();
+            throw $ex;
+        }
+    }
+    
+    /**
+     * Erase a template dependent records, but not the main record
+     */
+    public function deleteTemplateDependents($templateid)
+    {
+        $transaction = db_transaction();
+        try
+        {
+            global $user;
+            if($user->uid != 1)
+            {
+                $errmsg = "User {$user->uid} attempted to delete template#$templateid!";
+                error_log("SECURITY WARNING: $errmsg");
+                throw new \Exception($errmsg);
+            }
+ 
             db_delete(DatabaseNamesHelper::$m_map_tag2tp_tablename)
               ->condition('template_projectid', $templateid)
               ->execute(); 
@@ -650,10 +678,6 @@ class WriteHelper
               ->condition('owner_template_projectid', $templateid)
               ->execute(); 
 
-            db_delete(DatabaseNamesHelper::$m_template_project_library_tablename)
-              ->condition('id', $templateid)
-              ->execute(); 
-            
         } catch (\Exception $ex) {
             $transaction->rollback();
             throw $ex;
@@ -8784,10 +8808,36 @@ class WriteHelper
                 $this->setIfValueMatchesName($proj_fields, $allow_publish_items, 'allow_publish_item_actual_start_dt_yn');
                 $this->setIfValueMatchesName($proj_fields, $allow_publish_items, 'allow_publish_item_actual_end_dt_yn');
             }
-            $main_qry = db_insert(DatabaseNamesHelper::$m_template_project_library_tablename)
-                ->fields($proj_fields);
-            $newid = $main_qry->execute(); 
-
+            
+            $newid = NULL;
+            if($replace_existing)
+            {
+                $found = db_select(DatabaseNamesHelper::$m_template_project_library_tablename, 'n')
+                   ->fields('n')
+                   ->condition('template_nm', $template_nm,'=')
+                    ->execute()
+                   ->fetchAssoc();    
+                if(!empty($found['id']))
+                {
+                    $newid=$found['id'];
+                    drupal_set_message("Will replace existing '$template_nm' with template ID#$newid");
+                    $this->deleteTemplateDependents($newid);
+                    $main_qry = db_update(DatabaseNamesHelper::$m_template_project_library_tablename)
+                            ->fields($proj_fields)
+                            ->condition('id', $newid, '=')
+                            ->execute(); 
+                    $action = "Replaced";
+                }
+            } 
+            
+            if(empty($newid))
+            {
+                $action = "Created";
+                $main_qry = db_insert(DatabaseNamesHelper::$m_template_project_library_tablename)
+                    ->fields($proj_fields);
+                $newid = $main_qry->execute(); 
+            }
+            
             $step++;
             //Now update the new goal to indicate ownership
             db_update(DatabaseNamesHelper::$m_template_workitem_tablename)
@@ -8904,7 +8954,7 @@ class WriteHelper
             }
             
             //If we are here then we had success.
-            $msg = 'Added template#' . $newid . " with $role_count declared roles";
+            $msg = $action . ' template#' . $newid . " with $role_count declared roles";
             
             $resultbundle = array(
                 'message'=>$msg,
