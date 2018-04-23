@@ -107,15 +107,22 @@ class ConfigureModulePage extends \bigfathom_template_library\ASimpleFormPage
                 if(strlen($filename)>2)
                 {
                     $core_template_count++;
+                    
                     $file_path = "$install_templates_realpath/$filename";
-                    $files[] = $filename;
+                    $file_contents = file_get_contents($file_path,FALSE);
+                    $parsed_file = \bigfathom\UtilityProjectTemplate::convertProjectTemplateTabText2Bundle($file_contents);
+                    
+                    $fb = array(
+                        'name'=>$filename,
+                        'properties'=>array("TODO"),
+                        'parsed'=>$parsed_file    
+                    );
+                    $files[] = $fb;
                 }
             } catch (\Exception $ex) {
                 drupal_set_message("Failed to list $filename",'error');
             }
         }
-        
-        asort($files);
         
         $bundle['count'] = $core_template_count;
         $bundle['files'] = $files;
@@ -141,18 +148,39 @@ class ConfigureModulePage extends \bigfathom_template_library\ASimpleFormPage
             $html_classname_overrides['action-button'] = 'action-button';
         }
         
-        //TODO
         $form = [];
         
         $tfb = $this->getCurrentTemplateFilesBundle();
         $files_ar = $tfb['files'];
         $files_markup = "<h2>Core Template Files</h2>"
                 . "<table>";
+        $files_markup .= "<tr><th></th><th>Filename</th>"
+                . "<th>TEMPLATE_NM</th>"
+                . "<th>MISSION_TX</th>"
+                . "<th>AUTHOR_NAME</th>"
+                . "<th>PUBLISHED_TS</th>"
+                . "</tr>";
         $filecount=0;
-        foreach($files_ar as $filename)
+        foreach($files_ar as $fileinfo)
         {
+            // [TEMPLATE_NM] => FISMA_AT_FAMILY [PUBLISHEDREFNAME] => FISMA_AT_FAMILY [AUTHOR_NAME] => Frank Fon
+            $filename = $fileinfo['name'];
+            $metadata=$fileinfo['parsed']['metadata'];
+            $TEMPLATE_NM=$metadata['TEMPLATE_NM'];
+            $PUBLISHEDREFNAME=$metadata['PUBLISHEDREFNAME'];
+            $AUTHOR_NAME=$metadata['AUTHOR_NAME'];
+            $PUBLISHED_TS=$metadata['PUBLISHED_TS'];
+            $MISSION_TX=$metadata['MISSION_TX'];
+            
+            //drupal_set_message("<pre>".print_r($fileinfo,TRUE)."</pre>");
             $filecount++;
-            $files_markup .= "<tr><td>$filecount</td><td>$filename</td></tr>";
+            $files_markup .= "<tr><td>$filecount</td>"
+                    . "<td>$filename</td>"
+                    . "<td>$TEMPLATE_NM</td>"
+                    . "<td>$MISSION_TX</td>"
+                    . "<td>$AUTHOR_NAME</td>"
+                    . "<td>$PUBLISHED_TS</td>"
+                    . "</tr>";
         }
         
         $files_markup .= "</table>";

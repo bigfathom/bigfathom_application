@@ -8820,7 +8820,7 @@ class WriteHelper
                 if(!empty($found['id']))
                 {
                     $newid=$found['id'];
-                    drupal_set_message("Will replace existing '$template_nm' with template ID#$newid");
+                    //drupal_set_message("Will replace existing '$template_nm' with template ID#$newid");
                     $this->deleteTemplateDependents($newid);
                     $main_qry = db_update(DatabaseNamesHelper::$m_template_project_library_tablename)
                             ->fields($proj_fields)
