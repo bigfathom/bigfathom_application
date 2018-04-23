@@ -156,12 +156,10 @@ class ConfigureModulePage extends \bigfathom_template_library\ASimpleFormPage
         }
         
         $files_markup .= "</table>";
-        $form['data_entry_area1']['body']['files_info'] = array('#type' => 'item'
-                    , '#markup' => $files_markup);
-
         
         if($this->m_action == "RELOAD")
         {
+            module_load_include('inc','bigfathom_template_library','install/DemoData');
             
             $demodata = new \bigfathom_template_library\DemoData();
             $demodata->load();
@@ -169,8 +167,13 @@ class ConfigureModulePage extends \bigfathom_template_library\ASimpleFormPage
             
         }
         
-        //TODO --- set a working URL
-        $CLICKMARKUP="<a href='bigfathom/templates/reload_core_template_files'>here</a>";
+        $form['data_entry_area1']['body']['files_info'] = array('#type' => 'item'
+                    , '#markup' => $files_markup);
+
+        
+        $RELOADURL="?q=admin/config/system/bigfathom_template_library&action=RELOAD";
+        $CLICKMARKUP="<a href='{$RELOADURL}'>here</a>";
+        
         $reload_templates_markup = "<p>To reload the database from template files listed above, click {$CLICKMARKUP}</p>";
         $form['data_entry_area1']['body']['action'] = array('#type' => 'item'
             , '#markup' => $reload_templates_markup);

@@ -28,9 +28,9 @@ class DeleteTemplatePage extends \bigfathom\ASimpleFormPage
     protected $m_templateid        = NULL;
     protected $m_urls_arr       = NULL;
     protected $m_oPageHelper = NULL;
-    protected $m_project_tablename = 'bigfathom_project';
-    protected $m_map_group2project_tablename = 'bigfathom_map_group2project';
-    protected $m_map_prole2project_tablename = 'bigfathom_map_role2project';
+    //protected $m_project_tablename = 'bigfathom_project';
+    //protected $m_map_group2project_tablename = 'bigfathom_map_group2project';
+    //protected $m_map_prole2project_tablename = 'bigfathom_map_role2project';
     
     function __construct($templateid, $urls_override_arr=NULL)
     {
@@ -79,28 +79,20 @@ class DeleteTemplatePage extends \bigfathom\ASimpleFormPage
         $updated_dt = date("Y-m-d H:i", time());
         try
         {
-            $project_id = $myvalues['id'];
+            $templateid = $myvalues['id'];
             
-            db_delete($this->m_project_tablename)
-              ->condition('id', $project_id)
-              ->execute(); 
+            $loaded2 = module_load_include('php','bigfathom_core','core/WriteHelper');
+            $oWriteHelper = new \bigfathom\WriteHelper();
+            $oWriteHelper->deleteTemplate($templateid);
 
-            db_delete($this->m_map_group2project_tablename)
-              ->condition('projectid', $project_id)
-              ->execute(); 
-            
-            db_delete($this->m_map_prole2project_tablename)
-              ->condition('projectid', $project_id)
-              ->execute(); 
-            
             //If we are here then we had success.
-            $msg = 'Deleted project template#' . $project_id;
+            $msg = 'Deleted project template#' . $templateid;
             drupal_set_message($msg);
         }
         catch(\Exception $ex)
         {
-            $msg = t('Failed to delete project at root goal ' . $myvalues['root_workitem_nm']
-                      . ' project because ' . $ex->getMessage());
+            $msg = t('Failed to delete template#' . $templateid
+                      . ' because ' . $ex->getMessage());
             error_log("$msg\n" 
                       . print_r($myvalues, TRUE) . '>>>'. print_r($ex, TRUE));
             throw new \Exception($msg, 99910, $ex);

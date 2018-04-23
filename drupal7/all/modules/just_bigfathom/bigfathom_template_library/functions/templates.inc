@@ -25,8 +25,15 @@ function bigfathom_template_library_configure_form_builder($form, &$form_state)
     try
     {
         $urls_arr = array('return'=>'admin/modules');
+
+        if(empty($_GET['action']))
+        {
+            $action = NULL;
+        } else {
+            $action = strtoupper(trim($_GET['action']));
+        }
         
-        $oPI = new \bigfathom_template_library\ConfigureModulePage();
+        $oPI = new \bigfathom_template_library\ConfigureModulePage($action);
         $form = array();
         $disabled = FALSE;
         $myvalues = $oPI->getFieldValues();
@@ -42,7 +49,14 @@ function bigfathom_template_library_configure_form_builder_validate($form, &$for
     {
         $urls_arr = array('return'=>'admin/modules');
         
-        $oPI = new \bigfathom_template_library\ConfigureModulePage();
+        if(empty($_GET['action']))
+        {
+            $action = NULL;
+        } else {
+            $action = strtoupper(trim($_GET['action']));
+        }
+        
+        $oPI = new \bigfathom_template_library\ConfigureModulePage($action);
         return $oPI->looksValid($form, $form_state['values']);
     } catch (\Exception $ex) {
         throw $ex;
@@ -55,8 +69,16 @@ function bigfathom_template_library_configure_form_builder_submit($form, &$form_
     {
         $urls_arr = array('return'=>'admin/modules');
         
-        $oPI = new \bigfathom_template_library\ConfigureModulePage();
+        if(empty($_GET['action']))
+        {
+            $action = NULL;
+        } else {
+            $action = strtoupper(trim($_GET['action']));
+        }
+        
+        $oPI = new \bigfathom_template_library\ConfigureModulePage($action);
         $oPI->updateDatabase($form, $form_state['values']);
+
         //Success!
         $form_state['redirect'] = array(
             $page_args['menu_base'],
@@ -71,24 +93,3 @@ function bigfathom_template_library_configure_form_builder_submit($form, &$form_
     }
 }
 
-
-function bigfathom_template_library_reload_form() 
-{
-    return drupal_get_form('bigfathom_template_library_reload_form_builder');
-}
-function bigfathom_template_library_reload_form_builder($form, &$form_state)
-{
-    try
-    {
-        $urls_arr = array('return'=>'admin/modules');
-        
-        $oPI = new \bigfathom_template_library\ConfigureModulePage("RELOAD");
-        $form = array();
-        $disabled = FALSE;
-        $myvalues = $oPI->getFieldValues();
-        return $oPI->getForm($form, $form_state, $disabled, $myvalues);
-
-    } catch (\Exception $ex) {
-        throw $ex;
-    }
-}

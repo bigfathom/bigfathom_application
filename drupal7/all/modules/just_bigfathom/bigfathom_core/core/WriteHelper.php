@@ -625,6 +625,41 @@ class WriteHelper
             throw $ex;
         }
     }
+
+    /**
+     * Erase a template and all its content from the system
+     */
+    public function deleteTemplate($templateid)
+    {
+        $transaction = db_transaction();
+        try
+        {
+            global $user;
+            if($user->uid != 1)
+            {
+                $errmsg = "User {$user->uid} attempted to delete template#$templateid!";
+                error_log("SECURITY WARNING: $errmsg");
+                throw new \Exception($errmsg);
+            }
+            
+            //NOW PHYSICALLY REMOVE THE RECORDS...
+            db_delete(DatabaseNamesHelper::$m_project_tablename)
+              ->condition('id', $templateid)
+              ->execute(); 
+
+            db_delete(DatabaseNamesHelper::$m_map_group2project_tablename)
+              ->condition('projectid', $templateid)
+              ->execute(); 
+            
+            db_delete(DatabaseNamesHelper::$m_map_prole2project_tablename)
+              ->condition('projectid', $templateid)
+              ->execute(); 
+            
+        } catch (\Exception $ex) {
+            $transaction->rollback();
+            throw $ex;
+        }
+    }
     
     /**
      * Deactivate a project
@@ -1252,7 +1287,7 @@ class WriteHelper
     /**
      * Create a project template
      */
-    public function createTemplateFromImport($importedvalues, $myvalues_overrides=NULL)
+    public function createTemplateFromImport($importedvalues, $myvalues_overrides=NULL, $replace_existing=FALSE)
     {
         try
         {
@@ -1295,7 +1330,7 @@ class WriteHelper
                     }
                 }
             }
-            $result_bundle = $this->createNewTemplate($myvalues_overrides);
+            $result_bundle = $this->createNewTemplate($myvalues_overrides, $replace_existing);
             $newid = $result_bundle['newid'];
             $this->markTPUpdated($newid, "create new template#{$newid} from imported content");
             return $result_bundle;
@@ -8618,7 +8653,7 @@ class WriteHelper
         }
     }
     
-    public function createNewTemplate($myvalues)
+    public function createNewTemplate($myvalues, $replace_existing=FALSE)
     {
         $default_workitem_status_cd = 'WNS';
         $transaction = db_transaction();
