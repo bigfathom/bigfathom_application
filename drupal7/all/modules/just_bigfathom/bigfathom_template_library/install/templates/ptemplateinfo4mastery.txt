@@ -1,0 +1,116 @@
+PROJECT_TEMPLATE	FORMAT	PUBLISHER:NAME	PUBLISHER:URI	TYPE	PUBLISHED_TS	TEMPLATE_NM	PUBLISHEDREFNAME	AUTHOR_NAME	PROJECT_CONTEXTID	ROOT_WORKITEMID
+DATA ROW>>	TXT:BFTF1	admin	http://localhost:55580/	project template	2018-04-28T16:12:19+00:00	MASTERY_IN_LIFE	mastery_v1	Frank Font	46	1
+BEGIN	METADATA	MISSION_TX
+Become a person that is fulfilling their desire to grow and master an area or subject matter to the best of their ability and perhaps better in some ways than anyone before them has mastered it.
+END	METADATA	MISION_TX
+BEGIN	METADATA	SUBMITTER_BLURB_TX
+This template is very largely based on the ideas synthesized by Robert Greene in his book titled 'Mastery'.
+END	METADATA	SUBMITTER_BLURB_TX
+WORKITEMS	WID	NAME	PURPOSE_TX	OWNER_TEMPLATE_PROJECTID	TYPELETTER						
+DATA ROW>>	1	Master Your Calling	Become a master in your chosen field.	1	P						
+DATA ROW>>	2	Formal Education	Well rounded foundation enabling entry into higher levels of connection and engagement with people on your life path.  Find hints of your natural vocation during this journey.	1	G						
+DATA ROW>>	3	Apprenticeship Graduation	Receive recognition founded in real observation by qualified experts that you have completed your current apprenticeship.	1	G						
+DATA ROW>>	4	Apprenticeship Experimentation	Overcome fears of trying new approaches and techniques that you synthesize even if their value is not openly recognized by your existing mentors.	1	G						
+DATA ROW>>	5	Apprenticeship Skill Acquisition	Complete through the embracement of tedium and self discipline the hands-on repetition and practice of the subject matter for the magical 10,000 hours until key aspects of the material come naturally to you as can only happen through sweat.	1	G						
+DATA ROW>>	6	Apprenticeship Observation Phase	Learn the rules and recognize the power relationships existing in your apprenticeship environment so you can assimilate and connect without disrupting it.	1	G						
+DATA ROW>>	7	Enter Fruitful Apprenticeship	Enter into the practical phase of your education where you are directly interacting with people that have already mastered skills that are significant to you in your life journey.	1	G						
+DATA ROW>>	8	Find a Mentor	Find a mentor that demonstrates mastery in the area you are pursuing and who is welcoming to you and can benefit from your grown.	1	G						
+DATA ROW>>	9	Surpass Your Mentor	Learn from your mentor and synthesize your own unique improvements into the art of the subject matter with the goal of surpassing them in your ability with one or more aspects of the subject.	1	G						
+DATA ROW>>	10	Grok Factors of Emotional Intelligence	Read a book or several and/or engage in coursework that explains and meaningfully familiarizes you with the latest science based insights into the impact of emotions on individuals and how to improve your skill in navigating them.	1	G						
+DATA ROW>>	11	See People as They Are	Understand the real intentions and motivations of the people in our lives that can impact, promote, or impede our progress toward mastery of our calling.	1	G						
+DATA ROW>>	12	Identify your Skill Inclinations	What is it that you are strongly drawn toward that you believe would satisfy you to master?	1	G						
+DATA ROW>>	13	Identify your Skill Needs	What is it that you are weak in that you know in your mind you must become stronger and more capable in?	1	G						
+DATA ROW>>	14	Stay Aware of Related Fields	Keep up to date on developments and progress in fields related to your chosen apprenticeship.	1	G						
+DATA ROW>>	15	Create a New Original Way	Leverage your advanced skills in your domain of expertise with your awareness and skills in related and unrelated domains to create new paths that others have not before.	1	G						
+DATA ROW>>	16	Understand Current Rules	Understand current rules and norms of the environment in which you will create and deliver the products of your work.	1	G						
+DATA ROW>>	17	Deeply Understand Related Fields	Have near expert understanding of one or more fields similar to your own core subject area.	1	G						
+DATA ROW>>	18	Understand Unrelated Fields	Have better-than-novice understanding of one or more fields completely unrelated to your own core subject area.	1	G						
+DATA ROW>>	19	Collect Creative Strategies	Have several go-to strategies that aid you in your quest to create new and original works in your chosen domain.	1	G						
+DATA ROW>>	20	Delay Judgment	Intentionally delay your inclination to produce an insight.  Instead absorb the complexity and dynamic observations of events around you without forming an opinion until they have all washed over you and settled into their own spaces.	1	G						
+DATA ROW>>	21	Suppress Your Ego	Take yourself and your needs out of your creative ruminations.  Substitute instead the needs and benefits to other people and situations meaningful to you in some way.	1	G						
+DATA ROW>>	22	Consider the Ridiculous	Allow for the intentional consideration of ideas that on their surface strike you or others as unreasonable or impractical.  Grow your mind by exploring these ideas as if you need to make them work.	1	G						
+DATA ROW>>	23	Alternate Modalities	Change up your explorations to examine ideas not only in spoken or written concept but also as visualizations or as sounds.  Be creative with how many modalities can be employed to flesh out an idea and look for insights in the novel edges.	1	G						
+DATA ROW>>	24	Encourage Random Input	Harness the power of serendipity to feed your machinery of logical reasoning.	1	G						
+DATA ROW>>	25	Connect to Your Environment	Become a consummate observer of every environment you find yourself in.	1	G						
+DATA ROW>>	26	Supreme Focus	Develop to the power to keep on task through the duration of time through events that challenge your focus.	1	G						
+DATA ROW>>	27	Practice	Develop the equivalent of muscle memory through repetition of work in your weakest areas until they join the ranks of your strengths.	1	G						
+DATA ROW>>	28	Internalize Details	Require yourself to understand intricate details in aspects of your chosen study areas rather than being satisfied with an overall or superficial understanding.	1	G						
+DATA ROW>>	29	Widen your Vision	Think globally with your insights.	1	G						
+DATA ROW>>	30	Submit to Others	Immerse yourself in the perspective of others to learn from them.  Learn from others even if they expect you to teach them or it is not obvious what you could learn from them.	1	G						
+DATA ROW>>	31	Synthesize all Knowledge	Bring together novel insights from ALL your broad ranges of studied disciplines to synthesis new insights in existing and new domains.	1	G						
+DATA ROW>>	32	Maintain Production Capacity	Take care of yourself so that you are able to produce instead of breaking down.	1	G						
+DATA ROW>>	33	Humility Mindset	Prepare your mind to approach new subjects without expectation that your opinion has any value until you complete the formal study.	1	G						
+DATA ROW>>	34	Prepare to Succeed	Understand the criteria that is being measured and focus your energy on rigorously satisfying it.	1	G						
+DATA ROW>>	35	Credible Programs	Find diverse educational settings that are providing legitimate fact-based foundations on which you can move forward building a lifetime of knowledge.	1	G						
+WORKITEM_SUBMAP_NAME:DAW											
+DATA ROW>>	1	15									
+DATA ROW>>	1	25									
+DATA ROW>>	1	26									
+DATA ROW>>	1	27									
+DATA ROW>>	1	28									
+DATA ROW>>	1	29									
+DATA ROW>>	1	30									
+DATA ROW>>	1	31									
+DATA ROW>>	1	32									
+DATA ROW>>	2	33									
+DATA ROW>>	2	34									
+DATA ROW>>	2	35									
+DATA ROW>>	3	4									
+DATA ROW>>	3	9									
+DATA ROW>>	4	5									
+DATA ROW>>	4	14									
+DATA ROW>>	5	6									
+DATA ROW>>	6	7									
+DATA ROW>>	6	8									
+DATA ROW>>	6	11									
+DATA ROW>>	7	2									
+DATA ROW>>	8	12									
+DATA ROW>>	8	13									
+DATA ROW>>	11	10									
+DATA ROW>>	15	3									
+DATA ROW>>	15	16									
+DATA ROW>>	15	17									
+DATA ROW>>	15	18									
+DATA ROW>>	15	19									
+DATA ROW>>	19	20									
+DATA ROW>>	19	21									
+DATA ROW>>	19	22									
+DATA ROW>>	19	23									
+DATA ROW>>	19	24									
+MAP_RELEVANT_ROLES											
+MAP_WORKITEMID2PROJECTID											
+DATA ROW>>	15	1									
+DATA ROW>>	25	1									
+DATA ROW>>	26	1									
+DATA ROW>>	27	1									
+DATA ROW>>	28	1									
+DATA ROW>>	29	1									
+DATA ROW>>	30	1									
+DATA ROW>>	31	1									
+DATA ROW>>	32	1									
+DATA ROW>>	33	1									
+DATA ROW>>	34	1									
+DATA ROW>>	35	1									
+DATA ROW>>	4	1									
+DATA ROW>>	9	1									
+DATA ROW>>	5	1									
+DATA ROW>>	14	1									
+DATA ROW>>	6	1									
+DATA ROW>>	7	1									
+DATA ROW>>	8	1									
+DATA ROW>>	11	1									
+DATA ROW>>	2	1									
+DATA ROW>>	12	1									
+DATA ROW>>	13	1									
+DATA ROW>>	10	1									
+DATA ROW>>	3	1									
+DATA ROW>>	16	1									
+DATA ROW>>	17	1									
+DATA ROW>>	18	1									
+DATA ROW>>	19	1									
+DATA ROW>>	20	1									
+DATA ROW>>	21	1									
+DATA ROW>>	22	1									
+DATA ROW>>	23	1									
+DATA ROW>>	24	1									
+PROJECT_TEMPLATE_END	WORKITEM_COUNT=35	DAW_LINK_COUNT=34									
