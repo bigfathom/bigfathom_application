@@ -1,5 +1,5 @@
 PROJECT_TEMPLATE	FORMAT	PUBLISHER:NAME	PUBLISHER:URI	TYPE	PUBLISHED_TS	TEMPLATE_NM	PUBLISHEDREFNAME	AUTHOR_NAME	PROJECT_CONTEXTID	ROOT_WORKITEMID
-DATA ROW>>	TXT:BFTF1	admin	http://localhost:55580/	project template	2018-04-28T16:12:19+00:00	MASTERY_IN_LIFE	mastery_v1	Frank Font	46	1
+DATA ROW>>	TXT:BFTF1	admin	http://localhost:55580/	project template	2018-04-28T16:12:19+00:00	MASTERY_IN_LIFE	mastery_v1a	Frank Font	46	1
 BEGIN	METADATA	MISSION_TX
 Become a person that is fulfilling their desire to grow and master an area or subject matter to the best of their ability and perhaps better in some ways than anyone before them has mastered it.
 END	METADATA	MISION_TX
@@ -42,6 +42,7 @@ DATA ROW>>	32	Maintain Production Capacity	Take care of yourself so that you are
 DATA ROW>>	33	Humility Mindset	Prepare your mind to approach new subjects without expectation that your opinion has any value until you complete the formal study.	1	G						
 DATA ROW>>	34	Prepare to Succeed	Understand the criteria that is being measured and focus your energy on rigorously satisfying it.	1	G						
 DATA ROW>>	35	Credible Programs	Find diverse educational settings that are providing legitimate fact-based foundations on which you can move forward building a lifetime of knowledge.	1	G						
+DATA ROW>>	36	Learn to Find the Fun	Develop the mental skill of discovering what you enjoy in any situation or subject matter so that you are better equiped to successfully fly where others wear out.	1	G						
 WORKITEM_SUBMAP_NAME:DAW											
 DATA ROW>>	1	15									
 DATA ROW>>	1	25									
@@ -77,6 +78,7 @@ DATA ROW>>	19	21
 DATA ROW>>	19	22									
 DATA ROW>>	19	23									
 DATA ROW>>	19	24									
+DATA ROW>>	34	36									
 MAP_RELEVANT_ROLES											
 MAP_WORKITEMID2PROJECTID											
 DATA ROW>>	15	1									
