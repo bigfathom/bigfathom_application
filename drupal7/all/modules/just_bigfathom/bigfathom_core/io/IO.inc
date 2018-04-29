@@ -684,6 +684,7 @@ class IO
             }
             $mymetadata['project_contextid'] = $templateinfo['project_contextid'];
             $mymetadata['mission_tx'] = $templateinfo['mission_tx'];
+            $mymetadata['submitter_blurb_tx'] = $templateinfo['submitter_blurb_tx'];
             
             $raw_workitems = [];
             $clean_workitems = [];
@@ -856,6 +857,11 @@ class IO
             $format_tx = 'BFTF1';
             $everything = $this->getTemplateProjectInfoMaps($clean_publishedrefname,$aExtraTopLevelAttribs,$sExtraContextNoteText,$filetype_tx,$format_tx);
             $tabtext_rows = [];
+
+            //Declare our dedicated blocks collection
+            $dedicated_blocks = [];
+            $dedicated_blocks['MISSION_TX']=[];
+            $dedicated_blocks['SUBMITTER_BLURB_TX']=[];
             
             //Format the top level project template info
             $metadata_map = $everything['metadata'];
@@ -865,22 +871,42 @@ class IO
             foreach($metadata_map as $k=>$v)
             {
                 $clean_k = strtoupper(trim($k));
-                if(!is_array($v))
+                if(key_exists($clean_k, $dedicated_blocks))
                 {
-                    $one_labelrow[] = $clean_k;
-                    $one_datarow[] = $this->getText4JSONField($v);
+                    //Dedicated block entry
+                    $dedicated_blocks[$clean_k] = trim($v);
                 } else {
-                    foreach($v as $vk=>$vv)
+                    //Simple top level entry
+                    if(!is_array($v))
                     {
-                        $clean_vk = strtoupper(trim($vk));
-                        $one_labelrow[] = "$clean_k:$clean_vk";
-                        $one_datarow[] = $this->getText4JSONField($vv);
+                        $one_labelrow[] = $clean_k;
+                        $one_datarow[] = $this->getText4JSONField($v);
+                    } else {
+                        foreach($v as $vk=>$vv)
+                        {
+                            $clean_vk = strtoupper(trim($vk));
+                            $one_labelrow[] = "$clean_k:$clean_vk";
+                            $one_datarow[] = $this->getText4JSONField($vv);
+                        }
                     }
                 }
             }
             $tabtext_rows[] = implode("\t", $one_labelrow);
             $tabtext_rows[] = implode("\t", $one_datarow);
 
+            //Write the dedicated blocks
+            foreach($dedicated_blocks as $k=>$v)
+            {
+                $tabtext_rows[] = "BEGIN\tMETADATA\t{$k}";
+                if(!is_array($v))
+                {
+                    $tabtext_rows[] = "$v";
+                } else {
+                    $tabtext_rows[] = print_r($v,TRUE);
+                }
+                $tabtext_rows[] = "END\tMETADATA\t{$k}";
+            }
+            
             //Format all the workitem detail
             $workitem_submaps = [];
             $workitems_map = $everything['workitems'];
@@ -991,7 +1017,7 @@ class IO
             $tabtext_rows[] = $last_row;
             
             $tabtext_tx = implode("\n", $tabtext_rows);
-            
+            //return print_r($everything,TRUE);
             //We are done!
             return $tabtext_tx;
         } catch (\Exception $ex) {
