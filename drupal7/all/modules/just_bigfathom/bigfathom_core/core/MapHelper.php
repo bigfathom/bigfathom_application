@@ -6905,6 +6905,10 @@ class MapHelper extends \bigfathom\MapWorkitemHelper
     {
         try
         {
+            if(empty($personid))
+            {
+                throw new \Exception("Missing required personid!");
+            }
             $rows = $this->getPersonsData(NULL,'id',"u.id=$personid");
             return $rows[$personid];
         } catch (\Exception $ex) {
@@ -6916,7 +6920,7 @@ class MapHelper extends \bigfathom\MapWorkitemHelper
     {
         try
         {
-            if(count($personid_ar) == 0)
+            if(empty($personid_ar) || count($personid_ar) == 0)
             {
                 $rows = [];
             } else {

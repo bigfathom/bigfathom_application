@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.hierarchy = {
-        "version": "20180308.1",
+        "version": "20180429.1",
         "default_workitem_opacity":.9,
         "context_type":null,
         "readonly":false
@@ -2025,7 +2025,14 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
             $("#dlg_loading_container").css("display","block");
 
             var callbackid = actionname + "_workitem#" + nativeid;
-            var grab_fullurl = bigfathom_util.data.getGrabDataUrl('one_workitem_with_lookupinfo',{"nativeid": nativeid});
+            var dataname;
+            if(bigfathom_util.hierarchy.context_type !== 'template')
+            {
+                dataname = "one_workitem_with_lookupinfo";
+            } else {
+                dataname = "one_template_workitem_with_lookupinfo";
+            }
+            var grab_fullurl = bigfathom_util.data.getGrabDataUrl(dataname,{"nativeid": nativeid});
             var callbackActionFunction = function(callbackid, responseBundle)
             {
                 if(responseBundle == null || responseBundle.data == null)
@@ -2035,17 +2042,42 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
                 } else {
                     var workitemdetail = responseBundle.data.data;
 
-    //console.log("LOOK workitemdetail=" + JSON.stringify(workitemdetail));
-    //alert("LOOK now got data for workitem#" + nativeid);
                     var maps = workitemdetail.maps;
                     var lookups = workitemdetail.lookups;
                     var peopledetail = lookups.people;
-                    var ownerdetail = peopledetail[workitemdetail.owner_personid];
-                    var delegate_ownerpersonids = maps.delegate_owner;
-                    var count_delegate_owners = delegate_ownerpersonids.length;
+                    var ownerdetail;
+                    if(peopledetail.hasOwnProperty(workitemdetail.owner_personid))
+                    {
+                        ownerdetail = peopledetail[workitemdetail.owner_personid];
+                    } else {
+                        //Did NOT find this person -- continue.
+                        console.log("WARNING did NOT find detail for workitemdetail.owner_personid="+workitemdetail.owner_personid)
+                        console.log("WARNING workitemdetail=" + JSON.stringify(workitemdetail));
+                        console.log("WARNING peopledetail=" + JSON.stringify(peopledetail));
+                        console.log("WARNING ownerdetail=" + JSON.stringify(ownerdetail));
+                        ownerdetail = {"first_nm":"user#"+workitemdetail.owner_personid,"last_nm":""};
+                    }
+                    var delegate_ownerpersonids;
+                    var count_delegate_owners;
+                    if(!maps.hasOwnProperty("delegate_owner"))
+                    {
+                        //Normal for template
+                        delegate_ownerpersonids = [];
+                        count_delegate_owners = 0;
+                    } else {
+                        //Normal for regular project
+                        delegate_ownerpersonids = maps.delegate_owner;
+                        count_delegate_owners = delegate_ownerpersonids.length;
+                    }
                     var topinfomarkup = "<fieldset>";
                     topinfomarkup += "<label for='ownerinfo'>Owner</label> ";
-                    topinfomarkup += "<span id='ownerinfo' title='id#" + workitemdetail.owner_personid + " and " + count_delegate_owners + " delegate owners'>" + ownerdetail.first_nm + " " + ownerdetail.last_nm + "</span><br>";
+                    
+                    topinfomarkup += "<span id='ownerinfo' title='id#" + workitemdetail.owner_personid 
+                            + " and " + count_delegate_owners + " delegate owners'>" 
+                            + ownerdetail.first_nm 
+                            + " " 
+                            + ownerdetail.last_nm 
+                            + "</span><br>";
                     if(count_delegate_owners > 0)
                     {
                         var do_markup = "";
@@ -2072,7 +2104,10 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
                     topinfomarkup += "<span id='uniqueid' title='the unique ID of this existing record'>" + workitemdetail.nativeid + "</span><br>";
                     topinfomarkup += "</fieldset>";
 
-                    var infoelem = $("#dlg_"+ actionname +"_workitem_topinfo");
+                    var infoelem_name = "#dlg_"+ actionname +"_workitem_topinfo";
+                    console.log("DEBUGGING infoelem_name="+infoelem_name);
+                    
+                    var infoelem = $(infoelem_name);
                     infoelem.empty();
                     infoelem.append(topinfomarkup);
                     if(actionname === 'edit')

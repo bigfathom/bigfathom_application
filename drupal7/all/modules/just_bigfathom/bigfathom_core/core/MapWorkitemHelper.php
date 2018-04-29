@@ -3082,7 +3082,35 @@ class MapWorkitemHelper extends \bigfathom\MapCommunicationHelper
     }
     
     
-    
+    /**
+     * Return a rich map of template workitem detail
+     */
+    public function getOneRichTWRecordWithLookupInfo($template_workitemid)
+    {
+        if(empty($template_workitemid))
+        {
+            throw new \Exception("Missing required template workitemid!");
+        }
+        try
+        {
+            $record = $this->getOneBareTWRecord($template_workitemid);
+            $ids_ar = array($template_workitemid);
+            $submaps = $this->getTWMaps($ids_ar, TRUE);
+            foreach($submaps as $twid=>$mapdetails)
+            {
+                $record['maps'] = $mapdetails;
+            }
+            
+            $owners[] = $record['owner_personid'];
+            $peopleinfo = $this->getPeopleDetailData($owners);
+            $lookups['people'] = $peopleinfo;
+            $record['lookups'] = $lookups;
+            
+            return $record;
+        } catch (\Exception $ex) {
+            throw $ex;
+        }
+    }    
     
     /**
      * Return a rich map of workitem detail
@@ -3096,6 +3124,10 @@ class MapWorkitemHelper extends \bigfathom\MapCommunicationHelper
         try
         {
             $record = $this->getOneBareWorkitemRecord($workitemid);
+            if(empty($record))
+            {
+                throw new \Exception("There is no workitem record wid#$workitemid");
+            }
             $owners = [];
             $ids_ar = array($workitemid);
             $submaps = $this->getWorkitemMaps($ids_ar, TRUE);

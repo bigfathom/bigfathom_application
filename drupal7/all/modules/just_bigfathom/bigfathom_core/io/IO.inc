@@ -470,6 +470,11 @@ class IO
                 $workitemid = $aExtraTopLevelAttribs['nativeid'];
                 $one_workitem = $this->m_oMapHelper->getOneRichWorkitemRecordWithLookupInfo($workitemid);
                 $everything['data'] = $one_workitem;
+            } else if($clean_dataname === 'one_template_workitem_with_lookupinfo')
+            {
+                $workitemid = $aExtraTopLevelAttribs['nativeid'];
+                $one_workitem = $this->m_oMapHelper->getOneRichTWRecordWithLookupInfo($workitemid);
+                $everything['data'] = $one_workitem;
             } else if($clean_dataname === 'one_sprint_workitem')
             {
                 $sprintid = $aExtraTopLevelAttribs['sprintid'];
@@ -527,7 +532,7 @@ class IO
             $clean_publishedrefname = strtolower(trim($publishedrefname));
             if(empty($clean_publishedrefname))
             {
-                throw new \Exception("Missing required reference name in template publishe attempt by {$this_username}!");
+                throw new \Exception("Missing required reference name in template publish attempt by {$this_username}!");
             }
             
             $everything = array();
