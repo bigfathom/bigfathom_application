@@ -56,7 +56,10 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
         $this->m_oContext = \bigfathom\Context::getInstance();
         $pmi = $this->m_oContext->getParentMenuItem();
         $urls_arr['return'] = $pmi['link_path'];
-        $urls_arr['tableconsole'] = 'bigfathom/projects/workitems/duration';
+        if($this->m_context_type == 'project')
+        {
+            $urls_arr['tableconsole'] = 'bigfathom/projects/workitems/duration';
+        }
         if(is_array($urls_override_arr))
         {
             foreach($urls_override_arr as $k=>$url)
@@ -104,39 +107,6 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
         }
     }
     
-    private function getVarNameMap()
-    {
-        /*
-         *                         . "\nvar my_userinfo_map = $json_userinfo_map;"
-                        . "\nvar my_action_map = $json_action_map;"
-                        . "\nvar my_field_map = $json_field_map;"
-                        . "\nvar tpid = {$this->m_templateid};"
-                        . "\nvar template_projectid = {$this->m_templateid};"
-                        . "\nvar commands = $json_commands;"
-                        . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', 'template', my_userinfo_map, my_action_map, my_field_map, tpid, commands);\n"
-                        . "</script>"
-         * 
-         * 
-         *                         . "\nvar my_userinfo_map = $json_userinfo_map;"
-                        . "\nvar my_action_map = $json_action_map;"
-                        . "\nvar my_field_map = $json_field_map;"
-                        . "\nvar projectid = {$this->m_projectid};"
-                        . "\nvar commands = $json_commands;"
-                        . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', 'project', my_userinfo_map, my_action_map, my_field_map, projectid, commands);\n"
-                        . "</script>"
-
-         * 
-         */
-        $map = [];
-        if($this->m_context_type != 'template')
-        {
-            $map['m_projectid']='projectid';
-        } else {
-            $map['m_projectid']='tpid';
-        }
-        return $map;
-    }
-    
     /**
      * Get all the form contents for rendering
      * @return type renderable array
@@ -152,8 +122,6 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
 
             $this->addJS($base_url, $module_path, $theme_path);
             
-            $js_var_map = $this->getVarNameMap();
-
             if($html_classname_overrides == NULL)
             {
                 $html_classname_overrides = array();
@@ -202,11 +170,19 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
             
             $findbox_markup = '<span title="Provide ID number of the node you want to find"><label for="txt_find">Search:</label><input type="text" id="txt_find" value="" maxlength="20" size="5"></label></span>';
             $checkbox_zoom_markup = '<label title="Enable ability to zoom and move the display canvas" ><input type="checkbox" id="chk_enablezoompan" value="tasks" checked="checked" >Enable zoom &amp; pan</label>';
-            $checkbox_hide_completed_markup = '<span title="Hide all workitems that are already done"><label><input type="checkbox" id="chk_hide_completed_branches" value="tasks" checked="checked" >Hide completed branches</label></span>';
             $resetscale_markup = "<button title='Resets the display back to its original zoom and position' id='btn_reset_scale' type='button'>Reset Display</button>";
-            $bar_markup = " | ";
-            $sCreateNewWorkitemMarkup = "<button id='btn_create_new_workitem' type='button'>Create New Candidate Workitem</button>";
-            $sImportPartsMarkup = "<button id='btn_import_parts' type='button'>Import Parts</button>";
+            if($this->m_context_type == 'template')
+            {
+                $checkbox_hide_completed_markup = '';
+                $bar_markup = '';
+                $sCreateNewWorkitemMarkup = '';
+                $sImportPartsMarkup = '';
+            } else {
+                $checkbox_hide_completed_markup = '<span title="Hide all workitems that are already done"><label><input type="checkbox" id="chk_hide_completed_branches" value="tasks" checked="checked" >Hide completed branches</label></span>';
+                $bar_markup = " | ";
+                $sCreateNewWorkitemMarkup = "<button id='btn_create_new_workitem' type='button'>Create New Candidate Workitem</button>";
+                $sImportPartsMarkup = "<button id='btn_import_parts' type='button'>Import Parts</button>";
+            }
             $form["formarea1"]['dashboard']['controls'] = array('#type' => 'item',
                      '#markup' => ""
                 . "<span class='inlinecontrols' style='white-space:nowrap; display:inline'>"
@@ -350,7 +326,6 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                         . "\nvar my_field_map = $json_field_map;"
                         . "\nvar main_id = {$this->m_projectid};"
                         . "\nvar context_type = '{$this->m_context_type}';"
-                        . "\nvar xxxx{$js_var_map['m_projectid']} = {$this->m_projectid};"
                         . "\nvar commands = $json_commands;"
                         . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', context_type, my_userinfo_map, my_action_map, my_field_map, main_id, commands);\n"
                         . "</script>"
