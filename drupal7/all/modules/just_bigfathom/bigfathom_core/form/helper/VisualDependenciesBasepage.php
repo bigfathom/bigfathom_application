@@ -225,49 +225,7 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                 'close_dlg_btn_id'=>'btn_cancel',
                 'field_ids_map'=>$loading_field_map,
                 );
-            
-            $add_field_map = array(
-                'workitem_nm'=>'new_workitem_nm',
-                'purpose_tx'=>'new_purpose_tx',
-                'workitem_basetype'=>'new_workitem_basetype',
-                'branch_effort_hours_est'=>'new_branch_effort_hours_est',
-                'remaining_effort_hours'=>'new_remaining_effort_hours'
-                );
-            $add_popup_map = array(
-                'context'=>'workitem',
-                'subcontext'=>'add',
-                'dlg_container_id'=>'dlg_add_workitem_container',
-                'dlg_form_id'=>'dlg_add_workitem_form',
-                'show_dlg_btn_id'=>'btn_show_popup_create_new_item',
-                'dlg_form_topinfo'=>'dlg_add_workitem_topinfo',
-                'dlg_form_statusinfo'=>'dlg_add_workitem_statusinfo',
-                'save_dlg_btn_id'=>'btn_save_new',
-                'saveandaddmore_dlg_btn_id'=>'btn_create_workitem_and_addmore',
-                'close_dlg_btn_id'=>'btn_add_close',
-                'field_ids_map'=>$add_field_map,
-                );
-            
-            $edit_field_map = array(
-                'nativeid'=>'edit_nativeid',
-                'workitem_nm'=>'edit_workitem_nm',
-                'purpose_tx'=>'edit_purpose_tx',
-                'workitem_basetype'=>'edit_workitem_basetype',
-                'workitem_status_cd'=>'edit_workitem_status_cd',
-                'branch_effort_hours_est'=>'edit_branch_effort_hours_est',
-                'remaining_effort_hours'=>'edit_remaining_effort_hours'
-                );
-            $edit_popup_map = array(
-                'context'=>'workitem',
-                'subcontext'=>'edit',
-                'dlg_container_id'=>'dlg_edit_workitem_container',
-                'dlg_form_id'=>'dlg_edit_workitem_form',
-                'dlg_form_topinfo'=>'dlg_edit_workitem_topinfo',
-                'dlg_form_statusinfo'=>'dlg_edit_workitem_statusinfo',
-                'save_dlg_btn_id'=>'btn_save_changes',
-                'close_dlg_btn_id'=>'btn_edit_close',
-                'field_ids_map'=>$edit_field_map,
-                );
-            
+
             $view_field_map = array(
                 'nativeid'=>'view_nativeid',
                 'workitem_nm'=>'view_workitem_nm',
@@ -288,21 +246,87 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                 'field_ids_map'=>$view_field_map,
                 );
             
-            $popups = array('loading_workitem' => $loading_popup_map
+            if($this->m_context_type == 'template')
+            {
+                $add_field_map = NULL;
+                $add_popup_map = NULL;
+                $edit_field_map = NULL;
+                $edit_popup_map = NULL;
+                
+                $popups = array('loading_workitem' => $loading_popup_map
+                    ,'view_workitem' => $view_popup_map
+                        );
+                
+                $aggregate_field_map = [];
+                
+                $action_map = array(
+                    'popups'=>$popups,
+                    'txt_find_id'=>'txt_find',
+                    'reset_scale_btn_id'=>'btn_reset_scale',
+                    'enablezoompan_chk_id'=>'chk_enablezoompan',
+                    );
+
+            } else {
+                $add_field_map = array(
+                    'workitem_nm'=>'new_workitem_nm',
+                    'purpose_tx'=>'new_purpose_tx',
+                    'workitem_basetype'=>'new_workitem_basetype',
+                    'branch_effort_hours_est'=>'new_branch_effort_hours_est',
+                    'remaining_effort_hours'=>'new_remaining_effort_hours'
+                    );
+                $add_popup_map = array(
+                    'context'=>'workitem',
+                    'subcontext'=>'add',
+                    'dlg_container_id'=>'dlg_add_workitem_container',
+                    'dlg_form_id'=>'dlg_add_workitem_form',
+                    'show_dlg_btn_id'=>'btn_show_popup_create_new_item',
+                    'dlg_form_topinfo'=>'dlg_add_workitem_topinfo',
+                    'dlg_form_statusinfo'=>'dlg_add_workitem_statusinfo',
+                    'save_dlg_btn_id'=>'btn_save_new',
+                    'saveandaddmore_dlg_btn_id'=>'btn_create_workitem_and_addmore',
+                    'close_dlg_btn_id'=>'btn_add_close',
+                    'field_ids_map'=>$add_field_map,
+                    );
+
+                $edit_field_map = array(
+                    'nativeid'=>'edit_nativeid',
+                    'workitem_nm'=>'edit_workitem_nm',
+                    'purpose_tx'=>'edit_purpose_tx',
+                    'workitem_basetype'=>'edit_workitem_basetype',
+                    'workitem_status_cd'=>'edit_workitem_status_cd',
+                    'branch_effort_hours_est'=>'edit_branch_effort_hours_est',
+                    'remaining_effort_hours'=>'edit_remaining_effort_hours'
+                    );
+                $edit_popup_map = array(
+                    'context'=>'workitem',
+                    'subcontext'=>'edit',
+                    'dlg_container_id'=>'dlg_edit_workitem_container',
+                    'dlg_form_id'=>'dlg_edit_workitem_form',
+                    'dlg_form_topinfo'=>'dlg_edit_workitem_topinfo',
+                    'dlg_form_statusinfo'=>'dlg_edit_workitem_statusinfo',
+                    'save_dlg_btn_id'=>'btn_save_changes',
+                    'close_dlg_btn_id'=>'btn_edit_close',
+                    'field_ids_map'=>$edit_field_map,
+                    );
+
+                $popups = array('loading_workitem' => $loading_popup_map
                     ,'add_workitem' => $add_popup_map
                     ,'view_workitem' => $view_popup_map
                     ,'edit_workitem' => $edit_popup_map);
 
-            $action_map = array(
-                'popups'=>$popups,
-                'txt_find_id'=>'txt_find',
-                'reset_scale_btn_id'=>'btn_reset_scale',
-                'create_new_workitem_btn_id'=>'btn_create_new_workitem',
-                'import_parts_btn_id'=>'btn_import_parts',
-                'hide_completed_branches_chk_id'=>'chk_hide_completed_branches',
-                'enablezoompan_chk_id'=>'chk_enablezoompan',
-                'edit_workitem_btn_id'=>'btn_edit_workitem',
-                );
+                $aggregate_field_map = array_merge($add_field_map, $edit_field_map);
+                
+                $action_map = array(
+                    'popups'=>$popups,
+                    'txt_find_id'=>'txt_find',
+                    'reset_scale_btn_id'=>'btn_reset_scale',
+                    'create_new_workitem_btn_id'=>'btn_create_new_workitem',
+                    'import_parts_btn_id'=>'btn_import_parts',
+                    'hide_completed_branches_chk_id'=>'chk_hide_completed_branches',
+                    'enablezoompan_chk_id'=>'chk_enablezoompan',
+                    'edit_workitem_btn_id'=>'btn_edit_workitem',
+                    );
+            }
             
             //Draw our canvas
             $form["formarea1"]['mainvisual'] = array(
@@ -310,8 +334,6 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                 '#markup' => '<div style="width:100%; height:100vh" class="visualizationbox" id="visualization1" /">',
             );
 
-            $aggregate_field_map = array_merge($add_field_map, $edit_field_map);
-            
             //Run our script now
             $json_userinfo_map = json_encode($userinfo_map);
             $json_action_map = json_encode($action_map);
