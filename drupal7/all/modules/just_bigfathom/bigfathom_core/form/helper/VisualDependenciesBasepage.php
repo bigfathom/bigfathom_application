@@ -27,8 +27,9 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
     protected $m_projectid = NULL;
     protected $m_urls_arr = NULL;
     protected $m_page_parambundle = NULL;
-    protected $m_pagemode;
+    protected $m_pagemode = NULL;
     protected $m_oSnippetHelper     = NULL;
+    protected $m_oUAH = NULL;
     
     public function __construct($context_type, $projectid, $urls_override_arr=NULL, $page_parambundle=NULL)
     {
@@ -42,6 +43,13 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
         }
         $this->m_context_type = $context_type;
         $this->m_projectid = $projectid;
+
+        $loaded_uah = module_load_include('php','bigfathom_core','core/UserAccountHelper');
+        if(!$loaded_uah)
+        {
+            throw new \Exception('Failed to load the UserAccountHelper class');
+        }
+        $this->m_oUAH = new \bigfathom\UserAccountHelper();
         
         $urls_arr = [];
         module_load_include('php','bigfathom_core','core/Context');
@@ -72,6 +80,63 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
         $this->m_oSnippetHelper = new \bigfathom\SnippetHelper();
     }
 
+    private function addJS($base_url, $module_path, $theme_path)
+    {
+        drupal_add_js("$base_url/$theme_path/js/jquery-1.12.1.min.js");
+        drupal_add_js("$base_url/$theme_path/js/d3.v3.js");
+        drupal_add_js("$base_url/$theme_path/js/spinner.js");
+        drupal_add_js("$base_url/$module_path/visualization/d3v3_util_svg.js");
+        drupal_add_js("$base_url/$module_path/visualization/util_url.js");
+        drupal_add_js("$base_url/$module_path/visualization/util_data.js");
+        drupal_add_js("$base_url/$module_path/visualization/util_nodes.js");
+        drupal_add_js("$base_url/$module_path/visualization/d3v3_util_shapes.js");
+        drupal_add_js("$base_url/$module_path/visualization/d3v3_util_shapes_lib.js");
+        drupal_add_js("$base_url/$module_path/visualization/help_d3v3_util_popup.js");
+        drupal_add_js("$base_url/$module_path/visualization/d3v3_util_env_multilevelhierarchy.js");
+        
+        if($this->m_pagemode === 'showgoals')
+        {
+            drupal_add_js("$base_url/$module_path/visualization/d3v3_util_hierarchy_data.js");
+            drupal_add_js("$base_url/$module_path/visualization/d3v3_util_hierarchy.js");
+        } else {
+            drupal_add_js("$base_url/$module_path/visualization/help_d3v3_util_task_hierarchy_data.js");
+            drupal_add_js("$base_url/$module_path/visualization/help_d3v3_util_task_hierarchy.js");
+        }
+    }
+    
+    private function getVarNameMap()
+    {
+        /*
+         *                         . "\nvar my_userinfo_map = $json_userinfo_map;"
+                        . "\nvar my_action_map = $json_action_map;"
+                        . "\nvar my_field_map = $json_field_map;"
+                        . "\nvar tpid = {$this->m_templateid};"
+                        . "\nvar template_projectid = {$this->m_templateid};"
+                        . "\nvar commands = $json_commands;"
+                        . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', 'template', my_userinfo_map, my_action_map, my_field_map, tpid, commands);\n"
+                        . "</script>"
+         * 
+         * 
+         *                         . "\nvar my_userinfo_map = $json_userinfo_map;"
+                        . "\nvar my_action_map = $json_action_map;"
+                        . "\nvar my_field_map = $json_field_map;"
+                        . "\nvar projectid = {$this->m_projectid};"
+                        . "\nvar commands = $json_commands;"
+                        . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', 'project', my_userinfo_map, my_action_map, my_field_map, projectid, commands);\n"
+                        . "</script>"
+
+         * 
+         */
+        $map = [];
+        if($this->m_context_type != 'template')
+        {
+            $map['m_projectid']='projectid';
+        } else {
+            $map['m_projectid']='tpid';
+        }
+        return $map;
+    }
+    
     /**
      * Get all the form contents for rendering
      * @return type renderable array
@@ -80,21 +145,14 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
     {
         try
         {
+            global $user;
             global $base_url;
             $module_path = drupal_get_path('module', 'bigfathom_core');
             $theme_path = drupal_get_path('theme', 'omega_bigfathom');
 
-            drupal_add_js("$base_url/$theme_path/js/jquery-1.12.1.min.js");
-            drupal_add_js("$base_url/$theme_path/js/d3.v3.js");
-            drupal_add_js("$base_url/$theme_path/js/spinner.js");
-            drupal_add_js("$base_url/$module_path/visualization/d3v3_util_svg.js");
-            drupal_add_js("$base_url/$module_path/visualization/util_url.js");
-            drupal_add_js("$base_url/$module_path/visualization/util_data.js");
-            drupal_add_js("$base_url/$module_path/visualization/util_nodes.js");
-            drupal_add_js("$base_url/$module_path/visualization/d3v3_util_shapes.js");
-            drupal_add_js("$base_url/$module_path/visualization/d3v3_util_shapes_lib.js");
-            drupal_add_js("$base_url/$module_path/visualization/help_d3v3_util_popup.js");
-            drupal_add_js("$base_url/$module_path/visualization/d3v3_util_env_multilevelhierarchy.js");
+            $this->addJS($base_url, $module_path, $theme_path);
+            
+            $js_var_map = $this->getVarNameMap();
 
             if($html_classname_overrides == NULL)
             {
@@ -121,16 +179,6 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                 $html_classname_overrides['action-button'] = 'action-button';
             }
             
-            if($this->m_pagemode === 'showgoals')
-            {
-                drupal_add_js("$base_url/$module_path/visualization/d3v3_util_hierarchy_data.js");
-                drupal_add_js("$base_url/$module_path/visualization/d3v3_util_hierarchy.js");
-            } else {
-                drupal_add_js("$base_url/$module_path/visualization/help_d3v3_util_task_hierarchy_data.js");
-                drupal_add_js("$base_url/$module_path/visualization/help_d3v3_util_task_hierarchy.js");
-            }
-            
-            global $base_url;
             $form["formarea1"] = array(
                 '#prefix' => "\n<section>\n",
                 '#suffix' => "\n</section>\n",
@@ -176,14 +224,6 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                 . "</span>"    
                 );            
 
-            $loaded_uah = module_load_include('php','bigfathom_core','core/UserAccountHelper');
-            if(!$loaded_uah)
-            {
-                throw new \Exception('Failed to load the UserAccountHelper class');
-            }
-            $this->m_oUAH = new \bigfathom\UserAccountHelper();
-            
-            global $user;
             $userinfo_map =  $this->m_oUAH->getAllRolesBundle($user->uid);
             
             //Map the library action name to our element IDs
@@ -308,9 +348,11 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
                         . "\nvar my_userinfo_map = $json_userinfo_map;"
                         . "\nvar my_action_map = $json_action_map;"
                         . "\nvar my_field_map = $json_field_map;"
-                        . "\nvar projectid = {$this->m_projectid};"
+                        . "\nvar main_id = {$this->m_projectid};"
+                        . "\nvar context_type = '{$this->m_context_type}';"
+                        . "\nvar xxxx{$js_var_map['m_projectid']} = {$this->m_projectid};"
                         . "\nvar commands = $json_commands;"
-                        . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', 'project', my_userinfo_map, my_action_map, my_field_map, projectid, commands);\n"
+                        . "\nvar manager = bigfathom_util.hierarchy.createEverything('visualization1', context_type, my_userinfo_map, my_action_map, my_field_map, main_id, commands);\n"
                         . "</script>"
                         . "");
 

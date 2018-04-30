@@ -14,21 +14,28 @@
 
 namespace bigfathom;
 
-require_once 'helper/ASimpleFormPage.php';
+require_once 'helper/VisualDependenciesBasepage.php';
 
 /**
  * Information for the user
  *
  * @author Frank Font of Room4me.com Software LLC
  */
-class MapTemplateDependenciesPage extends \bigfathom\ASimpleFormPage
+class MapTemplateDependenciesPage extends \bigfathom\VisualDependenciesBasepage
 {
-    protected $m_templateid = NULL;
-    protected $m_urls_arr = NULL;
-    protected $m_page_parambundle = NULL;
-    protected $m_pagemode;
     
-    public function __construct($projectid, $urls_arr=NULL, $page_parambundle=NULL)
+    public function __construct($projectid, $urls_override_arr=NULL, $page_parambundle=NULL)
+    {
+        parent::__construct("template",$projectid, $urls_override_arr, $page_parambundle);
+    }
+    
+    
+    //protected $m_templateid = NULL;
+    //protected $m_urls_arr = NULL;
+    //protected $m_page_parambundle = NULL;
+    //protected $m_pagemode;
+    
+    public function XXX__construct($projectid, $urls_arr=NULL, $page_parambundle=NULL)
     {
         if($projectid == NULL)
         {
@@ -57,7 +64,7 @@ class MapTemplateDependenciesPage extends \bigfathom\ASimpleFormPage
      * Get all the form contents for rendering
      * @return type renderable array
      */
-    function getForm($form, &$form_state, $disabled, $myvalues, $html_classname_overrides=NULL)
+    function XXXgetForm($form, &$form_state, $disabled, $myvalues, $html_classname_overrides=NULL)
     {
         try
         {
