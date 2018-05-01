@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.hierarchy = {
-        "version": "20180429.1",
+        "version": "20180430.1",
         "default_workitem_opacity":.9,
         "context_type":null,
         "readonly":false
@@ -1320,55 +1320,71 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
     {
         try
         {
-            console.log("LOOK my_userinfo_map=" + JSON.stringify(my_userinfo_map));
-            console.log("LOOK target=" + JSON.stringify(target));
-            var okay = false;
-            if(rootprojectnode.key === target.key)
+            var checkTemplateContext = function()
             {
-                //All project members can map to the project root!
-                okay = true;
-            } else
-            if(my_userinfo_map.systemroles.summary.is_systemadmin)
+                return false;
+            }
+
+            var checkProjectContext = function()
             {
-                //Can do whatever they want in the system
-                okay = true;
-            } else {
-                var mypersonid = my_userinfo_map.personid;
-                var isOwner = function(target)
+                var okay = false;
+                if(rootprojectnode.key === target.key)
                 {
-                    //Check ownership
-                    okay = false;
-                    if(mypersonid === target.maps.owner_personid)
+                    //All project members can map to the project root!
+                    okay = true;
+                } else
+                if(my_userinfo_map.systemroles.summary.is_systemadmin)
+                {
+                    //Can do whatever they want in the system
+                    okay = true;
+                } else {
+                    var mypersonid = my_userinfo_map.personid;
+                    var isOwner = function(target)
                     {
-                        okay = true;
-                    } else {
-                        //Check delegates
-                        if(target.hasOwnProperty("maps") && target.maps.hasOwnProperty("delegate_owner"))
+                        //Check ownership
+                        okay = false;
+                        if(mypersonid === target.maps.owner_personid)
                         {
-                            var maxidx = target.maps.delegate_owner.length;
-                            for (var i = 0; i < maxidx; i++) {
-                                if(mypersonid == target.maps.delegate_owner[i]) //Must use == NOT ===!!!
-                                {
-                                    okay = true;
-                                    break;
+                            okay = true;
+                        } else {
+                            //Check delegates
+                            if(target.hasOwnProperty("maps") && target.maps.hasOwnProperty("delegate_owner"))
+                            {
+                                var maxidx = target.maps.delegate_owner.length;
+                                for (var i = 0; i < maxidx; i++) {
+                                    if(mypersonid == target.maps.delegate_owner[i]) //Must use == NOT ===!!!
+                                    {
+                                        okay = true;
+                                        break;
+                                    }
                                 }
                             }
                         }
+                        return okay;
+                    };
+
+                    if(isOwner(rootprojectnode))
+                    {
+                        //Owns the project!
+                        okay = true;
+                    } else {
+                        //Owns the target!
+                        okay = isOwner(target);
                     }
-                    return okay;
-                };
-
-                if(isOwner(rootprojectnode))
-                {
-                    //Owns the project!
-                    okay = true;
-                } else {
-                    //Owns the target!
-                    okay = isOwner(target);
                 }
-            }
 
-            return okay;
+                return okay;
+            }
+            
+            console.log("LOOK my_userinfo_map=" + JSON.stringify(my_userinfo_map));
+            console.log("LOOK target=" + JSON.stringify(target));
+
+            if(bigfathom_util.hierarchy.context_type == 'template')
+            {
+                return checkTemplateContext();
+            } else {
+                return checkProjectContext();
+            }
         }
         catch(err)
         {
