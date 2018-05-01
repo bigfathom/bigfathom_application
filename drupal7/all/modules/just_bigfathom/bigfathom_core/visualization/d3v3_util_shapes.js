@@ -17,7 +17,7 @@ if (typeof bigfathom_util === 'undefined')
 if(!bigfathom_util.hasOwnProperty("shapes"))
 {
     //Create the object property because it does not already exist
-    bigfathom_util.shapes = {version: "20180331.1"};
+    bigfathom_util.shapes = {version: "20180430.1"};
 }
 
 //see shape names from http://fiddle.jshell.net/994XM/9/
@@ -1233,7 +1233,8 @@ d3.selection.enter.prototype.joinForceNodeShapes = function(manager, typename)
         .text(function(d){
             if(d.hasOwnProperty('status_detail'))
             {
-                if(!d.hasOwnProperty("is_candidate") || !d.is_candidate)
+                //20180430 enhancing with new property 'show_status' so we can togle from template display
+                if((!d.hasOwnProperty("show_status") || d.show_status) && (!d.hasOwnProperty("is_candidate") || !d.is_candidate))
                 {
                     return d.status_detail.code;
                 }
