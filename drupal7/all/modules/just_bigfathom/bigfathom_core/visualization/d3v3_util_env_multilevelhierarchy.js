@@ -24,7 +24,7 @@ if(!bigfathom_util.env.hasOwnProperty("multilevelhierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.env.multilevelhierarchy = {
-        "version": "20180219.2", 
+        "version": "20180430.1", 
         "hierarchy_lane":1, 
         "unassigned_lane":2, 
         "show_unassigned_lane":true,
@@ -33,7 +33,7 @@ if(!bigfathom_util.env.hasOwnProperty("multilevelhierarchy"))
         "max_sublane_width": 700,
         "max_tree_levels": 100,
         "min_canvas_usable_width": 1100,
-        "min_canvas_usable_height": 700,
+        "min_canvas_usable_height": 600,
         "check_canvas_size": true,
         "is_model_out_of_synch": false,
         "locks": {"offsets_changing_requester": null},

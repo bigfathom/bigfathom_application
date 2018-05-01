@@ -340,9 +340,12 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
             $json_field_map = json_encode($aggregate_field_map);
             $json_commands = json_encode($this->m_page_parambundle);
             
+            $show_status_jsvar_value = ($this->m_context_type == 'template') ? '0' : '1';
+            
             $form["myscripts"] = array('#type' => 'item',
                      '#markup' => ""
                         . "<script>"
+                        . "\nbigfathom_util.shapes.show_status = {$show_status_jsvar_value};"
                         . "\nvar my_userinfo_map = $json_userinfo_map;"
                         . "\nvar my_action_map = $json_action_map;"
                         . "\nvar my_field_map = $json_field_map;"

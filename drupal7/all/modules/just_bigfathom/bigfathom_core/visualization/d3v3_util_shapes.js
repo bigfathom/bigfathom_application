@@ -17,7 +17,10 @@ if (typeof bigfathom_util === 'undefined')
 if(!bigfathom_util.hasOwnProperty("shapes"))
 {
     //Create the object property because it does not already exist
-    bigfathom_util.shapes = {version: "20180430.1"};
+    bigfathom_util.shapes = {
+        version: "20180430.2",
+        show_status: true
+    };
 }
 
 //see shape names from http://fiddle.jshell.net/994XM/9/
@@ -1203,35 +1206,38 @@ d3.selection.enter.prototype.joinForceNodeShapes = function(manager, typename)
         })
         .attr('class', function(d) {
             var classtext = "node-status-cd";
-            if(d.hasOwnProperty('status_detail'))
+            if(!bigfathom_util.shapes.show_status)
             {
-                var sd = d.status_detail;
-                var hpart;
-                var tpart;
-                if(sd.happy_yn === null)
+                if(d.hasOwnProperty('status_detail'))
                 {
-                    hpart = '-ambigous';
-                } else {
-                    if(sd.happy_yn == 1)
+                    var sd = d.status_detail;
+                    var hpart;
+                    var tpart;
+                    if(sd.happy_yn === null)
                     {
-                        hpart = '-happy-yes';
+                        hpart = '-ambigous';
                     } else {
-                        hpart = '-happy-no';
+                        if(sd.happy_yn == 1)
+                        {
+                            hpart = '-happy-yes';
+                        } else {
+                            hpart = '-happy-no';
+                        }
                     }
+                    if(sd.terminal_yn == 1)
+                    {
+                        tpart = '-terminal';
+                    } else {
+                        tpart = '';
+                    }
+                    classtext += " node-status" + tpart + hpart;
+                    //classtext += " node-status-terminal-happy-yes";
                 }
-                if(sd.terminal_yn == 1)
-                {
-                    tpart = '-terminal';
-                } else {
-                    tpart = '';
-                }
-                classtext += " node-status" + tpart + hpart;
-                //classtext += " node-status-terminal-happy-yes";
             }
             return classtext;
         })
         .text(function(d){
-            if(d.hasOwnProperty('status_detail'))
+            if(bigfathom_util.shapes.show_status && d.hasOwnProperty('status_detail'))
             {
                 //20180430 enhancing with new property 'show_status' so we can togle from template display
                 if((!d.hasOwnProperty("show_status") || d.show_status) && (!d.hasOwnProperty("is_candidate") || !d.is_candidate))

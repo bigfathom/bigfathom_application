@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.hierarchy = {
-        "version": "20180430.1",
+        "version": "20180430.2",
         "default_workitem_opacity":.9,
         "context_type":null,
         "readonly":false
@@ -32,6 +32,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 bigfathom_util.hierarchy.createEverything = function (canvas_container_id, context_type, my_userinfo_map, my_action_map, my_field_map, projectid, initial_commands)
 {
     bigfathom_util.hierarchy.context_type = context_type;
+    bigfathom_util.shapes.show_status = !(context_type == 'template');
     var start_simulation = true;
     var dataname;
     if(context_type !== 'template')
