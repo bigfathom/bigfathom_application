@@ -18,7 +18,7 @@ if(!bigfathom_util.hasOwnProperty("shapes"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.shapes = {
-        version: "20180430.2",
+        version: "20180506.1",
         show_status: true
     };
 }
@@ -220,7 +220,7 @@ bigfathom_util.shapes.getManager = function (graphdata, handlers, overrides)
     /**
      * The built-in shapes
      */
-    manager["getD3Symbol"] = function (d)
+    manager["getD3Symbol"] = function (d,i)
     {
         var svgpath;
 
@@ -293,7 +293,7 @@ bigfathom_util.shapes.getManager = function (graphdata, handlers, overrides)
      * .attr.d = path
      * .attr.fill = fill color
      */
-    manager["getShape"] = function (node_data)
+    manager["getShape"] = function (node_data,i)
     {
         var shapedef = {};
         var svgpath;
@@ -372,6 +372,7 @@ bigfathom_util.shapes.getManager = function (graphdata, handlers, overrides)
             }
         }
 
+        //jQuery.extend(shapedef, node_data); //20180506
         return shapedef;
     };
 

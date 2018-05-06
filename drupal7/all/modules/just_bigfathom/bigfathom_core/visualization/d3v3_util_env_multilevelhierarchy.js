@@ -24,7 +24,7 @@ if(!bigfathom_util.env.hasOwnProperty("multilevelhierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.env.multilevelhierarchy = {
-        "version": "20180430.1", 
+        "version": "20180505.1", 
         "hierarchy_lane":1, 
         "unassigned_lane":2, 
         "show_unassigned_lane":true,

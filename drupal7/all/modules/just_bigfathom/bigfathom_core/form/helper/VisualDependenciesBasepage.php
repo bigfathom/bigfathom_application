@@ -340,12 +340,21 @@ class VisualDependenciesBasepage extends \bigfathom\ASimpleFormPage
             $json_field_map = json_encode($aggregate_field_map);
             $json_commands = json_encode($this->m_page_parambundle);
             
-            $show_status_jsvar_value = ($this->m_context_type == 'template') ? '0' : '1';
+            $show_icon_status_value = ($this->m_context_type == 'template') ? '0' : '1';
+            $readonly_value = ($this->m_context_type == 'template') ? '1' : '0';
+            
+            //The DOM element for our node hover tooltips
+            $form["tooltipmarkup"] = array('#type' => 'item',
+                     '#markup' => ""
+                        . '<div class="node-tooltip">Absolute HTML Tip</div>'
+                        );
             
             $form["myscripts"] = array('#type' => 'item',
                      '#markup' => ""
                         . "<script>"
-                        . "\nbigfathom_util.shapes.show_status = {$show_status_jsvar_value};"
+                        . "\nbigfathom_util.shapes.show_status = {$show_icon_status_value};"
+                        . "\nbigfathom_util.hierarchy.readonly = {$readonly_value};"
+                        . "\n"
                         . "\nvar my_userinfo_map = $json_userinfo_map;"
                         . "\nvar my_action_map = $json_action_map;"
                         . "\nvar my_field_map = $json_field_map;"

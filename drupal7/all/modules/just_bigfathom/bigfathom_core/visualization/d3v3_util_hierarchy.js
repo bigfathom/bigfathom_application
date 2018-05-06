@@ -19,7 +19,7 @@ if(!bigfathom_util.hasOwnProperty("hierarchy"))
 {
     //Create the object property because it does not already exist
     bigfathom_util.hierarchy = {
-        "version": "20180430.2",
+        "version": "20180505.1",
         "default_workitem_opacity":.9,
         "context_type":null,
         "readonly":false
@@ -428,7 +428,7 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
         editable_nodes = {};
     };
 
-    var node_over = function (d)
+    var node_over = function (d,i)
     {
         instance.clear_all_special_links();
         instance.clear_all_special_nodes();
@@ -459,6 +459,48 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
        
         highlight_node = d;
         highlight_all_connected_nodes(d);
+        
+        /*
+        //////////////////// ABBACATS DEBUG 
+        var HTMLabsoluteTip = d3.select("div.node-tooltip");
+   
+        console.log("ABBACATS LOOK1");  
+        HTMLabsoluteTip.style("opacity", "1");   
+   
+        var svgcontext = d.ownerSVGElement;
+        if ( d === null )
+        {
+            console.log("ABBACATS LOOK2 we have null d!!!!!!!!!!!!!!!");  
+            
+        } else {
+            console.log("ABBACATS LOOK d=" + JSON.stringify(d) );  
+            console.log("ABBACATS LOOK svgcontext=" + JSON.stringify(svgcontext) );  
+            //A better solution is to calculate the position 
+            //of the page on the screen to position an 
+            //absolute-positioned tooltip:
+            var ctm = svgcontext.getScreenCTM()
+            console.log("ABBACATS LOOK2a ctm=" + JSON.stringify(ctm) );  
+            
+            var matrix = ctm
+                    .translate(+svgcontext.getAttribute("cx"),
+                             +svgcontext.getAttribute("cy"));
+            console.log("ABBACATS LOOK2b matrix=" + JSON.stringify(matrix) );  
+            HTMLabsoluteTip
+                .style("left", 
+                       (window.pageXOffset + matrix.e) + "px")
+                .style("top",
+                       (window.pageYOffset + matrix.f + 30) + "px");        
+
+            console.log("ABBACATS LOOK2");  
+
+
+    console.log("LOOKDEBUG matrix="+JSON.stringify(matrix));						 
+        }
+   
+				  
+        
+        ///////////////////
+        */
         
         instance.redraw();
     };
@@ -1155,9 +1197,9 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
                 my_node_handlers["mouseover"] = {
                         "handler_type" : "on",
                         "replacement" : true,
-                        "function" : function(d) { 
+                        "function" : function(d,i) { 
                                 //d3.event.stopPropagation();
-                                node_over(d);
+                                node_over(d,i);
                             }
                     };
 
@@ -1269,14 +1311,14 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
             //Goal nodes WITH SHOWN antecedents and without disconnect warning
             instance.node_h_show_ant_subsequent_goal_sel.enter().joinForceNodeShapes(instance.shape_manager);  //,"goal");
             instance.node_h_show_ant_subsequent_goal_sel.exit().remove();
-            instance.node_h_show_ant_subsequent_goal_sel.classed("special", function(d) 
+            instance.node_h_show_ant_subsequent_goal_sel.classed("special", function(d, index) 
                     { 
                         return isSpecialNode(d);
-                    }).classed("editable", function(d) 
+                    }).classed("editable", function(d, index) 
                     { 
                         return isEditableNode(d);
                     }).on("contextmenu", function(d, index) {
-                        showContextMenuForOneWorkitem(d);
+                        showContextMenuForOneWorkitem(d, index);
                     });
 
             //Goal nodes WITH SHOWN antecedents and WITH disconnect warning
@@ -1289,7 +1331,7 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
                     { 
                         return isEditableNode(d);
                     }).on("contextmenu", function(d, index) {
-                        showContextMenuForOneWorkitem(d);
+                        showContextMenuForOneWorkitem(d, index);
                     });
 
             instance.link_sel.enter().joinForceLinkShapes(instance.shape_manager);
@@ -1395,7 +1437,7 @@ console.log("LOOK we clicked d=" + JSON.stringify(d));
 
     var my_drag = d3.behavior.drag()
         .on("dragstart", function (d) {
-            if(d.is_drag_source)
+            if(d.is_drag_source && !bigfathom_util.hierarchy.readonly)
             {
                 drag_started = true;
                 dragging_started_node = d;
